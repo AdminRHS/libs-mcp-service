@@ -2,7 +2,7 @@ const { API_TOKEN, API_BASE_URL } = require('./config.js');
 
 // API functions
 async function makeRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${API_BASE_URL}/token/${endpoint}`;
   
   const defaultOptions = {
     headers: {

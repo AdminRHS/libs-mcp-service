@@ -9,29 +9,29 @@ async function getDepartments(params = {}) {
     ...(search && { search })
   });
   
-  return await makeRequest(`/department?${queryParams}`);
+  return await makeRequest(`departments?${queryParams}`);
 }
 
 async function getDepartment(departmentId) {
-  return await makeRequest(`/department/${departmentId}`);
+  return await makeRequest(`departments/${departmentId}`);
 }
 
 async function createDepartment(data) {
-  return await makeRequest('/department', {
+  return await makeRequest('departments', {
     method: 'POST',
     body: JSON.stringify(data)
   });
 }
 
 async function updateDepartment(departmentId, data) {
-  return await makeRequest(`/department/${departmentId}`, {
+  return await makeRequest(`departments/${departmentId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
 }
 
 async function deleteDepartment(departmentId) {
-  return await makeRequest(`/department/${departmentId}`, {
+  return await makeRequest(`departments/${departmentId}`, {
     method: 'DELETE'
   });
 }
@@ -45,29 +45,29 @@ async function getProfessions(params = {}) {
     ...(search && { search })
   });
   
-  return await makeRequest(`/profession?${queryParams}`);
+  return await makeRequest(`professions?${queryParams}`);
 }
 
 async function getProfession(professionId) {
-  return await makeRequest(`/profession/${professionId}`);
+  return await makeRequest(`professions/${professionId}`);
 }
 
 async function createProfession(data) {
-  return await makeRequest('/profession', {
+  return await makeRequest('professions', {
     method: 'POST',
     body: JSON.stringify(data)
   });
 }
 
 async function updateProfession(professionId, data) {
-  return await makeRequest(`/profession/${professionId}`, {
+  return await makeRequest(`professions/${professionId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
 }
 
 async function deleteProfession(professionId) {
-  return await makeRequest(`/profession/${professionId}`, {
+  return await makeRequest(`professions/${professionId}`, {
     method: 'DELETE'
   });
 }
@@ -81,65 +81,29 @@ async function getStatuses(params = {}) {
     ...(search && { search })
   });
   
-  return await makeRequest(`/status?${queryParams}`);
+  return await makeRequest(`statuses?${queryParams}`);
 }
 
 async function getStatus(statusId) {
-  return await makeRequest(`/status/${statusId}`);
+  return await makeRequest(`statuses/${statusId}`);
 }
 
 async function createStatus(data) {
-  return await makeRequest('/status', {
+  return await makeRequest('statuses', {
     method: 'POST',
     body: JSON.stringify(data)
   });
 }
 
 async function updateStatus(statusId, data) {
-  return await makeRequest(`/status/${statusId}`, {
+  return await makeRequest(`statuses/${statusId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
 }
 
 async function deleteStatus(statusId) {
-  return await makeRequest(`/status/${statusId}`, {
-    method: 'DELETE'
-  });
-}
-
-// Priority functions
-async function getPriorities(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`/priority?${queryParams}`);
-}
-
-async function getPriority(priorityId) {
-  return await makeRequest(`/priority/${priorityId}`);
-}
-
-async function createPriority(data) {
-  return await makeRequest('/priority', {
-    method: 'POST',
-    body: JSON.stringify(data)
-  });
-}
-
-async function updatePriority(priorityId, data) {
-  return await makeRequest(`/priority/${priorityId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data)
-  });
-}
-
-async function deletePriority(priorityId) {
-  return await makeRequest(`/priority/${priorityId}`, {
+  return await makeRequest(`statuses/${statusId}`, {
     method: 'DELETE'
   });
 }
@@ -153,29 +117,29 @@ async function getLanguages(params = {}) {
     ...(search && { search })
   });
   
-  return await makeRequest(`/language?${queryParams}`);
+  return await makeRequest(`languages?${queryParams}`);
 }
 
 async function getLanguage(languageId) {
-  return await makeRequest(`/language/${languageId}`);
+  return await makeRequest(`languages/${languageId}`);
 }
 
 async function createLanguage(data) {
-  return await makeRequest('/language', {
+  return await makeRequest('languages', {
     method: 'POST',
     body: JSON.stringify(data)
   });
 }
 
 async function updateLanguage(languageId, data) {
-  return await makeRequest(`/language/${languageId}`, {
+  return await makeRequest(`languages/${languageId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
 }
 
 async function deleteLanguage(languageId) {
-  return await makeRequest(`/language/${languageId}`, {
+  return await makeRequest(`languages/${languageId}`, {
     method: 'DELETE'
   });
 }
@@ -189,29 +153,29 @@ async function getToolTypes(params = {}) {
     ...(search && { search })
   });
   
-  return await makeRequest(`/tool-type?${queryParams}`);
+  return await makeRequest(`tool-types?${queryParams}`);
 }
 
 async function getToolType(toolTypeId) {
-  return await makeRequest(`/tool-type/${toolTypeId}`);
+  return await makeRequest(`tool-types/${toolTypeId}`);
 }
 
 async function createToolType(data) {
-  return await makeRequest('/tool-type', {
+  return await makeRequest('tool-types', {
     method: 'POST',
     body: JSON.stringify(data)
   });
 }
 
 async function updateToolType(toolTypeId, data) {
-  return await makeRequest(`/tool-type/${toolTypeId}`, {
+  return await makeRequest(`tool-types/${toolTypeId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
 }
 
 async function deleteToolType(toolTypeId) {
-  return await makeRequest(`/tool-type/${toolTypeId}`, {
+  return await makeRequest(`tool-types/${toolTypeId}`, {
     method: 'DELETE'
   });
 }
@@ -225,29 +189,29 @@ async function getTools(params = {}) {
     ...(search && { search })
   });
   
-  return await makeRequest(`/tools?${queryParams}`);
+  return await makeRequest(`tools?${queryParams}`);
 }
 
 async function getTool(toolId) {
-  return await makeRequest(`/tools/${toolId}`);
+  return await makeRequest(`tools/${toolId}`);
 }
 
 async function createTool(data) {
-  return await makeRequest('/tools', {
+  return await makeRequest('tools', {
     method: 'POST',
     body: JSON.stringify(data)
   });
 }
 
 async function updateTool(toolId, data) {
-  return await makeRequest(`/tools/${toolId}`, {
+  return await makeRequest(`tools/${toolId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
 }
 
 async function deleteTool(toolId) {
-  return await makeRequest(`/tools/${toolId}`, {
+  return await makeRequest(`tools/${toolId}`, {
     method: 'DELETE'
   });
 }
@@ -259,8 +223,6 @@ module.exports = {
   getProfessions, getProfession, createProfession, updateProfession, deleteProfession,
   // Status functions
   getStatuses, getStatus, createStatus, updateStatus, deleteStatus,
-  // Priority functions
-  getPriorities, getPriority, createPriority, updatePriority, deletePriority,
   // Language functions
   getLanguages, getLanguage, createLanguage, updateLanguage, deleteLanguage,
   // Tool Type functions

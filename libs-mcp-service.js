@@ -208,66 +208,6 @@ var require_tools = __commonJS({
           required: ["statusId"]
         }
       },
-      // Priority tools
-      {
-        name: "get_priorities",
-        description: "Get all priorities",
-        inputSchema: {
-          type: "object",
-          properties: {
-            page: { type: "number", description: "Page number (default: 1)" },
-            limit: { type: "number", description: "Number of priorities per page (default: 10)" },
-            search: { type: "string", description: "Search by priority name or description" }
-          }
-        }
-      },
-      {
-        name: "get_priority",
-        description: "Get a specific priority by ID",
-        inputSchema: {
-          type: "object",
-          properties: {
-            priorityId: { type: "string", description: "Priority ID" }
-          },
-          required: ["priorityId"]
-        }
-      },
-      {
-        name: "create_priority",
-        description: "Create a new priority",
-        inputSchema: {
-          type: "object",
-          properties: {
-            name: { type: "string", description: "Priority name" },
-            description: { type: "string", description: "Priority description" }
-          },
-          required: ["name", "description"]
-        }
-      },
-      {
-        name: "update_priority",
-        description: "Update an existing priority",
-        inputSchema: {
-          type: "object",
-          properties: {
-            priorityId: { type: "string", description: "Priority ID" },
-            name: { type: "string", description: "Priority name" },
-            description: { type: "string", description: "Priority description" }
-          },
-          required: ["priorityId"]
-        }
-      },
-      {
-        name: "delete_priority",
-        description: "Delete a priority",
-        inputSchema: {
-          type: "object",
-          properties: {
-            priorityId: { type: "string", description: "Priority ID" }
-          },
-          required: ["priorityId"]
-        }
-      },
       // Language tools
       {
         name: "get_languages",
@@ -458,7 +398,7 @@ var require_api = __commonJS({
   "api.js"(exports2, module2) {
     var { API_TOKEN: API_TOKEN2, API_BASE_URL: API_BASE_URL2 } = require_config();
     async function makeRequest(endpoint, options = {}) {
-      const url = `${API_BASE_URL2}${endpoint}`;
+      const url = `${API_BASE_URL2}/token/${endpoint}`;
       const defaultOptions = {
         headers: {
           "Authorization": `Bearer ${API_TOKEN2}`,
@@ -494,25 +434,25 @@ var require_entities = __commonJS({
         limit: limit.toString(),
         ...search && { search }
       });
-      return await makeRequest(`/department?${queryParams}`);
+      return await makeRequest(`departments?${queryParams}`);
     }
     async function getDepartment(departmentId) {
-      return await makeRequest(`/department/${departmentId}`);
+      return await makeRequest(`departments/${departmentId}`);
     }
     async function createDepartment(data) {
-      return await makeRequest("/department", {
+      return await makeRequest("departments", {
         method: "POST",
         body: JSON.stringify(data)
       });
     }
     async function updateDepartment(departmentId, data) {
-      return await makeRequest(`/department/${departmentId}`, {
+      return await makeRequest(`departments/${departmentId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
     }
     async function deleteDepartment(departmentId) {
-      return await makeRequest(`/department/${departmentId}`, {
+      return await makeRequest(`departments/${departmentId}`, {
         method: "DELETE"
       });
     }
@@ -523,25 +463,25 @@ var require_entities = __commonJS({
         limit: limit.toString(),
         ...search && { search }
       });
-      return await makeRequest(`/profession?${queryParams}`);
+      return await makeRequest(`professions?${queryParams}`);
     }
     async function getProfession(professionId) {
-      return await makeRequest(`/profession/${professionId}`);
+      return await makeRequest(`professions/${professionId}`);
     }
     async function createProfession(data) {
-      return await makeRequest("/profession", {
+      return await makeRequest("professions", {
         method: "POST",
         body: JSON.stringify(data)
       });
     }
     async function updateProfession(professionId, data) {
-      return await makeRequest(`/profession/${professionId}`, {
+      return await makeRequest(`professions/${professionId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
     }
     async function deleteProfession(professionId) {
-      return await makeRequest(`/profession/${professionId}`, {
+      return await makeRequest(`professions/${professionId}`, {
         method: "DELETE"
       });
     }
@@ -552,54 +492,25 @@ var require_entities = __commonJS({
         limit: limit.toString(),
         ...search && { search }
       });
-      return await makeRequest(`/status?${queryParams}`);
+      return await makeRequest(`statuses?${queryParams}`);
     }
     async function getStatus(statusId) {
-      return await makeRequest(`/status/${statusId}`);
+      return await makeRequest(`statuses/${statusId}`);
     }
     async function createStatus(data) {
-      return await makeRequest("/status", {
+      return await makeRequest("statuses", {
         method: "POST",
         body: JSON.stringify(data)
       });
     }
     async function updateStatus(statusId, data) {
-      return await makeRequest(`/status/${statusId}`, {
+      return await makeRequest(`statuses/${statusId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
     }
     async function deleteStatus(statusId) {
-      return await makeRequest(`/status/${statusId}`, {
-        method: "DELETE"
-      });
-    }
-    async function getPriorities(params = {}) {
-      const { page = 1, limit = 10, search = "" } = params;
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-        ...search && { search }
-      });
-      return await makeRequest(`/priority?${queryParams}`);
-    }
-    async function getPriority(priorityId) {
-      return await makeRequest(`/priority/${priorityId}`);
-    }
-    async function createPriority(data) {
-      return await makeRequest("/priority", {
-        method: "POST",
-        body: JSON.stringify(data)
-      });
-    }
-    async function updatePriority(priorityId, data) {
-      return await makeRequest(`/priority/${priorityId}`, {
-        method: "PUT",
-        body: JSON.stringify(data)
-      });
-    }
-    async function deletePriority(priorityId) {
-      return await makeRequest(`/priority/${priorityId}`, {
+      return await makeRequest(`statuses/${statusId}`, {
         method: "DELETE"
       });
     }
@@ -610,25 +521,25 @@ var require_entities = __commonJS({
         limit: limit.toString(),
         ...search && { search }
       });
-      return await makeRequest(`/language?${queryParams}`);
+      return await makeRequest(`languages?${queryParams}`);
     }
     async function getLanguage(languageId) {
-      return await makeRequest(`/language/${languageId}`);
+      return await makeRequest(`languages/${languageId}`);
     }
     async function createLanguage(data) {
-      return await makeRequest("/language", {
+      return await makeRequest("languages", {
         method: "POST",
         body: JSON.stringify(data)
       });
     }
     async function updateLanguage(languageId, data) {
-      return await makeRequest(`/language/${languageId}`, {
+      return await makeRequest(`languages/${languageId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
     }
     async function deleteLanguage(languageId) {
-      return await makeRequest(`/language/${languageId}`, {
+      return await makeRequest(`languages/${languageId}`, {
         method: "DELETE"
       });
     }
@@ -639,25 +550,25 @@ var require_entities = __commonJS({
         limit: limit.toString(),
         ...search && { search }
       });
-      return await makeRequest(`/tool-type?${queryParams}`);
+      return await makeRequest(`tool-types?${queryParams}`);
     }
     async function getToolType(toolTypeId) {
-      return await makeRequest(`/tool-type/${toolTypeId}`);
+      return await makeRequest(`tool-types/${toolTypeId}`);
     }
     async function createToolType(data) {
-      return await makeRequest("/tool-type", {
+      return await makeRequest("tool-types", {
         method: "POST",
         body: JSON.stringify(data)
       });
     }
     async function updateToolType(toolTypeId, data) {
-      return await makeRequest(`/tool-type/${toolTypeId}`, {
+      return await makeRequest(`tool-types/${toolTypeId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
     }
     async function deleteToolType(toolTypeId) {
-      return await makeRequest(`/tool-type/${toolTypeId}`, {
+      return await makeRequest(`tool-types/${toolTypeId}`, {
         method: "DELETE"
       });
     }
@@ -668,25 +579,25 @@ var require_entities = __commonJS({
         limit: limit.toString(),
         ...search && { search }
       });
-      return await makeRequest(`/tools?${queryParams}`);
+      return await makeRequest(`tools?${queryParams}`);
     }
     async function getTool(toolId) {
-      return await makeRequest(`/tools/${toolId}`);
+      return await makeRequest(`tools/${toolId}`);
     }
     async function createTool(data) {
-      return await makeRequest("/tools", {
+      return await makeRequest("tools", {
         method: "POST",
         body: JSON.stringify(data)
       });
     }
     async function updateTool(toolId, data) {
-      return await makeRequest(`/tools/${toolId}`, {
+      return await makeRequest(`tools/${toolId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
     }
     async function deleteTool(toolId) {
-      return await makeRequest(`/tools/${toolId}`, {
+      return await makeRequest(`tools/${toolId}`, {
         method: "DELETE"
       });
     }
@@ -709,12 +620,6 @@ var require_entities = __commonJS({
       createStatus,
       updateStatus,
       deleteStatus,
-      // Priority functions
-      getPriorities,
-      getPriority,
-      createPriority,
-      updatePriority,
-      deletePriority,
       // Language functions
       getLanguages,
       getLanguage,
@@ -759,12 +664,6 @@ var require_handlers = __commonJS({
       createStatus,
       updateStatus,
       deleteStatus,
-      // Priority functions
-      getPriorities,
-      getPriority,
-      createPriority,
-      updatePriority,
-      deletePriority,
       // Language functions
       getLanguages,
       getLanguage,
@@ -803,12 +702,6 @@ var require_handlers = __commonJS({
       create_status: createStatus,
       update_status: updateStatus,
       delete_status: deleteStatus,
-      // Priority handlers
-      get_priorities: getPriorities,
-      get_priority: getPriority,
-      create_priority: createPriority,
-      update_priority: updatePriority,
-      delete_priority: deletePriority,
       // Language handlers
       get_languages: getLanguages,
       get_language: getLanguage,

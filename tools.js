@@ -183,67 +183,6 @@ const tools = [
     }
   },
 
-  // Priority tools
-  {
-    name: 'get_priorities',
-    description: 'Get all priorities',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        page: { type: 'number', description: 'Page number (default: 1)' },
-        limit: { type: 'number', description: 'Number of priorities per page (default: 10)' },
-        search: { type: 'string', description: 'Search by priority name or description' }
-      }
-    }
-  },
-  {
-    name: 'get_priority',
-    description: 'Get a specific priority by ID',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        priorityId: { type: 'string', description: 'Priority ID' }
-      },
-      required: ['priorityId']
-    }
-  },
-  {
-    name: 'create_priority',
-    description: 'Create a new priority',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string', description: 'Priority name' },
-        description: { type: 'string', description: 'Priority description' }
-      },
-      required: ['name', 'description']
-    }
-  },
-  {
-    name: 'update_priority',
-    description: 'Update an existing priority',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        priorityId: { type: 'string', description: 'Priority ID' },
-        name: { type: 'string', description: 'Priority name' },
-        description: { type: 'string', description: 'Priority description' }
-      },
-      required: ['priorityId']
-    }
-  },
-  {
-    name: 'delete_priority',
-    description: 'Delete a priority',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        priorityId: { type: 'string', description: 'Priority ID' }
-      },
-      required: ['priorityId']
-    }
-  },
-
   // Language tools
   {
     name: 'get_languages',

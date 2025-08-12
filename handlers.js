@@ -5,8 +5,6 @@ const {
   getProfessions, getProfession, createProfession, updateProfession, deleteProfession,
   // Status functions
   getStatuses, getStatus, createStatus, updateStatus, deleteStatus,
-  // Priority functions
-  getPriorities, getPriority, createPriority, updatePriority, deletePriority,
   // Language functions
   getLanguages, getLanguage, createLanguage, updateLanguage, deleteLanguage,
   // Tool Type functions
@@ -37,13 +35,6 @@ const toolHandlers = {
   create_status: createStatus,
   update_status: updateStatus,
   delete_status: deleteStatus,
-  
-  // Priority handlers
-  get_priorities: getPriorities,
-  get_priority: getPriority,
-  create_priority: createPriority,
-  update_priority: updatePriority,
-  delete_priority: deletePriority,
   
   // Language handlers
   get_languages: getLanguages,
