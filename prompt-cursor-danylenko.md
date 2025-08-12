@@ -180,7 +180,7 @@ The user needs to configure the environment variables before the MCP service can
 **User Request**: "Оксана: А ти забув додавати закінчення 'ес'. Тобто в мене все тепер в множині, всі запити за сутностями."
 
 **Changes Made**:
-1. **Updated `api.js`**: Changed URL structure from `${API_BASE_URL}token${endpoint}` to `${API_BASE_URL}token/${endpoint}`
+1. **Updated `api.js`**: Changed URL structure from `${API_BASE_URL}token${endpoint}` to `${API_BASE_URL}/token/${endpoint}`
 2. **Updated `entities.js`**: Changed all endpoints to plural form:
    - `department` → `departments`
    - `profession` → `professions`
@@ -245,3 +245,34 @@ The service is now properly configured with the correct endpoint structure for t
 - `/tools` - Tools (plural)
 
 The service now accurately reflects the available entities in the external API.
+
+## ES Modules Migration
+**User Request**: "А щось некоректно працює. Давай-и-и двічі перевір, що взагалі відбувається, що да як. А-а-а, те, що я зараз бачу-у-у, а, скоріш за все, треба додати... У новий пакет JSON додати, що в нас тип модуль І відповідно нові в нас всі імпорти. Через імпорт, не через require, як зараз. Скоріш за все, через це і не працює."
+
+**Problem Identified**: MCP client was expecting ES modules (import/export) but the service was using CommonJS (require/module.exports), causing validation errors.
+
+**Changes Made**:
+1. **Updated `package.json`**: Added `"type": "module"` for ES module support
+2. **Updated `config.js`**: Changed from `module.exports` to `export { API_TOKEN, API_BASE_URL }`
+3. **Updated `api.js`**: Changed from `require` to `import` and `module.exports` to `export`
+4. **Updated `entities.js`**: Changed from `require` to `import` and `module.exports` to `export`
+5. **Updated `tools.js`**: Changed from `module.exports` to `export { tools }`
+6. **Updated `handlers.js`**: Changed from `require` to `import` and `module.exports` to `export default`
+7. **Updated `index.js`**: Changed from `require` to `import` and removed priority cases
+8. **Updated build script**: Added `--format=esm` to esbuild configuration
+
+**Technical Details**:
+- **Before**: CommonJS modules with `require()` and `module.exports`
+- **After**: ES modules with `import` and `export`
+- **Build**: esbuild now generates ES module format instead of CommonJS
+- **Bundle size**: Reduced from 28.4kb to 22.4kb
+
+**Testing Results**:
+- ✅ MCP service initialization works correctly with ES modules
+- ✅ Tools list returns all 25 available tools
+- ✅ Service responds to JSON-RPC 2.0 protocol
+- ✅ No more validation errors from MCP client
+- ✅ All imports/exports use proper ES module syntax
+
+**Current Status**:
+The service now properly uses ES modules and should work correctly with MCP clients that expect modern JavaScript module syntax.

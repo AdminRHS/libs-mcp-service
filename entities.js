@@ -1,4 +1,4 @@
-const { makeRequest } = require('./api.js');
+import { makeRequest } from './api.js';
 
 // Department functions
 async function getDepartments(params = {}) {
@@ -216,7 +216,7 @@ async function deleteTool(toolId) {
   });
 }
 
-module.exports = {
+export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment, deleteDepartment,
   // Profession functions

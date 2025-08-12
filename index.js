@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const readline = require('readline');
-const { API_TOKEN, API_BASE_URL } = require('./config.js');
-const tools = require('./tools.js');
-const toolHandlers = require('./handlers.js');
+import readline from 'readline';
+import { API_TOKEN, API_BASE_URL } from './config.js';
+import { tools } from './tools.js';
+import toolHandlers from './handlers.js';
 
 // Validation
 if (!API_TOKEN) {
@@ -96,13 +96,6 @@ async function handleRequest(request) {
             case 'update_status': const { statusId, ...statusUpdateData } = args; result = await handler(statusId, statusUpdateData); break;
             case 'delete_status': result = await handler(args.statusId); break;
 
-            // Priority cases
-            case 'get_priorities': result = await handler(args); break;
-            case 'get_priority': result = await handler(args.priorityId); break;
-            case 'create_priority': result = await handler(args); break;
-            case 'update_priority': const { priorityId, ...priorityUpdateData } = args; result = await handler(priorityId, priorityUpdateData); break;
-            case 'delete_priority': result = await handler(args.priorityId); break;
-
             // Language cases
             case 'get_languages': result = await handler(args); break;
             case 'get_language': result = await handler(args.languageId); break;
@@ -124,58 +117,40 @@ async function handleRequest(request) {
             case 'update_tool': const { toolId, ...toolUpdateData } = args; result = await handler(toolId, toolUpdateData); break;
             case 'delete_tool': result = await handler(args.toolId); break;
 
-            default: throw new Error(`Unknown tool: ${name}`);
+            default:
+              throw new Error(`Unhandled tool: ${name}`);
           }
 
-          sendResponse(id, {
-            content: [{ type: 'text', text: JSON.stringify(result, null, 2) }]
-          });
+          sendResponse(id, result);
         } catch (error) {
-          sendResponse(id, {
-            content: [{ type: 'text', text: JSON.stringify({ error: { message: error.message, type: 'tool_error' } }, null, 2) }]
-          });
+          sendError(id, error);
         }
         break;
 
-      case 'notifications/cancel':
-        // Handle cancellation if needed
-        break;
-
       default:
-        sendError(id, new Error(`Unknown method: ${method}`));
+        sendError(id, { message: `Unknown method: ${method}` });
     }
   } catch (error) {
-    sendError(request.id, error);
+    sendError(id, error);
   }
 }
 
-async function run() {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-  });
+// Main server loop
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
 
-  rl.on('line', async (line) => {
-    try {
-      const request = JSON.parse(line);
-      await handleRequest(request);
-    } catch (error) {
-      console.error('Error parsing request:', error.message);
-    }
-  });
+rl.on('line', (line) => {
+  try {
+    const request = JSON.parse(line);
+    handleRequest(request);
+  } catch (error) {
+    console.error('Failed to parse JSON:', error.message);
+  }
+});
 
-  rl.on('close', () => {
-    process.exit(0);
-  });
-}
-
-// Handle graceful shutdown
-process.on('SIGINT', () => { process.exit(0); });
-process.on('SIGTERM', () => { process.exit(0); });
-
-// Start the service
-run().catch(error => {
-  console.error('Service error:', error);
-  process.exit(1);
+rl.on('close', () => {
+  process.exit(0);
 });

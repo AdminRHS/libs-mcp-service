@@ -1,4 +1,4 @@
-const { API_TOKEN, API_BASE_URL } = require('./config.js');
+import { API_TOKEN, API_BASE_URL } from './config.js';
 
 // API functions
 async function makeRequest(endpoint, options = {}) {
@@ -26,6 +26,4 @@ async function makeRequest(endpoint, options = {}) {
   }
 }
 
-module.exports = {
-  makeRequest
-};
+export { makeRequest };

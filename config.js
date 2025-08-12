@@ -13,7 +13,4 @@ if (!API_BASE_URL) {
   process.exit(1);
 }
 
-module.exports = {
-  API_TOKEN,
-  API_BASE_URL
-};
+export { API_TOKEN, API_BASE_URL };

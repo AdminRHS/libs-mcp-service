@@ -1,4 +1,4 @@
-const {
+import {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment, deleteDepartment,
   // Profession functions
@@ -11,7 +11,7 @@ const {
   getToolTypes, getToolType, createToolType, updateToolType, deleteToolType,
   // Tool functions
   getTools, getTool, createTool, updateTool, deleteTool
-} = require('./entities.js');
+} from './entities.js';
 
 // Tool handlers mapping
 const toolHandlers = {
@@ -58,4 +58,4 @@ const toolHandlers = {
   delete_tool: deleteTool
 };
 
-module.exports = toolHandlers;
+export default toolHandlers;

@@ -2,12 +2,13 @@
   "name": "libs-mcp-service",
   "version": "1.0.0",
   "description": "Minimal MCP service for integration with external platforms",
+  "type": "module",
   "main": "libs-mcp-service.js",
   "bin": {
     "libs-mcp-service": "./libs-mcp-service.js"
   },
   "scripts": {
-    "build": "npx esbuild index.js --bundle --platform=node --target=node18 --outfile=libs-mcp-service.js --external:child_process --external:readline --external:process --external:fs --external:path --external:url",
+    "build": "npx esbuild index.js --bundle --platform=node --target=node18 --format=esm --outfile=libs-mcp-service.js --external:child_process --external:readline --external:process --external:fs --external:path --external:url",
     "start": "node libs-mcp-service.js",
     "dev": "node index.js"
   },
