@@ -121,9 +121,14 @@ async function handleRequest(request) {
               throw new Error(`Unhandled tool: ${name}`);
           }
 
-          sendResponse(id, result);
+          sendResponse(id, {
+            content: [{ type: 'text', text: JSON.stringify(result, null, 2) }]
+          });
         } catch (error) {
-          sendError(id, error);
+          console.error('Tool execution error:', error.message);
+          sendResponse(id, {
+            content: [{ type: 'text', text: JSON.stringify({ error: { message: error.message, type: 'tool_error' } }, null, 2) }]
+          });
         }
         break;
 
@@ -131,6 +136,7 @@ async function handleRequest(request) {
         sendError(id, { message: `Unknown method: ${method}` });
     }
   } catch (error) {
+    console.error('Request handling error:', error.message);
     sendError(id, error);
   }
 }

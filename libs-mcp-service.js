@@ -775,15 +775,21 @@ async function handleRequest(request) {
             default:
               throw new Error(`Unhandled tool: ${name}`);
           }
-          sendResponse(id2, result);
+          sendResponse(id2, {
+            content: [{ type: "text", text: JSON.stringify(result, null, 2) }]
+          });
         } catch (error) {
-          sendError(id2, error);
+          console.error("Tool execution error:", error.message);
+          sendResponse(id2, {
+            content: [{ type: "text", text: JSON.stringify({ error: { message: error.message, type: "tool_error" } }, null, 2) }]
+          });
         }
         break;
       default:
         sendError(id2, { message: `Unknown method: ${method}` });
     }
   } catch (error) {
+    console.error("Request handling error:", error.message);
     sendError(id, error);
   }
 }

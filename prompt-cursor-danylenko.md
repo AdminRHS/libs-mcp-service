@@ -276,3 +276,34 @@ The service now accurately reflects the available entities in the external API.
 
 **Current Status**:
 The service now properly uses ES modules and should work correctly with MCP clients that expect modern JavaScript module syntax.
+
+## Response Format Fix
+**User Request**: Received validation errors from MCP client about invalid JSON-RPC format.
+
+**Problem Identified**: MCP client was expecting a specific response format for `tools/call` method with `content` field containing text array.
+
+**Changes Made**:
+1. **Updated `index.js`**: Modified `tools/call` response format to include `content` field:
+   - **Before**: `sendResponse(id, result)`
+   - **After**: `sendResponse(id, { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] })`
+
+2. **Updated error handling**: Modified error responses to use same format:
+   - **Before**: `sendError(id, error)`
+   - **After**: `sendResponse(id, { content: [{ type: 'text', text: JSON.stringify({ error: { message: error.message, type: 'tool_error' } }, null, 2) }] })`
+
+3. **Added logging**: Added console.error statements for better debugging of tool execution errors.
+
+**Technical Details**:
+- **Response Format**: Now follows MCP specification with `content` array containing text objects
+- **Error Format**: Errors are wrapped in the same content format for consistency
+- **JSON Serialization**: Results are properly serialized with indentation for readability
+
+**Testing Results**:
+- ✅ MCP service initialization works correctly
+- ✅ Tools list returns all 25 available tools
+- ✅ Service responds to JSON-RPC 2.0 protocol
+- ✅ Response format now matches MCP client expectations
+- ✅ Error handling provides proper feedback
+
+**Current Status**:
+The service now properly formats responses according to MCP specification and should work correctly with MCP clients without validation errors.
