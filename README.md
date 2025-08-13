@@ -1,6 +1,6 @@
 # Libs MCP Service
 
-A minimal Model Context Protocol (MCP) service for integration with external platforms. This service provides CRUD operations for entities through a standardized MCP interface.
+A Model Context Protocol (MCP) service for integration with external platforms. This service provides CRUD operations for various entities through a standardized MCP interface using the official MCP SDK.
 
 ## Quick Setup
 
@@ -30,13 +30,14 @@ Add the following to your MCP configuration:
 | Variable | Required | Description | Default |
 |----------|----------|-------------|---------|
 | `API_TOKEN` | Yes | Authentication token for the external platform | - |
-| `API_BASE_URL` | No | Base URL for the external API | `https://api.example.com` |
+| `API_BASE_URL` | Yes | Base URL for the external API | - |
 
 ## Features
 
 - **CRUD Operations**: Create, read, update, and delete entities
 - **Search & Pagination**: Get entities with search and pagination support
-- **MCP Protocol**: Full Model Context Protocol compliance
+- **Official MCP SDK**: Full Model Context Protocol compliance using `@modelcontextprotocol/sdk`
+- **Multiple Entity Types**: Support for departments, professions, statuses, languages, tool types, and tools
 - **Standalone**: Runs as a standalone Node.js process
 - **Easy Deployment**: Executable via npx without local installation
 
@@ -62,54 +63,84 @@ libs-mcp-service
 
 ## Available Tools
 
-### get_entities
-Retrieve all entities with optional pagination and search.
+The service provides 30 tools across 6 entity types:
 
-**Parameters:**
+### Departments
+- `get_departments` - List all departments with pagination and search
+- `get_department` - Get a specific department by ID
+- `create_department` - Create a new department
+- `update_department` - Update an existing department
+- `delete_department` - Delete a department
+
+### Professions
+- `get_professions` - List all professions with pagination and search
+- `get_profession` - Get a specific profession by ID
+- `create_profession` - Create a new profession
+- `update_profession` - Update an existing profession
+- `delete_profession` - Delete a profession
+
+### Statuses
+- `get_statuses` - List all statuses with pagination and search
+- `get_status` - Get a specific status by ID
+- `create_status` - Create a new status
+- `update_status` - Update an existing status
+- `delete_status` - Delete a status
+
+### Languages
+- `get_languages` - List all languages with pagination and search
+- `get_language` - Get a specific language by ID
+- `create_language` - Create a new language
+- `update_language` - Update an existing language
+- `delete_language` - Delete a language
+
+### Tool Types
+- `get_tool_types` - List all tool types with pagination and search
+- `get_tool_type` - Get a specific tool type by ID
+- `create_tool_type` - Create a new tool type
+- `update_tool_type` - Update an existing tool type
+- `delete_tool_type` - Delete a tool type
+
+### Tools
+- `get_tools` - List all tools with pagination and search
+- `get_tool` - Get a specific tool by ID
+- `create_tool` - Create a new tool
+- `update_tool` - Update an existing tool
+- `delete_tool` - Delete a tool
+
+## Common Parameters
+
+Most list operations support these parameters:
 - `page` (number, optional): Page number (default: 1)
-- `limit` (number, optional): Number of entities per page (default: 10)
-- `search` (string, optional): Search by entity name or description
+- `limit` (number, optional): Number of items per page (default: 10)
+- `search` (string, optional): Search by name or description
 
-### get_entity
-Retrieve a specific entity by ID.
-
-**Parameters:**
-- `entityId` (string, required): Entity ID
-
-### create_entity
-Create a new entity.
-
-**Parameters:**
+Create operations require:
 - `name` (string, required): Entity name
 - `description` (string, required): Entity description
-- `type` (string, optional): Entity type
 
-### update_entity
-Update an existing entity.
-
-**Parameters:**
-- `entityId` (string, required): Entity ID
+Update operations require:
+- `[entityId]` (string, required): Entity ID
 - `name` (string, optional): Entity name
 - `description` (string, optional): Entity description
-- `type` (string, optional): Entity type
-
-### delete_entity
-Delete an entity.
-
-**Parameters:**
-- `entityId` (string, required): Entity ID
 
 ## API Endpoints
 
 The service expects the following REST API endpoints on your external platform:
 
-- `GET /entities` - List entities (with query parameters: page, limit, search)
-- `GET /entities/:id` - Get specific entity
-- `POST /entities` - Create entity
-- `PUT /entities/:id` - Update entity
-- `DELETE /entities/:id` - Delete entity
+- `GET /api/token/departments` - List departments (with query parameters: page, limit, search)
+- `GET /api/token/departments/:id` - Get specific department
+- `POST /api/token/departments` - Create department
+- `PUT /api/token/departments/:id` - Update department
+- `DELETE /api/token/departments/:id` - Delete department
 
-All requests include the `Authorization: Bearer <API_TOKEN>` header.
+Similar patterns for other entities:
+- `/api/token/professions`
+- `/api/token/statuses`
+- `/api/token/languages`
+- `/api/token/tool-types`
+- `/api/token/tools`
+
+All requests include the `X-API-Key: <API_TOKEN>` header.
 
 ## Development
 
@@ -128,28 +159,22 @@ This creates the bundled `libs-mcp-service.js` file that includes all dependenci
 npm run dev
 ```
 
-### Testing
-
-The service can be tested by sending JSON-RPC requests to stdin:
-
-```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | API_TOKEN=test_token node libs-mcp-service.js
-```
-
 ## Error Handling
 
-The service includes comprehensive error handling:
+The service includes comprehensive error handling using the official MCP SDK:
 
-- Missing API token results in immediate exit
-- HTTP errors are properly formatted and returned
-- Invalid JSON-RPC requests are handled gracefully
-- Tool errors include detailed error messages
+- **Configuration Errors**: Missing API token or base URL results in immediate exit
+- **HTTP Errors**: API request failures are properly formatted and returned
+- **Tool Errors**: Invalid tool calls include detailed error messages
+- **MCP Protocol Errors**: Handled automatically by the official SDK
+- **Response Format**: All errors follow proper MCP content structure
 
 ## Security Notes
 
 - **API Token**: Never commit your actual API token to version control
 - **Environment Variables**: Use environment variables for sensitive configuration
 - **HTTPS**: Ensure your API_BASE_URL uses HTTPS in production
+- **X-API-Key**: Uses X-API-Key header for authentication
 
 ## Troubleshooting
 
@@ -159,15 +184,19 @@ The service includes comprehensive error handling:
    - Ensure the API_TOKEN environment variable is set
    - Check your MCP client configuration
 
-2. **"HTTP error! status: 401"**
+2. **"API_BASE_URL environment variable is required"**
+   - Ensure the API_BASE_URL environment variable is set
+   - Verify the URL format is correct
+
+3. **"HTTP error! status: 401"**
    - Verify your API token is valid
    - Check if the token has expired
 
-3. **"HTTP error! status: 404"**
+4. **"HTTP error! status: 404"**
    - Verify the API_BASE_URL is correct
    - Check if the API endpoints exist
 
-4. **Service not starting**
+5. **Service not starting**
    - Ensure Node.js 18+ is installed
    - Check if all dependencies are available
 
@@ -178,6 +207,17 @@ To enable debug logging, set the `DEBUG` environment variable:
 ```bash
 DEBUG=* npx github:AdminRHS/libs-mcp-service
 ```
+
+## Architecture
+
+The service uses a modular architecture:
+
+- **`index.js`** - Main MCP server using official SDK
+- **`config.js`** - Environment configuration
+- **`api.js`** - HTTP request utilities
+- **`entities.js`** - CRUD operations for all entities
+- **`tools.js`** - MCP tool definitions
+- **`handlers.js`** - Tool handler mappings
 
 ## License
 
