@@ -2,11 +2,11 @@ import { API_TOKEN, API_BASE_URL } from './config.js';
 
 // API functions
 async function makeRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}/token/${endpoint}`;
+  const url = `${API_BASE_URL}/api/token/${endpoint}`;
   
   const defaultOptions = {
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      'X-API-Key': API_TOKEN,
       'Content-Type': 'application/json',
       ...options.headers
     }
