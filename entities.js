@@ -30,12 +30,6 @@ async function updateDepartment(departmentId, data) {
   });
 }
 
-async function deleteDepartment(departmentId) {
-  return await makeRequest(`departments/${departmentId}`, {
-    method: 'DELETE'
-  });
-}
-
 // Profession functions
 async function getProfessions(params = {}) {
   const { page = 1, limit = 10, search = '' } = params;
@@ -63,12 +57,6 @@ async function updateProfession(professionId, data) {
   return await makeRequest(`professions/${professionId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
-  });
-}
-
-async function deleteProfession(professionId) {
-  return await makeRequest(`professions/${professionId}`, {
-    method: 'DELETE'
   });
 }
 
@@ -102,12 +90,6 @@ async function updateStatus(statusId, data) {
   });
 }
 
-async function deleteStatus(statusId) {
-  return await makeRequest(`statuses/${statusId}`, {
-    method: 'DELETE'
-  });
-}
-
 // Language functions
 async function getLanguages(params = {}) {
   const { page = 1, limit = 10, search = '' } = params;
@@ -135,12 +117,6 @@ async function updateLanguage(languageId, data) {
   return await makeRequest(`languages/${languageId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
-  });
-}
-
-async function deleteLanguage(languageId) {
-  return await makeRequest(`languages/${languageId}`, {
-    method: 'DELETE'
   });
 }
 
@@ -174,12 +150,6 @@ async function updateToolType(toolTypeId, data) {
   });
 }
 
-async function deleteToolType(toolTypeId) {
-  return await makeRequest(`tool-types/${toolTypeId}`, {
-    method: 'DELETE'
-  });
-}
-
 // Tool functions
 async function getTools(params = {}) {
   const { page = 1, limit = 10, search = '' } = params;
@@ -210,23 +180,17 @@ async function updateTool(toolId, data) {
   });
 }
 
-async function deleteTool(toolId) {
-  return await makeRequest(`tools/${toolId}`, {
-    method: 'DELETE'
-  });
-}
-
 export {
   // Department functions
-  getDepartments, getDepartment, createDepartment, updateDepartment, deleteDepartment,
+  getDepartments, getDepartment, createDepartment, updateDepartment,
   // Profession functions
-  getProfessions, getProfession, createProfession, updateProfession, deleteProfession,
+  getProfessions, getProfession, createProfession, updateProfession,
   // Status functions
-  getStatuses, getStatus, createStatus, updateStatus, deleteStatus,
+  getStatuses, getStatus, createStatus, updateStatus,
   // Language functions
-  getLanguages, getLanguage, createLanguage, updateLanguage, deleteLanguage,
+  getLanguages, getLanguage, createLanguage, updateLanguage,
   // Tool Type functions
-  getToolTypes, getToolType, createToolType, updateToolType, deleteToolType,
+  getToolTypes, getToolType, createToolType, updateToolType,
   // Tool functions
-  getTools, getTool, createTool, updateTool, deleteTool
+  getTools, getTool, createTool, updateTool
 };

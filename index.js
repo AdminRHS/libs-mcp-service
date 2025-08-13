@@ -64,9 +64,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { departmentId, ...departmentUpdateData } = args;
         result = await handler(departmentId, departmentUpdateData);
         break;
-      case "delete_department":
-        result = await handler(args.departmentId);
-        break;
       case "get_professions":
         result = await handler(args);
         break;
@@ -79,9 +76,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_profession":
         const { professionId, ...professionUpdateData } = args;
         result = await handler(professionId, professionUpdateData);
-        break;
-      case "delete_profession":
-        result = await handler(args.professionId);
         break;
       case "get_statuses":
         result = await handler(args);
@@ -96,9 +90,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { statusId, ...statusUpdateData } = args;
         result = await handler(statusId, statusUpdateData);
         break;
-      case "delete_status":
-        result = await handler(args.statusId);
-        break;
       case "get_languages":
         result = await handler(args);
         break;
@@ -111,9 +102,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_language":
         const { languageId, ...languageUpdateData } = args;
         result = await handler(languageId, languageUpdateData);
-        break;
-      case "delete_language":
-        result = await handler(args.languageId);
         break;
       case "get_tool_types":
         result = await handler(args);
@@ -128,9 +116,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { toolTypeId, ...toolTypeUpdateData } = args;
         result = await handler(toolTypeId, toolTypeUpdateData);
         break;
-      case "delete_tool_type":
-        result = await handler(args.toolTypeId);
-        break;
       case "get_tools":
         result = await handler(args);
         break;
@@ -143,9 +128,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_tool":
         const { toolId, ...toolUpdateData } = args;
         result = await handler(toolId, toolUpdateData);
-        break;
-      case "delete_tool":
-        result = await handler(args.toolId);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);

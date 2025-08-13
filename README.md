@@ -63,49 +63,43 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 30 tools across 6 entity types:
+The service provides 24 tools across 6 entity types:
 
 ### Departments
 - `get_departments` - List all departments with pagination and search
 - `get_department` - Get a specific department by ID
 - `create_department` - Create a new department
 - `update_department` - Update an existing department
-- `delete_department` - Delete a department
 
 ### Professions
 - `get_professions` - List all professions with pagination and search
 - `get_profession` - Get a specific profession by ID
 - `create_profession` - Create a new profession
 - `update_profession` - Update an existing profession
-- `delete_profession` - Delete a profession
 
 ### Statuses
 - `get_statuses` - List all statuses with pagination and search
 - `get_status` - Get a specific status by ID
 - `create_status` - Create a new status
 - `update_status` - Update an existing status
-- `delete_status` - Delete a status
 
 ### Languages
 - `get_languages` - List all languages with pagination and search
 - `get_language` - Get a specific language by ID
 - `create_language` - Create a new language
 - `update_language` - Update an existing language
-- `delete_language` - Delete a language
 
 ### Tool Types
 - `get_tool_types` - List all tool types with pagination and search
 - `get_tool_type` - Get a specific tool type by ID
 - `create_tool_type` - Create a new tool type
 - `update_tool_type` - Update an existing tool type
-- `delete_tool_type` - Delete a tool type
 
 ### Tools
 - `get_tools` - List all tools with pagination and search
 - `get_tool` - Get a specific tool by ID
 - `create_tool` - Create a new tool
 - `update_tool` - Update an existing tool
-- `delete_tool` - Delete a tool
 
 ## Common Parameters
 

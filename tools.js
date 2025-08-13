@@ -49,17 +49,6 @@ const tools = [
       required: ['departmentId']
     }
   },
-  {
-    name: 'delete_department',
-    description: 'Delete a department',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        departmentId: { type: 'string', description: 'Department ID' }
-      },
-      required: ['departmentId']
-    }
-  },
 
   // Profession tools
   {
@@ -106,17 +95,6 @@ const tools = [
         professionId: { type: 'string', description: 'Profession ID' },
         name: { type: 'string', description: 'Profession name' },
         description: { type: 'string', description: 'Profession description' }
-      },
-      required: ['professionId']
-    }
-  },
-  {
-    name: 'delete_profession',
-    description: 'Delete a profession',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        professionId: { type: 'string', description: 'Profession ID' }
       },
       required: ['professionId']
     }
@@ -171,17 +149,6 @@ const tools = [
       required: ['statusId']
     }
   },
-  {
-    name: 'delete_status',
-    description: 'Delete a status',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        statusId: { type: 'string', description: 'Status ID' }
-      },
-      required: ['statusId']
-    }
-  },
 
   // Language tools
   {
@@ -228,17 +195,6 @@ const tools = [
         languageId: { type: 'string', description: 'Language ID' },
         name: { type: 'string', description: 'Language name' },
         description: { type: 'string', description: 'Language description' }
-      },
-      required: ['languageId']
-    }
-  },
-  {
-    name: 'delete_language',
-    description: 'Delete a language',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        languageId: { type: 'string', description: 'Language ID' }
       },
       required: ['languageId']
     }
@@ -293,17 +249,6 @@ const tools = [
       required: ['toolTypeId']
     }
   },
-  {
-    name: 'delete_tool_type',
-    description: 'Delete a tool type',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        toolTypeId: { type: 'string', description: 'Tool Type ID' }
-      },
-      required: ['toolTypeId']
-    }
-  },
 
   // Tool tools
   {
@@ -350,17 +295,6 @@ const tools = [
         toolId: { type: 'string', description: 'Tool ID' },
         name: { type: 'string', description: 'Tool name' },
         description: { type: 'string', description: 'Tool description' }
-      },
-      required: ['toolId']
-    }
-  },
-  {
-    name: 'delete_tool',
-    description: 'Delete a tool',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        toolId: { type: 'string', description: 'Tool ID' }
       },
       required: ['toolId']
     }

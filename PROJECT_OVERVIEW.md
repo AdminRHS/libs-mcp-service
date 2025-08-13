@@ -49,7 +49,7 @@ libs-mcp-service/
 - ✅ **JSON request/response** handling
 
 ### **4. `entities.js`** - CRUD Operations
-- ✅ **30 functions** for 6 entity types
+- ✅ **24 functions** for 6 entity types
 - ✅ **Correct API endpoints** with proper URL structure
 - ✅ **Pagination and search support**
 - ✅ **Consistent error handling**
@@ -63,7 +63,7 @@ libs-mcp-service/
 - `delete[Entity]()` - Delete by ID
 
 ### **5. `tools.js`** - Tool Definitions
-- ✅ **30 MCP tools** with JSON Schema
+- ✅ **24 MCP tools** with JSON Schema
 - ✅ **Detailed descriptions** and parameters
 - ✅ **Proper validation** rules for required fields
 - ✅ **Consistent naming** conventions
@@ -84,28 +84,27 @@ libs-mcp-service/
 
 ### **8. `README.md`** - Documentation
 - ✅ **Updated for official MCP SDK**
-- ✅ **Complete tool documentation** for all 30 tools
+- ✅ **Complete tool documentation** for all 24 tools
 - ✅ **Proper API endpoint documentation**
 - ✅ **Clear configuration** instructions
 - ✅ **Architecture section** added
 
-## 🎯 Available Tools (30 total)
+## 🎯 Available Tools (24 total)
 
 | Entity | Tools | API Endpoint | Description |
 |--------|-------|--------------|-------------|
-| **Departments** | 5 | `/api/token/departments` | Department management |
-| **Professions** | 5 | `/api/token/professions` | Profession management |
-| **Statuses** | 5 | `/api/token/statuses` | Status management |
-| **Languages** | 5 | `/api/token/languages` | Language management |
-| **Tool Types** | 5 | `/api/token/tool-types` | Tool type management |
-| **Tools** | 5 | `/api/token/tools` | Tool management |
+| **Departments** | 4 | `/api/token/departments` | Department management |
+| **Professions** | 4 | `/api/token/professions` | Profession management |
+| **Statuses** | 4 | `/api/token/statuses` | Status management |
+| **Languages** | 4 | `/api/token/languages` | Language management |
+| **Tool Types** | 4 | `/api/token/tool-types` | Tool type management |
+| **Tools** | 4 | `/api/token/tools` | Tool management |
 
 ### Tool Operations per Entity:
 1. **`get_[entity]s`** - List all with pagination/search
 2. **`get_[entity]`** - Get specific by ID
 3. **`create_[entity]`** - Create new entity
 4. **`update_[entity]`** - Update existing entity
-5. **`delete_[entity]`** - Delete entity by ID
 
 ## ✅ Quality Checklist
 
@@ -162,8 +161,8 @@ libs-mcp-service/
 
 ## 📊 Performance Metrics
 
-- **Bundle Size**: 466.8KB (includes official MCP SDK)
-- **Total Tools**: 30 (5 per entity × 6 entities)
+- **Bundle Size**: 463.9KB (includes official MCP SDK)
+- **Total Tools**: 24 (4 per entity × 6 entities)
 - **API Endpoints**: 6 entity types with full CRUD
 - **Code Lines**: ~1,200 (excluding bundled file)
 - **Dependencies**: 1 runtime (MCP SDK), 2 development

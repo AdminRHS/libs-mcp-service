@@ -12122,17 +12122,6 @@ var tools = [
       required: ["departmentId"]
     }
   },
-  {
-    name: "delete_department",
-    description: "Delete a department",
-    inputSchema: {
-      type: "object",
-      properties: {
-        departmentId: { type: "string", description: "Department ID" }
-      },
-      required: ["departmentId"]
-    }
-  },
   // Profession tools
   {
     name: "get_professions",
@@ -12178,17 +12167,6 @@ var tools = [
         professionId: { type: "string", description: "Profession ID" },
         name: { type: "string", description: "Profession name" },
         description: { type: "string", description: "Profession description" }
-      },
-      required: ["professionId"]
-    }
-  },
-  {
-    name: "delete_profession",
-    description: "Delete a profession",
-    inputSchema: {
-      type: "object",
-      properties: {
-        professionId: { type: "string", description: "Profession ID" }
       },
       required: ["professionId"]
     }
@@ -12242,17 +12220,6 @@ var tools = [
       required: ["statusId"]
     }
   },
-  {
-    name: "delete_status",
-    description: "Delete a status",
-    inputSchema: {
-      type: "object",
-      properties: {
-        statusId: { type: "string", description: "Status ID" }
-      },
-      required: ["statusId"]
-    }
-  },
   // Language tools
   {
     name: "get_languages",
@@ -12298,17 +12265,6 @@ var tools = [
         languageId: { type: "string", description: "Language ID" },
         name: { type: "string", description: "Language name" },
         description: { type: "string", description: "Language description" }
-      },
-      required: ["languageId"]
-    }
-  },
-  {
-    name: "delete_language",
-    description: "Delete a language",
-    inputSchema: {
-      type: "object",
-      properties: {
-        languageId: { type: "string", description: "Language ID" }
       },
       required: ["languageId"]
     }
@@ -12362,17 +12318,6 @@ var tools = [
       required: ["toolTypeId"]
     }
   },
-  {
-    name: "delete_tool_type",
-    description: "Delete a tool type",
-    inputSchema: {
-      type: "object",
-      properties: {
-        toolTypeId: { type: "string", description: "Tool Type ID" }
-      },
-      required: ["toolTypeId"]
-    }
-  },
   // Tool tools
   {
     name: "get_tools",
@@ -12418,17 +12363,6 @@ var tools = [
         toolId: { type: "string", description: "Tool ID" },
         name: { type: "string", description: "Tool name" },
         description: { type: "string", description: "Tool description" }
-      },
-      required: ["toolId"]
-    }
-  },
-  {
-    name: "delete_tool",
-    description: "Delete a tool",
-    inputSchema: {
-      type: "object",
-      properties: {
-        toolId: { type: "string", description: "Tool ID" }
       },
       required: ["toolId"]
     }
@@ -12482,11 +12416,6 @@ async function updateDepartment(departmentId, data) {
     body: JSON.stringify(data)
   });
 }
-async function deleteDepartment(departmentId) {
-  return await makeRequest(`departments/${departmentId}`, {
-    method: "DELETE"
-  });
-}
 async function getProfessions(params = {}) {
   const { page = 1, limit = 10, search = "" } = params;
   const queryParams = new URLSearchParams({
@@ -12509,11 +12438,6 @@ async function updateProfession(professionId, data) {
   return await makeRequest(`professions/${professionId}`, {
     method: "PUT",
     body: JSON.stringify(data)
-  });
-}
-async function deleteProfession(professionId) {
-  return await makeRequest(`professions/${professionId}`, {
-    method: "DELETE"
   });
 }
 async function getStatuses(params = {}) {
@@ -12540,11 +12464,6 @@ async function updateStatus(statusId, data) {
     body: JSON.stringify(data)
   });
 }
-async function deleteStatus(statusId) {
-  return await makeRequest(`statuses/${statusId}`, {
-    method: "DELETE"
-  });
-}
 async function getLanguages(params = {}) {
   const { page = 1, limit = 10, search = "" } = params;
   const queryParams = new URLSearchParams({
@@ -12567,11 +12486,6 @@ async function updateLanguage(languageId, data) {
   return await makeRequest(`languages/${languageId}`, {
     method: "PUT",
     body: JSON.stringify(data)
-  });
-}
-async function deleteLanguage(languageId) {
-  return await makeRequest(`languages/${languageId}`, {
-    method: "DELETE"
   });
 }
 async function getToolTypes(params = {}) {
@@ -12598,11 +12512,6 @@ async function updateToolType(toolTypeId, data) {
     body: JSON.stringify(data)
   });
 }
-async function deleteToolType(toolTypeId) {
-  return await makeRequest(`tool-types/${toolTypeId}`, {
-    method: "DELETE"
-  });
-}
 async function getTools(params = {}) {
   const { page = 1, limit = 10, search = "" } = params;
   const queryParams = new URLSearchParams({
@@ -12627,11 +12536,6 @@ async function updateTool(toolId, data) {
     body: JSON.stringify(data)
   });
 }
-async function deleteTool(toolId) {
-  return await makeRequest(`tools/${toolId}`, {
-    method: "DELETE"
-  });
-}
 
 // handlers.js
 var toolHandlers = {
@@ -12640,37 +12544,31 @@ var toolHandlers = {
   get_department: getDepartment,
   create_department: createDepartment,
   update_department: updateDepartment,
-  delete_department: deleteDepartment,
   // Profession handlers
   get_professions: getProfessions,
   get_profession: getProfession,
   create_profession: createProfession,
   update_profession: updateProfession,
-  delete_profession: deleteProfession,
   // Status handlers
   get_statuses: getStatuses,
   get_status: getStatus,
   create_status: createStatus,
   update_status: updateStatus,
-  delete_status: deleteStatus,
   // Language handlers
   get_languages: getLanguages,
   get_language: getLanguage,
   create_language: createLanguage,
   update_language: updateLanguage,
-  delete_language: deleteLanguage,
   // Tool Type handlers
   get_tool_types: getToolTypes,
   get_tool_type: getToolType,
   create_tool_type: createToolType,
   update_tool_type: updateToolType,
-  delete_tool_type: deleteToolType,
   // Tool handlers
   get_tools: getTools,
   get_tool: getTool,
   create_tool: createTool,
-  update_tool: updateTool,
-  delete_tool: deleteTool
+  update_tool: updateTool
 };
 var handlers_default = toolHandlers;
 
@@ -12721,9 +12619,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { departmentId, ...departmentUpdateData } = args;
         result = await handler(departmentId, departmentUpdateData);
         break;
-      case "delete_department":
-        result = await handler(args.departmentId);
-        break;
       case "get_professions":
         result = await handler(args);
         break;
@@ -12736,9 +12631,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_profession":
         const { professionId, ...professionUpdateData } = args;
         result = await handler(professionId, professionUpdateData);
-        break;
-      case "delete_profession":
-        result = await handler(args.professionId);
         break;
       case "get_statuses":
         result = await handler(args);
@@ -12753,9 +12645,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { statusId, ...statusUpdateData } = args;
         result = await handler(statusId, statusUpdateData);
         break;
-      case "delete_status":
-        result = await handler(args.statusId);
-        break;
       case "get_languages":
         result = await handler(args);
         break;
@@ -12768,9 +12657,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_language":
         const { languageId, ...languageUpdateData } = args;
         result = await handler(languageId, languageUpdateData);
-        break;
-      case "delete_language":
-        result = await handler(args.languageId);
         break;
       case "get_tool_types":
         result = await handler(args);
@@ -12785,9 +12671,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { toolTypeId, ...toolTypeUpdateData } = args;
         result = await handler(toolTypeId, toolTypeUpdateData);
         break;
-      case "delete_tool_type":
-        result = await handler(args.toolTypeId);
-        break;
       case "get_tools":
         result = await handler(args);
         break;
@@ -12800,9 +12683,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_tool":
         const { toolId, ...toolUpdateData } = args;
         result = await handler(toolId, toolUpdateData);
-        break;
-      case "delete_tool":
-        result = await handler(args.toolId);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);
