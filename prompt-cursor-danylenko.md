@@ -1309,3 +1309,47 @@ AI модель тепер отримає однакові інструкції 
 1. ✅ **Completed**: Successfully tested profession creation with tools using `tool_ids`
 2. ⚠️ **Issue**: MCP service array parameter handling in update operations
 3. **Recommendation**: Use `tool_ids` field for tool associations in profession creation
+
+### 2025-08-14 - Updated Language ID Descriptions
+
+**User Request**: "language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' }, - А-а, тут треба перефразувати трошки. Тобто пріоритет вибору англійський. Треба якось так написати."
+
+**Actions Taken**:
+1. **Updated Language ID Descriptions**: Changed all `language_id` field descriptions in `tools.js` to emphasize English as the recommended primary language
+2. **Improved Clarity**: Made it clear that English (ID: 57) is recommended as the primary language choice
+
+**Changes Made**:
+- **Before**: `'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)'`
+- **After**: `'Language ID - REQUIRED. Use get_languages to find language ID. English (ID: 57) is recommended as primary language'`
+
+**Files Updated**:
+- `tools.js`: Updated descriptions in create_department, update_department, create_profession, update_profession schemas
+
+**Key Improvements**:
+1. **Clearer Priority**: Now explicitly states that English is recommended as primary language
+2. **Better Guidance**: Provides clearer direction for users choosing language IDs
+3. **Consistent Messaging**: All language_id fields now have the same improved description
+
+**Result**: Users now receive clearer guidance that English should be the primary choice for language_id, while still allowing other languages to be used.
+
+### 2025-08-14 - Updated Term Type ID Descriptions
+
+**User Request**: "те саме для term_type_id - пріорітет "main""
+
+**Actions Taken**:
+1. **Updated Term Type ID Descriptions**: Changed all `term_type_id` field descriptions in `tools.js` to emphasize "main" as the recommended primary term type
+2. **Improved Clarity**: Made it clear that "main" (ID: 1) is recommended as the primary term type choice
+
+**Changes Made**:
+- **Before**: `'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)'`
+- **After**: `'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" (ID: 1) is recommended as primary term type'`
+
+**Files Updated**:
+- `tools.js`: Updated descriptions in update_department, create_profession, update_profession schemas
+
+**Key Improvements**:
+1. **Clearer Priority**: Now explicitly states that "main" is recommended as primary term type
+2. **Better Guidance**: Provides clearer direction for users choosing term type IDs
+3. **Consistent Messaging**: All term_type_id fields now have the same improved description
+
+**Result**: Users now receive clearer guidance that "main" should be the primary choice for term_type_id, while still allowing other term types to be used.

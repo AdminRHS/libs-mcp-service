@@ -36,9 +36,9 @@ const tools = [
           properties: {
             value: { type: 'string', description: 'Term value (department name) - REQUIRED' },
             description: { type: 'string', description: 'Term description (optional)' },
-            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
-            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
-            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' }
           },
           required: ['value', 'language_id', 'term_type_id']
         },
@@ -75,9 +75,9 @@ const tools = [
           properties: {
             value: { type: 'string', description: 'Term value (department name) - REQUIRED' },
             description: { type: 'string', description: 'Term description (optional)' },
-            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
-            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
-            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' }
           },
           required: ['value', 'language_id', 'term_type_id']
         },
@@ -138,9 +138,9 @@ const tools = [
           properties: {
             value: { type: 'string', description: 'Term value (profession name) - REQUIRED' },
             description: { type: 'string', description: 'Term description (optional)' },
-            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
-            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
-            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' }
           },
           required: ['value', 'language_id', 'term_type_id']
         },
@@ -178,9 +178,9 @@ const tools = [
           properties: {
             value: { type: 'string', description: 'Term value (profession name) - REQUIRED' },
             description: { type: 'string', description: 'Term description (optional)' },
-            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
-            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
-            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' }
           },
           required: ['value', 'language_id', 'term_type_id']
         },
