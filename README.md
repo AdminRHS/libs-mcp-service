@@ -16,7 +16,7 @@ Add the following to your MCP configuration:
       "args": ["github:AdminRHS/libs-mcp-service"],
       "env": {
         "API_TOKEN": "your_actual_token_here",
-        "API_BASE_URL": "https://your-api-domain.com"
+        "API_BASE_URL": "https://libs.anyemp.com"
       }
     }
   }
@@ -31,6 +31,13 @@ Add the following to your MCP configuration:
 |----------|----------|-------------|---------|
 | `API_TOKEN` | Yes | Authentication token for the external platform | - |
 | `API_BASE_URL` | Yes | Base URL for the external API | - |
+
+### API Environments
+
+- **Production**: `https://libs.anyemp.com` - Main microservice for libraries
+- **Development**: `https://libdev.anyemp.com` - Test environment for developers (recommended for development and testing)
+
+**Note**: For development and testing, it's recommended to use the development environment (`https://libdev.anyemp.com`) to avoid affecting production data.
 
 ## Features
 
@@ -134,7 +141,7 @@ Similar patterns for other entities:
 - `/api/token/tool-types`
 - `/api/token/tools`
 
-All requests include the `X-API-Key: <API_TOKEN>` header.
+All requests include the `Authorization: Bearer <API_TOKEN>` header.
 
 ## Development
 
@@ -168,7 +175,7 @@ The service includes comprehensive error handling using the official MCP SDK:
 - **API Token**: Never commit your actual API token to version control
 - **Environment Variables**: Use environment variables for sensitive configuration
 - **HTTPS**: Ensure your API_BASE_URL uses HTTPS in production
-- **X-API-Key**: Uses X-API-Key header for authentication
+- **Bearer Token**: Uses Authorization header with Bearer token for authentication
 
 ## Troubleshooting
 
@@ -201,6 +208,32 @@ To enable debug logging, set the `DEBUG` environment variable:
 ```bash
 DEBUG=* npx github:AdminRHS/libs-mcp-service
 ```
+
+## Testing Status
+
+The service has been thoroughly tested with the following results:
+
+### ✅ Tested Entities (5 out of 6)
+
+| Entity | CRUD Operations | Permissions | Schema | Status |
+|--------|----------------|-------------|--------|--------|
+| **Departments** | ✅ Create, Read, Update | ✅ GET allowed, POST blocked (403) | ✅ Corrected | ✅ Complete |
+| **Professions** | ✅ Create, Read, Update | ✅ GET allowed, POST blocked (403) | ✅ Simplified | ✅ Complete |
+| **Statuses** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Corrected | ✅ Complete |
+| **Tool Types** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Corrected | ✅ Complete |
+| **Tools** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Enhanced | ✅ Complete |
+| **Languages** | ❌ Not tested yet | ❌ Not tested yet | ❌ Not verified | ⏳ Pending |
+
+### Key Testing Results
+
+- **Schema Corrections**: Fixed schemas for Statuses, Tool Types, and Tools to match actual API structure
+- **Permission Testing**: All entities properly restrict write operations (403 Forbidden)
+- **Relationship Testing**: Tools successfully tested with toolTypeIds relationships
+- **Error Handling**: Proper validation and error responses confirmed
+
+### Remaining Work
+
+- **Languages**: Need to test CRUD operations, permissions, and schema validation
 
 ## Architecture
 

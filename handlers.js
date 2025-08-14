@@ -7,6 +7,8 @@ import {
   getStatuses, getStatus, createStatus, updateStatus,
   // Language functions
   getLanguages, getLanguage, createLanguage, updateLanguage,
+  // Term Type functions
+  getTermTypes,
   // Tool Type functions
   getToolTypes, getToolType, createToolType, updateToolType,
   // Tool functions
@@ -38,6 +40,9 @@ const toolHandlers = {
   get_language: getLanguage,
   create_language: createLanguage,
   update_language: updateLanguage,
+  
+  // Term Type handlers
+  get_term_types: getTermTypes,
   
   // Tool Type handlers
   get_tool_types: getToolTypes,

@@ -103,6 +103,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { languageId, ...languageUpdateData } = args;
         result = await handler(languageId, languageUpdateData);
         break;
+      case "get_term_types":
+        result = await handler(args);
+        break;
       case "get_tool_types":
         result = await handler(args);
         break;

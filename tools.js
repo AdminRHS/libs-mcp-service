@@ -30,10 +30,36 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        name: { type: 'string', description: 'Department name' },
-        description: { type: 'string', description: 'Department description' }
+        mainTerm: {
+          type: 'object',
+          description: 'Main term for the department (REQUIRED)',
+          properties: {
+            value: { type: 'string', description: 'Term value (department name) - REQUIRED' },
+            description: { type: 'string', description: 'Term description (optional)' },
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+          },
+          required: ['value', 'language_id', 'term_type_id']
+        },
+        terms: {
+          type: 'array',
+          description: 'Additional terms for the department (optional)',
+          items: {
+            type: 'object',
+            properties: {
+              value: { type: 'string', description: 'Term value - REQUIRED' },
+              description: { type: 'string', description: 'Term description (optional)' },
+              language_id: { type: 'number', description: 'Language ID - REQUIRED' },
+              term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
+              status_id: { type: 'number', description: 'Status ID (optional)' }
+            },
+            required: ['value', 'language_id', 'term_type_id']
+          }
+        },
+        color: { type: 'string', description: 'Department color (optional, default: "#1976d2")' },
       },
-      required: ['name', 'description']
+      required: ['mainTerm']
     }
   },
   {
@@ -42,11 +68,37 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        departmentId: { type: 'string', description: 'Department ID' },
-        name: { type: 'string', description: 'Department name' },
-        description: { type: 'string', description: 'Department description' }
+        departmentId: { type: 'string', description: 'Department ID (REQUIRED)' },
+        mainTerm: {
+          type: 'object',
+          description: 'Main term for the department (REQUIRED)',
+          properties: {
+            value: { type: 'string', description: 'Term value (department name) - REQUIRED' },
+            description: { type: 'string', description: 'Term description (optional)' },
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+          },
+          required: ['value', 'language_id', 'term_type_id']
+        },
+        terms: {
+          type: 'array',
+          description: 'Additional terms for the department (optional)',
+          items: {
+            type: 'object',
+            properties: {
+              value: { type: 'string', description: 'Term value - REQUIRED' },
+              description: { type: 'string', description: 'Term description (optional)' },
+              language_id: { type: 'number', description: 'Language ID - REQUIRED' },
+              term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
+              status_id: { type: 'number', description: 'Status ID (optional)' }
+            },
+            required: ['value', 'language_id', 'term_type_id']
+          }
+        },
+        color: { type: 'string', description: 'Department color (optional)' },
       },
-      required: ['departmentId']
+      required: ['departmentId', 'mainTerm']
     }
   },
 
@@ -80,10 +132,36 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        name: { type: 'string', description: 'Profession name' },
-        description: { type: 'string', description: 'Profession description' }
+        mainTerm: {
+          type: 'object',
+          description: 'Main term for the profession (REQUIRED)',
+          properties: {
+            value: { type: 'string', description: 'Term value (profession name) - REQUIRED' },
+            description: { type: 'string', description: 'Term description (optional)' },
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+          },
+          required: ['value', 'language_id', 'term_type_id']
+        },
+        terms: {
+          type: 'array',
+          description: 'Additional terms for the profession (optional)',
+          items: {
+            type: 'object',
+            properties: {
+              value: { type: 'string', description: 'Term value - REQUIRED' },
+              description: { type: 'string', description: 'Term description (optional)' },
+              language_id: { type: 'number', description: 'Language ID - REQUIRED' },
+              term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
+              status_id: { type: 'number', description: 'Status ID (optional)' }
+            },
+            required: ['value', 'language_id', 'term_type_id']
+          }
+        },
+        department_id: { type: 'number', description: 'Department ID (optional)' }
       },
-      required: ['name', 'description']
+      required: ['mainTerm']
     }
   },
   {
@@ -92,11 +170,37 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        professionId: { type: 'string', description: 'Profession ID' },
-        name: { type: 'string', description: 'Profession name' },
-        description: { type: 'string', description: 'Profession description' }
+        professionId: { type: 'string', description: 'Profession ID (REQUIRED)' },
+        mainTerm: {
+          type: 'object',
+          description: 'Main term for the profession (REQUIRED)',
+          properties: {
+            value: { type: 'string', description: 'Term value (profession name) - REQUIRED' },
+            description: { type: 'string', description: 'Term description (optional)' },
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find English language ID (typically 57)' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find "main" term type ID (typically 1)' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find "Active" status ID (typically 1)' }
+          },
+          required: ['value', 'language_id', 'term_type_id']
+        },
+        terms: {
+          type: 'array',
+          description: 'Additional terms for the profession (optional)',
+          items: {
+            type: 'object',
+            properties: {
+              value: { type: 'string', description: 'Term value - REQUIRED' },
+              description: { type: 'string', description: 'Term description (optional)' },
+              language_id: { type: 'number', description: 'Language ID - REQUIRED' },
+              term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
+              status_id: { type: 'number', description: 'Status ID (optional)' }
+            },
+            required: ['value', 'language_id', 'term_type_id']
+          }
+        },
+        department_id: { type: 'number', description: 'Department ID (optional)' }
       },
-      required: ['professionId']
+      required: ['professionId', 'mainTerm']
     }
   },
 
@@ -131,9 +235,9 @@ const tools = [
       type: 'object',
       properties: {
         name: { type: 'string', description: 'Status name' },
-        description: { type: 'string', description: 'Status description' }
+        color: { type: 'string', description: 'Status color (hex code)' }
       },
-      required: ['name', 'description']
+      required: ['name', 'color']
     }
   },
   {
@@ -144,7 +248,7 @@ const tools = [
       properties: {
         statusId: { type: 'string', description: 'Status ID' },
         name: { type: 'string', description: 'Status name' },
-        description: { type: 'string', description: 'Status description' }
+        color: { type: 'string', description: 'Status color (hex code)' }
       },
       required: ['statusId']
     }
@@ -183,7 +287,7 @@ const tools = [
         name: { type: 'string', description: 'Language name' },
         description: { type: 'string', description: 'Language description' }
       },
-      required: ['name', 'description']
+      required: ['name']
     }
   },
   {
@@ -197,6 +301,20 @@ const tools = [
         description: { type: 'string', description: 'Language description' }
       },
       required: ['languageId']
+    }
+  },
+
+  // Term Type tools
+  {
+    name: 'get_term_types',
+    description: 'Get all term types',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        page: { type: 'number', description: 'Page number (default: 1)' },
+        limit: { type: 'number', description: 'Number of term types per page (default: 10)' },
+        search: { type: 'string', description: 'Search by term type name or description' }
+      }
     }
   },
 
@@ -230,10 +348,9 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        name: { type: 'string', description: 'Tool Type name' },
-        description: { type: 'string', description: 'Tool Type description' }
+        name: { type: 'string', description: 'Tool Type name' }
       },
-      required: ['name', 'description']
+      required: ['name']
     }
   },
   {
@@ -243,8 +360,7 @@ const tools = [
       type: 'object',
       properties: {
         toolTypeId: { type: 'string', description: 'Tool Type ID' },
-        name: { type: 'string', description: 'Tool Type name' },
-        description: { type: 'string', description: 'Tool Type description' }
+        name: { type: 'string', description: 'Tool Type name' }
       },
       required: ['toolTypeId']
     }
@@ -281,9 +397,11 @@ const tools = [
       type: 'object',
       properties: {
         name: { type: 'string', description: 'Tool name' },
-        description: { type: 'string', description: 'Tool description' }
+        description: { type: 'string', description: 'Tool description' },
+        link: { type: 'string', description: 'Tool URL/link (optional)' },
+        toolTypeIds: { type: 'array', description: 'Array of tool type IDs (optional)', items: { type: 'number' } }
       },
-      required: ['name', 'description']
+      required: ['name']
     }
   },
   {
@@ -294,7 +412,9 @@ const tools = [
       properties: {
         toolId: { type: 'string', description: 'Tool ID' },
         name: { type: 'string', description: 'Tool name' },
-        description: { type: 'string', description: 'Tool description' }
+        description: { type: 'string', description: 'Tool description' },
+        link: { type: 'string', description: 'Tool URL/link (optional)' },
+        toolTypeIds: { type: 'array', description: 'Array of tool type IDs (optional)', items: { type: 'number' } }
       },
       required: ['toolId']
     }

@@ -6,7 +6,7 @@ async function makeRequest(endpoint, options = {}) {
   
   const defaultOptions = {
     headers: {
-      'X-API-Key': API_TOKEN,
+      'Authorization': `Bearer ${API_TOKEN}`,
       'Content-Type': 'application/json',
       ...options.headers
     }

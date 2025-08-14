@@ -120,6 +120,18 @@ async function updateLanguage(languageId, data) {
   });
 }
 
+// Term Type functions
+async function getTermTypes(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  
+  return await makeRequest(`term-types?${queryParams}`);
+}
+
 // Tool Type functions
 async function getToolTypes(params = {}) {
   const { page = 1, limit = 10, search = '' } = params;
@@ -189,6 +201,8 @@ export {
   getStatuses, getStatus, createStatus, updateStatus,
   // Language functions
   getLanguages, getLanguage, createLanguage, updateLanguage,
+  // Term Type functions
+  getTermTypes,
   // Tool Type functions
   getToolTypes, getToolType, createToolType, updateToolType,
   // Tool functions
