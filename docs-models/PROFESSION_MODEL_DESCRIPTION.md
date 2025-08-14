@@ -4,7 +4,6 @@
 
 ### Core Fields
 - **id**: Primary key (INTEGER, auto-increment)
-- **library_id**: Foreign key to Library model (INTEGER, nullable)
 - **term_group_id**: Foreign key to TermGroup model (INTEGER, nullable)
 - **department_id**: Foreign key to Department model (INTEGER, nullable)
 
@@ -31,9 +30,9 @@
 - **ai_validation_errors**: Validation error details (JSONB, nullable)
 
 ### Relationships
-- **Belongs to Library**: `library_id` → `libraries.id`
 - **Belongs to Department**: `department_id` → `departments.id`
 - **Belongs to TermGroup**: `term_group_id` → `term_groups.id`
+- **Many-to-many with Tool**: `professions.id` ↔ `tools.id` via `profession_tool` junction table
 
 ## Important: Complex Creation Process
 
@@ -60,7 +59,7 @@ formDataToSend.append('terms', JSON.stringify([
   }
 ]));
 formDataToSend.append('icon', iconFile); // Optional icon file
-```
+formDataToSend.append('tool_ids', JSON.stringify([1, 2, 3])); // Optional tool IDs
 
 ### Required Fields for Creating the Simplest Profession:
 
@@ -99,7 +98,8 @@ formDataToSend.append('icon', iconFile); // Optional icon file
 2. **Creates TermGroup** with mainTerm and additional terms
 3. **Links Profession** to TermGroup via `term_group_id`
 4. **Handles file uploads** for icons
-5. **Manages complex relationships** between terms, languages, statuses, and term types
+5. **Manages tool relationships** via many-to-many with Tools
+6. **Manages complex relationships** between terms, languages, statuses, and term types
 
 ## MCP Instructions for Profession Operations
 
@@ -200,7 +200,6 @@ All MCP functions return JSON objects with the following structure:
 ```javascript
 {
   id: INTEGER,                    // Primary key, auto-increment
-  library_id: INTEGER,            // Foreign key to Library (nullable)
   term_group_id: INTEGER,         // Foreign key to TermGroup (nullable)
   department_id: INTEGER,         // Foreign key to Department (nullable)
   // AI fields (managed internally, not exposed in MCP)
@@ -275,6 +274,16 @@ All MCP functions return JSON objects with the following structure:
 }
 ```
 
+### ProfessionTool Junction Table Fields:
+```javascript
+{
+  profession_id: INTEGER,         // REQUIRED - Foreign key to Profession
+  tool_id: INTEGER,              // REQUIRED - Foreign key to Tool
+  createdAt: DATE,               // Auto-generated timestamp
+  updatedAt: DATE                // Auto-generated timestamp
+}
+```
+
 ### Related Model Fields (for Reference):
 
 #### Department Model:
@@ -338,13 +347,12 @@ All MCP functions return JSON objects with the following structure:
 - **term_type_id**: 1 (usually "main" term type)
 - **status_id**: 1 (usually "Active" status)
 - **department_id**: null (if not provided)
-- **library_id**: null (if not provided)
 - **created_by**: "0" (if not provided)
 
 ### Relationships:
-- **Profession** → **Library** (via `library_id`)
 - **Profession** → **Department** (via `department_id`)
 - **Profession** → **TermGroup** (via `term_group_id`)
+- **Profession** ↔ **Tool** (many-to-many via `profession_tool` junction table)
 - **TermGroup** → **Term** (via `main_term_id` for main term)
 - **TermGroup** ↔ **Term** (many-to-many via `TermGroupRelation` for additional terms)
 - **Term** → **Language** (via `language_id`)
@@ -359,9 +367,10 @@ The MCP service provides a **simplified abstraction** over a complex profession 
 1. **Simplified MCP Interface**: Only `name` and `description` required
 2. **Complex Backend Processing**: Creates TermGroups, Terms, and manages relationships
 3. **Department Assignment**: Can be assigned to departments (not exposed in MCP)
-4. **AI Integration**: Full AI content management capabilities
-5. **File Support**: Icon upload and storage capabilities
-6. **Multi-language Support**: Full internationalization capabilities
+4. **Tool Integration**: Can be linked to multiple tools via many-to-many relationship
+5. **AI Integration**: Full AI content management capabilities
+6. **File Support**: Icon upload and storage capabilities
+7. **Multi-language Support**: Full internationalization capabilities
 
 ### For AI Integration:
 The MCP interface is perfect for AI systems that need to create professions quickly without understanding the underlying complexity. The backend automatically handles all the complex relationships and default values.

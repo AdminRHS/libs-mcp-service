@@ -159,7 +159,8 @@ const tools = [
             required: ['value', 'language_id', 'term_type_id']
           }
         },
-        department_id: { type: 'number', description: 'Department ID (optional)' }
+        department_id: { type: 'number', description: 'Department ID (optional)' },
+        tool_ids: { type: 'array', description: 'Array of tool IDs (optional)', items: { type: 'number' } }
       },
       required: ['mainTerm']
     }
@@ -198,7 +199,8 @@ const tools = [
             required: ['value', 'language_id', 'term_type_id']
           }
         },
-        department_id: { type: 'number', description: 'Department ID (optional)' }
+        department_id: { type: 'number', description: 'Department ID (optional)' },
+        tool_ids: { type: 'array', description: 'Array of tool IDs (optional)', items: { type: 'number' } }
       },
       required: ['professionId', 'mainTerm']
     }

@@ -1266,3 +1266,46 @@ AI модель тепер отримає однакові інструкції 
 - Додано інформацію про тестове середовище
 - Відображено статус тестування для всіх сутностей
 - Вказано залишкову роботу (Languages)
+
+# Prompt Cursor Danylenko - Process Documentation
+
+## Latest Updates
+
+### 2025-08-14 - Testing Professions with Tools
+
+**User Request**: "попробуй создать профессию с тулзами"
+
+**Actions Taken**:
+1. **Updated Profession Schema**: Reverted back to original complex schema with `mainTerm` structure and added `tool_ids` field
+2. **Tested Profession Creation with Tools**: 
+   - Created "AI Developer" profession with tools [1, 2] - ❌ tools not linked
+   - Created "Data Scientist" profession with tools [1, 3] - ❌ tools not linked
+   - Created "Frontend Developer" profession with tool_ids [1, 4, 5] - ✅ SUCCESS!
+   - Updated "Frontend Developer" to "Senior Frontend Developer" - ✅ SUCCESS!
+
+**Results**:
+- ✅ **Profession Creation**: Successfully created professions with complex `mainTerm` structure
+- ✅ **Profession Update**: Successfully updated profession name and description
+- ✅ **Tools Association**: Field `tool_ids` works correctly for creating tool relationships
+- ❌ **Tools Field**: The `tools` field is not processed by the backend API
+
+**Key Findings**:
+1. **Correct Field Name**: Use `tool_ids` instead of `tools` for tool associations
+2. **Complex Schema Works**: The original complex schema with `mainTerm`, `terms`, `department_id` works correctly
+3. **Tool Relationships**: Many-to-many relationships between professions and tools work correctly
+4. **MCP Array Issue**: MCP service has issues with array parameters in update operations
+
+**Technical Details**:
+- **Profession ID 137**: "AI Developer" with tools [1, 2] - tools not linked (used `tools` field)
+- **Profession ID 138**: "Senior Data Scientist" with tools [1, 3, 4] - tools not linked (used `tools` field)
+- **Profession ID 139**: "Senior Frontend Developer" with tool_ids [1, 4, 5] - ✅ SUCCESS! (used `tool_ids` field)
+- **Tools Linked**: Adobe Acrobat (ID: 4), Adobe After Effects (ID: 5), 1C (ID: 1)
+
+**Schema Correction**:
+- ✅ **create_profession**: Uses `tool_ids` field correctly
+- ⚠️ **update_profession**: MCP service has issues with array parameters
+
+**Next Steps**:
+1. ✅ **Completed**: Successfully tested profession creation with tools using `tool_ids`
+2. ⚠️ **Issue**: MCP service array parameter handling in update operations
+3. **Recommendation**: Use `tool_ids` field for tool associations in profession creation
