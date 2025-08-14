@@ -49,7 +49,7 @@ libs-mcp-service/
 - ✅ **JSON request/response** handling
 
 ### **4. `entities.js`** - CRUD Operations
-- ✅ **24 functions** for 6 entity types
+- ✅ **29 functions** for 7 entity types
 - ✅ **Correct API endpoints** with proper URL structure
 - ✅ **Pagination and search support**
 - ✅ **Consistent error handling**
@@ -63,7 +63,7 @@ libs-mcp-service/
 - `delete[Entity]()` - Delete by ID
 
 ### **5. `tools.js`** - Tool Definitions
-- ✅ **24 MCP tools** with JSON Schema
+- ✅ **29 MCP tools** with JSON Schema
 - ✅ **Detailed descriptions** and parameters
 - ✅ **Proper validation** rules for required fields
 - ✅ **Consistent naming** conventions
@@ -84,12 +84,12 @@ libs-mcp-service/
 
 ### **8. `README.md`** - Documentation
 - ✅ **Updated for official MCP SDK**
-- ✅ **Complete tool documentation** for all 24 tools
+- ✅ **Complete tool documentation** for all 29 tools
 - ✅ **Proper API endpoint documentation**
 - ✅ **Clear configuration** instructions
 - ✅ **Architecture section** added
 
-## 🎯 Available Tools (24 total)
+## 🎯 Available Tools (29 total)
 
 | Entity | Tools | API Endpoint | Description | Testing Status |
 |--------|-------|--------------|-------------|----------------|
@@ -97,8 +97,10 @@ libs-mcp-service/
 | **Professions** | 4 | `/api/token/professions` | Profession management | ✅ Complete |
 | **Statuses** | 4 | `/api/token/statuses` | Status management | ✅ Complete |
 | **Languages** | 4 | `/api/token/languages` | Language management | ⏳ Pending |
+| **Term Types** | 1 | `/api/token/term-types` | Term type management | ✅ Complete |
 | **Tool Types** | 4 | `/api/token/tool-types` | Tool type management | ✅ Complete |
 | **Tools** | 4 | `/api/token/tools` | Tool management | ✅ Complete |
+| **Actions** | 4 | `/api/token/actions` | Action management | ✅ Complete |
 
 ### Tool Operations per Entity:
 1. **`get_[entity]s`** - List all with pagination/search
@@ -145,19 +147,22 @@ libs-mcp-service/
 
 ### **Comprehensive Testing Results:**
 
-#### **✅ Tested Entities (5 out of 6)**
+#### **✅ Tested Entities (7 out of 8)**
 - **Departments**: ✅ CRUD operations, permissions, schema validation
 - **Professions**: ✅ CRUD operations, permissions, schema simplification
 - **Statuses**: ✅ CRUD operations, permissions, schema correction (color field)
 - **Tool Types**: ✅ CRUD operations, permissions, schema correction (name only)
 - **Tools**: ✅ CRUD operations, permissions, schema enhancement (link, toolTypeIds)
+- **Actions**: ✅ CRUD operations, permissions, complex term structure, batch operations
 - **Languages**: ⏳ Pending testing
+- **Term Types**: ✅ GET operations tested (no CRUD needed)
 
 #### **🔧 Schema Corrections Made**
 - **Statuses**: Fixed schema to use `color` field instead of `description`
 - **Tool Types**: Removed non-existent `description` field, kept only `name`
 - **Tools**: Added `link` and `toolTypeIds` fields, made `description` optional
 - **Professions**: Simplified complex FormData logic to JSON requests
+- **Actions**: Implemented complex term structure with mainTerm and terms array
 
 #### **🔒 Permission Testing Results**
 All entities properly implement security:
@@ -169,6 +174,9 @@ All entities properly implement security:
 - ✅ **Tools ↔ ToolTypes**: Successfully tested many-to-many relationships
 - ✅ **toolTypeIds**: Properly handles array of tool type IDs
 - ✅ **Relationship updates**: Correctly updates tool type associations
+- ✅ **Actions ↔ Terms**: Successfully tested complex term relationships
+- ✅ **Term Types**: Properly handles similar and translation term types
+- ✅ **Batch operations**: Successfully tested clearing and adding multiple terms
 
 ### **API Environments**
 - **Production**: `https://libs.anyemp.com` - Main microservice for libraries
@@ -186,7 +194,7 @@ All entities properly implement security:
 - ✅ **Proper logging** and error messages
 - ✅ **Security** with Bearer token authentication
 - ✅ **Performance** optimized bundle
-- ✅ **Comprehensive testing** completed for 5/6 entities
+- ✅ **Comprehensive testing** completed for 7/8 entities
 
 ### **Integration Features:**
 - ✅ **Universal MCP client** compatibility
@@ -198,8 +206,8 @@ All entities properly implement security:
 ## 📊 Performance Metrics
 
 - **Bundle Size**: 463.9KB (includes official MCP SDK)
-- **Total Tools**: 24 (4 per entity × 6 entities)
-- **API Endpoints**: 6 entity types with full CRUD
+- **Total Tools**: 29 (4 per entity × 8 entities - 3 missing CRUD operations)
+- **API Endpoints**: 8 entity types (7 with full CRUD, 1 with GET only)
 - **Code Lines**: ~1,200 (excluding bundled file)
 - **Dependencies**: 1 runtime (MCP SDK), 2 development
 - **Documentation**: 7.0KB README, 7.5KB Project Overview
@@ -222,7 +230,7 @@ The project demonstrates excellent software engineering practices:
 - **Production-ready** deployment strategy
 - **Thorough testing** and quality assurance
 
-**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (5/6 entities tested)
+**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (7/8 entities tested)
 
 ### **Key Improvements Made:**
 - ✅ **Migrated to official MCP SDK**
@@ -230,7 +238,7 @@ The project demonstrates excellent software engineering practices:
 - ✅ **Fixed tool handling** with function-based approach
 - ✅ **Updated documentation** to reflect current implementation
 - ✅ **Maintained modular architecture** for maintainability
-- ✅ **Comprehensive testing** of 5 out of 6 entities
+- ✅ **Comprehensive testing** of 7 out of 8 entities
 - ✅ **Schema corrections** for Statuses, Tool Types, and Tools
 - ✅ **Permission testing** confirmed security implementation
 - ✅ **Relationship testing** for Tools and ToolTypes

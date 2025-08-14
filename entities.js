@@ -192,6 +192,36 @@ async function updateTool(toolId, data) {
   });
 }
 
+// Action functions
+async function getActions(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  
+  return await makeRequest(`actions?${queryParams}`);
+}
+
+async function getAction(actionId) {
+  return await makeRequest(`actions/${actionId}`);
+}
+
+async function createAction(data) {
+  return await makeRequest('actions', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateAction(actionId, data) {
+  return await makeRequest(`actions/${actionId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment,
@@ -206,5 +236,7 @@ export {
   // Tool Type functions
   getToolTypes, getToolType, createToolType, updateToolType,
   // Tool functions
-  getTools, getTool, createTool, updateTool
+  getTools, getTool, createTool, updateTool,
+  // Action functions
+  getActions, getAction, createAction, updateAction
 };

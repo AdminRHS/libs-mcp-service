@@ -70,7 +70,7 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 24 tools across 6 entity types:
+The service provides 29 tools across 8 entity types:
 
 ### Departments
 - `get_departments` - List all departments with pagination and search
@@ -96,6 +96,9 @@ The service provides 24 tools across 6 entity types:
 - `create_language` - Create a new language
 - `update_language` - Update an existing language
 
+### Term Types
+- `get_term_types` - List all term types with pagination and search (GET only, no CRUD operations)
+
 ### Tool Types
 - `get_tool_types` - List all tool types with pagination and search
 - `get_tool_type` - Get a specific tool type by ID
@@ -107,6 +110,12 @@ The service provides 24 tools across 6 entity types:
 - `get_tool` - Get a specific tool by ID
 - `create_tool` - Create a new tool
 - `update_tool` - Update an existing tool
+
+### Actions
+- `get_actions` - List all actions with pagination and search
+- `get_action` - Get a specific action by ID
+- `create_action` - Create a new action
+- `update_action` - Update an existing action
 
 ## Common Parameters
 
@@ -140,6 +149,7 @@ Similar patterns for other entities:
 - `/api/token/languages`
 - `/api/token/tool-types`
 - `/api/token/tools`
+- `/api/token/actions`
 
 All requests include the `Authorization: Bearer <API_TOKEN>` header.
 

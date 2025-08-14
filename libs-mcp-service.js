@@ -12487,6 +12487,105 @@ var tools = [
       },
       required: ["toolId"]
     }
+  },
+  // Action tools
+  {
+    name: "get_actions",
+    description: "Get all actions",
+    inputSchema: {
+      type: "object",
+      properties: {
+        page: { type: "number", description: "Page number (default: 1)" },
+        limit: { type: "number", description: "Number of actions per page (default: 10)" },
+        search: { type: "string", description: "Search by action name" }
+      }
+    }
+  },
+  {
+    name: "get_action",
+    description: "Get a specific action by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        actionId: { type: "string", description: "Action ID" }
+      },
+      required: ["actionId"]
+    }
+  },
+  {
+    name: "create_action",
+    description: "Create a new action",
+    inputSchema: {
+      type: "object",
+      properties: {
+        mainTerm: {
+          type: "object",
+          description: "Main term for the action (REQUIRED)",
+          properties: {
+            value: { type: "string", description: "Term value (action name) - REQUIRED" },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the action (optional)",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED" },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED" },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        }
+      },
+      required: ["mainTerm"]
+    }
+  },
+  {
+    name: "update_action",
+    description: "Update an existing action",
+    inputSchema: {
+      type: "object",
+      properties: {
+        actionId: { type: "string", description: "Action ID (REQUIRED)" },
+        mainTerm: {
+          type: "object",
+          description: "Main term for the action (REQUIRED)",
+          properties: {
+            value: { type: "string", description: "Term value (action name) - REQUIRED" },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the action (optional)",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED" },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED" },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        }
+      },
+      required: ["actionId", "mainTerm"]
+    }
   }
 ];
 
@@ -12666,6 +12765,30 @@ async function updateTool(toolId, data) {
     body: JSON.stringify(data)
   });
 }
+async function getActions(params = {}) {
+  const { page = 1, limit = 10, search = "" } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...search && { search }
+  });
+  return await makeRequest(`actions?${queryParams}`);
+}
+async function getAction(actionId) {
+  return await makeRequest(`actions/${actionId}`);
+}
+async function createAction(data) {
+  return await makeRequest("actions", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateAction(actionId, data) {
+  return await makeRequest(`actions/${actionId}`, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
+}
 
 // handlers.js
 var toolHandlers = {
@@ -12700,7 +12823,12 @@ var toolHandlers = {
   get_tools: getTools,
   get_tool: getTool,
   create_tool: createTool,
-  update_tool: updateTool
+  update_tool: updateTool,
+  // Action handlers
+  get_actions: getActions,
+  get_action: getAction,
+  create_action: createAction,
+  update_action: updateAction
 };
 var handlers_default = toolHandlers;
 
@@ -12818,6 +12946,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_tool":
         const { toolId, ...toolUpdateData } = args;
         result = await handler(toolId, toolUpdateData);
+        break;
+      case "get_actions":
+        result = await handler(args);
+        break;
+      case "get_action":
+        result = await handler(args.actionId);
+        break;
+      case "create_action":
+        result = await handler(args);
+        break;
+      case "update_action":
+        const { actionId, ...actionUpdateData } = args;
+        result = await handler(actionId, actionUpdateData);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);
