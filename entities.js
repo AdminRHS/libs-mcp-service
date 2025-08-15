@@ -252,6 +252,36 @@ async function updateObject(objectId, data) {
   });
 }
 
+// Format functions
+async function getFormats(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  
+  return await makeRequest(`formats?${queryParams}`);
+}
+
+async function getFormat(formatId) {
+  return await makeRequest(`formats/${formatId}`);
+}
+
+async function createFormat(data) {
+  return await makeRequest('formats', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateFormat(formatId, data) {
+  return await makeRequest(`formats/${formatId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment,
@@ -270,5 +300,7 @@ export {
   // Action functions
   getActions, getAction, createAction, updateAction,
   // Object functions
-  getObjects, getObject, createObject, updateObject
+  getObjects, getObject, createObject, updateObject,
+  // Format functions
+  getFormats, getFormat, createFormat, updateFormat
 };

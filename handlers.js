@@ -16,7 +16,9 @@ import {
   // Action functions
   getActions, getAction, createAction, updateAction,
   // Object functions
-  getObjects, getObject, createObject, updateObject
+  getObjects, getObject, createObject, updateObject,
+  // Format functions
+  getFormats, getFormat, createFormat, updateFormat
 } from './entities.js';
 
 // Tool handlers mapping
@@ -70,7 +72,13 @@ const toolHandlers = {
   get_objects: getObjects,
   get_object: getObject,
   create_object: createObject,
-  update_object: updateObject
+  update_object: updateObject,
+  
+  // Format handlers
+  get_formats: getFormats,
+  get_format: getFormat,
+  create_format: createFormat,
+  update_format: updateFormat
 };
 
 export default toolHandlers;

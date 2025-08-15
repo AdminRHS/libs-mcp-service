@@ -676,6 +676,54 @@ const tools = [
       },
       required: ['objectId', 'mainTerm']
     }
+  },
+  
+  // Format tools
+  {
+    name: 'get_formats',
+    description: 'Get all formats',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        page: { type: 'number', description: 'Page number (default: 1)' },
+        limit: { type: 'number', description: 'Number of formats per page (default: 10)' },
+        search: { type: 'string', description: 'Search by format name' }
+      }
+    }
+  },
+  {
+    name: 'get_format',
+    description: 'Get a specific format by ID',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        formatId: { type: 'string', description: 'Format ID' }
+      },
+      required: ['formatId']
+    }
+  },
+  {
+    name: 'create_format',
+    description: 'Create a new format',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'Format name - REQUIRED. Must be unique and between 2-100 characters' }
+      },
+      required: ['name']
+    }
+  },
+  {
+    name: 'update_format',
+    description: 'Update an existing format',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        formatId: { type: 'string', description: 'Format ID (REQUIRED)' },
+        name: { type: 'string', description: 'Format name - REQUIRED. Must be unique and between 2-100 characters' }
+      },
+      required: ['formatId', 'name']
+    }
   }
 ];
 

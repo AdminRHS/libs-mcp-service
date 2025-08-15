@@ -158,6 +158,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { objectId, ...objectUpdateData } = args;
         result = await handler(objectId, objectUpdateData);
         break;
+      case "get_formats":
+        result = await handler(args);
+        break;
+      case "get_format":
+        result = await handler(args.formatId);
+        break;
+      case "create_format":
+        result = await handler(args);
+        break;
+      case "update_format":
+        const { formatId, ...formatUpdateData } = args;
+        result = await handler(formatId, formatUpdateData);
+        break;
       default:
         throw new Error(`Unhandled tool: ${name}`);
     }

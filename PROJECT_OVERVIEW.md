@@ -89,7 +89,7 @@ libs-mcp-service/
 - ✅ **Clear configuration** instructions
 - ✅ **Architecture section** added
 
-## 🎯 Available Tools (33 total)
+## �� Available Tools (37 total)
 
 | Entity | Tools | API Endpoint | Description | Testing Status |
 |--------|-------|--------------|-------------|----------------|
@@ -102,6 +102,7 @@ libs-mcp-service/
 | **Tools** | 4 | `/api/token/tools` | Tool management | ✅ Complete |
 | **Actions** | 4 | `/api/token/actions` | Action management | ✅ Complete |
 | **Objects** | 4 | `/api/token/objects` | Object management with formats | ✅ Complete |
+| **Formats** | 4 | `/api/token/formats` | Format management | ✅ Complete |
 
 ### Tool Operations per Entity:
 1. **`get_[entity]s`** - List all with pagination/search
@@ -148,7 +149,7 @@ libs-mcp-service/
 
 ### **Comprehensive Testing Results:**
 
-#### **✅ Tested Entities (8 out of 9)**
+#### **✅ Tested Entities (9 out of 10)**
 - **Departments**: ✅ CRUD operations, permissions, schema validation
 - **Professions**: ✅ CRUD operations, permissions, schema simplification
 - **Statuses**: ✅ CRUD operations, permissions, schema correction (color field)
@@ -156,6 +157,7 @@ libs-mcp-service/
 - **Tools**: ✅ CRUD operations, permissions, schema enhancement (link, toolTypeIds)
 - **Actions**: ✅ CRUD operations, permissions, complex term structure, batch operations
 - **Objects**: ✅ CRUD operations, permissions, complex term structure, format relationships
+- **Formats**: ✅ CRUD operations, permissions, simple structure (name field only)
 - **Languages**: ⏳ Pending testing
 - **Term Types**: ✅ GET operations tested (no CRUD needed)
 
@@ -170,6 +172,7 @@ libs-mcp-service/
 All entities properly implement security:
 - ✅ **GET operations**: Allowed (read access)
 - ❌ **POST/PUT operations**: Blocked with 403 Forbidden (write access restricted)
+- ✅ **Formats**: Full CRUD operations allowed (GET/POST/PUT)
 - ✅ **Consistent behavior** across all tested entities
 
 #### **🔗 Relationship Testing**
@@ -210,9 +213,9 @@ All entities properly implement security:
 
 ## 📊 Performance Metrics
 
-- **Bundle Size**: 466.8KB (includes official MCP SDK)
-- **Total Tools**: 33 (4 per entity × 9 entities - 3 missing CRUD operations)
-- **API Endpoints**: 9 entity types (8 with full CRUD, 1 with GET only)
+- **Bundle Size**: 487.6KB (includes official MCP SDK)
+- **Total Tools**: 37 (4 per entity × 10 entities - 3 missing CRUD operations)
+- **API Endpoints**: 10 entity types (9 with full CRUD, 1 with GET only)
 - **Code Lines**: ~1,200 (excluding bundled file)
 - **Dependencies**: 1 runtime (MCP SDK), 2 development
 - **Documentation**: 7.0KB README, 7.5KB Project Overview
@@ -235,7 +238,7 @@ The project demonstrates excellent software engineering practices:
 - **Production-ready** deployment strategy
 - **Thorough testing** and quality assurance
 
-**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (8/9 entities tested)
+**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (9/10 entities tested)
 
 ### **Key Improvements Made:**
 - ✅ **Migrated to official MCP SDK**
@@ -243,12 +246,13 @@ The project demonstrates excellent software engineering practices:
 - ✅ **Fixed tool handling** with function-based approach
 - ✅ **Updated documentation** to reflect current implementation
 - ✅ **Maintained modular architecture** for maintainability
-- ✅ **Comprehensive testing** of 8 out of 9 entities
+- ✅ **Comprehensive testing** of 9 out of 10 entities
 - ✅ **Schema corrections** for Statuses, Tool Types, and Tools
 - ✅ **Permission testing** confirmed security implementation
 - ✅ **Relationship testing** for Tools, ToolTypes, Actions, and Objects
 - ✅ **Complex term structure** testing for Actions and Objects
 - ✅ **Format relationships** testing for Objects
+- ✅ **Simple Format model** testing with full CRUD operations
 
 ### **Remaining Work:**
 - ⏳ **Languages entity**: Need to test CRUD operations, permissions, and schema validation

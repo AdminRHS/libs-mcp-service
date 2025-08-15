@@ -12741,6 +12741,53 @@ var tools = [
       },
       required: ["objectId", "mainTerm"]
     }
+  },
+  // Format tools
+  {
+    name: "get_formats",
+    description: "Get all formats",
+    inputSchema: {
+      type: "object",
+      properties: {
+        page: { type: "number", description: "Page number (default: 1)" },
+        limit: { type: "number", description: "Number of formats per page (default: 10)" },
+        search: { type: "string", description: "Search by format name" }
+      }
+    }
+  },
+  {
+    name: "get_format",
+    description: "Get a specific format by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        formatId: { type: "string", description: "Format ID" }
+      },
+      required: ["formatId"]
+    }
+  },
+  {
+    name: "create_format",
+    description: "Create a new format",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Format name - REQUIRED. Must be unique and between 2-100 characters" }
+      },
+      required: ["name"]
+    }
+  },
+  {
+    name: "update_format",
+    description: "Update an existing format",
+    inputSchema: {
+      type: "object",
+      properties: {
+        formatId: { type: "string", description: "Format ID (REQUIRED)" },
+        name: { type: "string", description: "Format name - REQUIRED. Must be unique and between 2-100 characters" }
+      },
+      required: ["formatId", "name"]
+    }
   }
 ];
 
@@ -12968,6 +13015,30 @@ async function updateObject(objectId, data) {
     body: JSON.stringify(data)
   });
 }
+async function getFormats(params = {}) {
+  const { page = 1, limit = 10, search = "" } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...search && { search }
+  });
+  return await makeRequest(`formats?${queryParams}`);
+}
+async function getFormat(formatId) {
+  return await makeRequest(`formats/${formatId}`);
+}
+async function createFormat(data) {
+  return await makeRequest("formats", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateFormat(formatId, data) {
+  return await makeRequest(`formats/${formatId}`, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
+}
 
 // handlers.js
 var toolHandlers = {
@@ -13012,7 +13083,12 @@ var toolHandlers = {
   get_objects: getObjects,
   get_object: getObject,
   create_object: createObject,
-  update_object: updateObject
+  update_object: updateObject,
+  // Format handlers
+  get_formats: getFormats,
+  get_format: getFormat,
+  create_format: createFormat,
+  update_format: updateFormat
 };
 var handlers_default = toolHandlers;
 
@@ -13156,6 +13232,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_object":
         const { objectId, ...objectUpdateData } = args;
         result = await handler(objectId, objectUpdateData);
+        break;
+      case "get_formats":
+        result = await handler(args);
+        break;
+      case "get_format":
+        result = await handler(args.formatId);
+        break;
+      case "create_format":
+        result = await handler(args);
+        break;
+      case "update_format":
+        const { formatId, ...formatUpdateData } = args;
+        result = await handler(formatId, formatUpdateData);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);

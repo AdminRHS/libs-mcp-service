@@ -70,7 +70,7 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 33 tools across 9 entity types:
+The service provides 37 tools across 10 entity types:
 
 ### Departments
 - `get_departments` - List all departments with pagination and search
@@ -123,6 +123,12 @@ The service provides 33 tools across 9 entity types:
 - `create_object` - Create a new object with complex term structure
 - `update_object` - Update an existing object with format relationships
 
+### Formats
+- `get_formats` - List all formats with pagination and search
+- `get_format` - Get a specific format by ID
+- `create_format` - Create a new format
+- `update_format` - Update an existing format
+
 ## Common Parameters
 
 Most list operations support these parameters:
@@ -157,6 +163,7 @@ Similar patterns for other entities:
 - `/api/token/tools`
 - `/api/token/actions`
 - `/api/token/objects`
+- `/api/token/formats`
 
 All requests include the `Authorization: Bearer <API_TOKEN>` header.
 
@@ -230,7 +237,7 @@ DEBUG=* npx github:AdminRHS/libs-mcp-service
 
 The service has been thoroughly tested with the following results:
 
-### ✅ Tested Entities (8 out of 9)
+### ✅ Tested Entities (9 out of 10)
 
 | Entity | CRUD Operations | Permissions | Schema | Status |
 |--------|----------------|-------------|--------|--------|
@@ -241,6 +248,7 @@ The service has been thoroughly tested with the following results:
 | **Tools** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Enhanced | ✅ Complete |
 | **Actions** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
 | **Objects** | ✅ Create, Read, Update | ✅ GET/POST/PUT blocked (403) | ✅ Complex term structure + formats | ✅ Complete |
+| **Formats** | ✅ Create, Read, Update | ✅ GET/POST/PUT allowed | ✅ Simple structure | ✅ Complete |
 | **Languages** | ❌ Not tested yet | ❌ Not tested yet | ❌ Not verified | ⏳ Pending |
 
 ### Key Testing Results
@@ -250,6 +258,7 @@ The service has been thoroughly tested with the following results:
 - **Relationship Testing**: Tools successfully tested with toolTypeIds relationships, Objects tested with format relationships
 - **Complex Term Structure**: Actions and Objects successfully tested with mainTerm and terms array
 - **Format Relationships**: Objects successfully tested with many-to-many format relationships
+- **Simple Format Model**: Formats successfully tested with minimal structure (name field only)
 - **Error Handling**: Proper validation and error responses confirmed
 
 ### Remaining Work
