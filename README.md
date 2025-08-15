@@ -70,7 +70,7 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 29 tools across 8 entity types:
+The service provides 33 tools across 9 entity types:
 
 ### Departments
 - `get_departments` - List all departments with pagination and search
@@ -117,6 +117,12 @@ The service provides 29 tools across 8 entity types:
 - `create_action` - Create a new action
 - `update_action` - Update an existing action
 
+### Objects
+- `get_objects` - List all objects with pagination and search
+- `get_object` - Get a specific object by ID
+- `create_object` - Create a new object with complex term structure
+- `update_object` - Update an existing object with format relationships
+
 ## Common Parameters
 
 Most list operations support these parameters:
@@ -150,6 +156,7 @@ Similar patterns for other entities:
 - `/api/token/tool-types`
 - `/api/token/tools`
 - `/api/token/actions`
+- `/api/token/objects`
 
 All requests include the `Authorization: Bearer <API_TOKEN>` header.
 
@@ -223,7 +230,7 @@ DEBUG=* npx github:AdminRHS/libs-mcp-service
 
 The service has been thoroughly tested with the following results:
 
-### ✅ Tested Entities (5 out of 6)
+### ✅ Tested Entities (8 out of 9)
 
 | Entity | CRUD Operations | Permissions | Schema | Status |
 |--------|----------------|-------------|--------|--------|
@@ -232,13 +239,17 @@ The service has been thoroughly tested with the following results:
 | **Statuses** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Corrected | ✅ Complete |
 | **Tool Types** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Corrected | ✅ Complete |
 | **Tools** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Enhanced | ✅ Complete |
+| **Actions** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Objects** | ✅ Create, Read, Update | ✅ GET/POST/PUT blocked (403) | ✅ Complex term structure + formats | ✅ Complete |
 | **Languages** | ❌ Not tested yet | ❌ Not tested yet | ❌ Not verified | ⏳ Pending |
 
 ### Key Testing Results
 
 - **Schema Corrections**: Fixed schemas for Statuses, Tool Types, and Tools to match actual API structure
 - **Permission Testing**: All entities properly restrict write operations (403 Forbidden)
-- **Relationship Testing**: Tools successfully tested with toolTypeIds relationships
+- **Relationship Testing**: Tools successfully tested with toolTypeIds relationships, Objects tested with format relationships
+- **Complex Term Structure**: Actions and Objects successfully tested with mainTerm and terms array
+- **Format Relationships**: Objects successfully tested with many-to-many format relationships
 - **Error Handling**: Proper validation and error responses confirmed
 
 ### Remaining Work

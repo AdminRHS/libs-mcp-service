@@ -574,6 +574,108 @@ const tools = [
       },
       required: ['actionId', 'mainTerm']
     }
+  },
+
+  // Object tools
+  {
+    name: 'get_objects',
+    description: 'Get all objects',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        page: { type: 'number', description: 'Page number (default: 1)' },
+        limit: { type: 'number', description: 'Number of objects per page (default: 10)' },
+        search: { type: 'string', description: 'Search by object name or description' }
+      }
+    }
+  },
+  {
+    name: 'get_object',
+    description: 'Get a specific object by ID',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        objectId: { type: 'string', description: 'Object ID' }
+      },
+      required: ['objectId']
+    }
+  },
+  {
+    name: 'create_object',
+    description: 'Create a new object',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mainTerm: {
+          type: 'object',
+          description: 'Main term for the object (REQUIRED)',
+          properties: {
+            value: { type: 'string', description: 'Term value (object name) - REQUIRED' },
+            description: { type: 'string', description: 'Term description (optional)' },
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' }
+          },
+          required: ['value', 'language_id', 'term_type_id']
+        },
+        terms: {
+          type: 'array',
+          description: 'Additional terms for the object (optional)',
+          items: {
+            type: 'object',
+            properties: {
+              value: { type: 'string', description: 'Term value - REQUIRED' },
+              description: { type: 'string', description: 'Term description (optional)' },
+              language_id: { type: 'number', description: 'Language ID - REQUIRED' },
+              term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
+              status_id: { type: 'number', description: 'Status ID (optional)' }
+            },
+            required: ['value', 'language_id', 'term_type_id']
+          }
+        },
+        format_ids: { type: 'array', description: 'Array of format IDs (optional)', items: { type: 'number' } }
+      },
+      required: ['mainTerm']
+    }
+  },
+  {
+    name: 'update_object',
+    description: 'Update an existing object',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        objectId: { type: 'string', description: 'Object ID (REQUIRED)' },
+        mainTerm: {
+          type: 'object',
+          description: 'Main term for the object (REQUIRED)',
+          properties: {
+            value: { type: 'string', description: 'Term value (object name) - REQUIRED' },
+            description: { type: 'string', description: 'Term description (optional)' },
+            language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
+            term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' }
+          },
+          required: ['value', 'language_id', 'term_type_id']
+        },
+        terms: {
+          type: 'array',
+          description: 'Additional terms for the object (optional)',
+          items: {
+            type: 'object',
+            properties: {
+              value: { type: 'string', description: 'Term value - REQUIRED' },
+              description: { type: 'string', description: 'Term description (optional)' },
+              language_id: { type: 'number', description: 'Language ID - REQUIRED' },
+              term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
+              status_id: { type: 'number', description: 'Status ID (optional)' }
+            },
+            required: ['value', 'language_id', 'term_type_id']
+          }
+        },
+        format_ids: { type: 'array', description: 'Array of format IDs (optional)', items: { type: 'number' } }
+      },
+      required: ['objectId', 'mainTerm']
+    }
   }
 ];
 

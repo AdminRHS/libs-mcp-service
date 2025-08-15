@@ -12640,6 +12640,107 @@ var tools = [
       },
       required: ["actionId", "mainTerm"]
     }
+  },
+  // Object tools
+  {
+    name: "get_objects",
+    description: "Get all objects",
+    inputSchema: {
+      type: "object",
+      properties: {
+        page: { type: "number", description: "Page number (default: 1)" },
+        limit: { type: "number", description: "Number of objects per page (default: 10)" },
+        search: { type: "string", description: "Search by object name or description" }
+      }
+    }
+  },
+  {
+    name: "get_object",
+    description: "Get a specific object by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: { type: "string", description: "Object ID" }
+      },
+      required: ["objectId"]
+    }
+  },
+  {
+    name: "create_object",
+    description: "Create a new object",
+    inputSchema: {
+      type: "object",
+      properties: {
+        mainTerm: {
+          type: "object",
+          description: "Main term for the object (REQUIRED)",
+          properties: {
+            value: { type: "string", description: "Term value (object name) - REQUIRED" },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the object (optional)",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED" },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED" },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        },
+        format_ids: { type: "array", description: "Array of format IDs (optional)", items: { type: "number" } }
+      },
+      required: ["mainTerm"]
+    }
+  },
+  {
+    name: "update_object",
+    description: "Update an existing object",
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: { type: "string", description: "Object ID (REQUIRED)" },
+        mainTerm: {
+          type: "object",
+          description: "Main term for the object (REQUIRED)",
+          properties: {
+            value: { type: "string", description: "Term value (object name) - REQUIRED" },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the object (optional)",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED" },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED" },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        },
+        format_ids: { type: "array", description: "Array of format IDs (optional)", items: { type: "number" } }
+      },
+      required: ["objectId", "mainTerm"]
+    }
   }
 ];
 
@@ -12843,6 +12944,30 @@ async function updateAction(actionId, data) {
     body: JSON.stringify(data)
   });
 }
+async function getObjects(params = {}) {
+  const { page = 1, limit = 10, search = "" } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...search && { search }
+  });
+  return await makeRequest(`objects?${queryParams}`);
+}
+async function getObject(objectId) {
+  return await makeRequest(`objects/${objectId}`);
+}
+async function createObject(data) {
+  return await makeRequest("objects", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateObject(objectId, data) {
+  return await makeRequest(`objects/${objectId}`, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
+}
 
 // handlers.js
 var toolHandlers = {
@@ -12882,7 +13007,12 @@ var toolHandlers = {
   get_actions: getActions,
   get_action: getAction,
   create_action: createAction,
-  update_action: updateAction
+  update_action: updateAction,
+  // Object handlers
+  get_objects: getObjects,
+  get_object: getObject,
+  create_object: createObject,
+  update_object: updateObject
 };
 var handlers_default = toolHandlers;
 
@@ -13013,6 +13143,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_action":
         const { actionId, ...actionUpdateData } = args;
         result = await handler(actionId, actionUpdateData);
+        break;
+      case "get_objects":
+        result = await handler(args);
+        break;
+      case "get_object":
+        result = await handler(args.objectId);
+        break;
+      case "create_object":
+        result = await handler(args);
+        break;
+      case "update_object":
+        const { objectId, ...objectUpdateData } = args;
+        result = await handler(objectId, objectUpdateData);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);

@@ -145,6 +145,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { actionId, ...actionUpdateData } = args;
         result = await handler(actionId, actionUpdateData);
         break;
+      case "get_objects":
+        result = await handler(args);
+        break;
+      case "get_object":
+        result = await handler(args.objectId);
+        break;
+      case "create_object":
+        result = await handler(args);
+        break;
+      case "update_object":
+        const { objectId, ...objectUpdateData } = args;
+        result = await handler(objectId, objectUpdateData);
+        break;
       default:
         throw new Error(`Unhandled tool: ${name}`);
     }

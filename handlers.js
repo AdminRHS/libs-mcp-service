@@ -14,7 +14,9 @@ import {
   // Tool functions
   getTools, getTool, createTool, updateTool,
   // Action functions
-  getActions, getAction, createAction, updateAction
+  getActions, getAction, createAction, updateAction,
+  // Object functions
+  getObjects, getObject, createObject, updateObject
 } from './entities.js';
 
 // Tool handlers mapping
@@ -62,7 +64,13 @@ const toolHandlers = {
   get_actions: getActions,
   get_action: getAction,
   create_action: createAction,
-  update_action: updateAction
+  update_action: updateAction,
+  
+  // Object handlers
+  get_objects: getObjects,
+  get_object: getObject,
+  create_object: createObject,
+  update_object: updateObject
 };
 
 export default toolHandlers;

@@ -49,7 +49,7 @@ libs-mcp-service/
 - ✅ **JSON request/response** handling
 
 ### **4. `entities.js`** - CRUD Operations
-- ✅ **29 functions** for 7 entity types
+- ✅ **33 functions** for 9 entity types
 - ✅ **Correct API endpoints** with proper URL structure
 - ✅ **Pagination and search support**
 - ✅ **Consistent error handling**
@@ -63,7 +63,7 @@ libs-mcp-service/
 - `delete[Entity]()` - Delete by ID
 
 ### **5. `tools.js`** - Tool Definitions
-- ✅ **29 MCP tools** with JSON Schema
+- ✅ **33 MCP tools** with JSON Schema
 - ✅ **Detailed descriptions** and parameters
 - ✅ **Proper validation** rules for required fields
 - ✅ **Consistent naming** conventions
@@ -89,7 +89,7 @@ libs-mcp-service/
 - ✅ **Clear configuration** instructions
 - ✅ **Architecture section** added
 
-## 🎯 Available Tools (29 total)
+## 🎯 Available Tools (33 total)
 
 | Entity | Tools | API Endpoint | Description | Testing Status |
 |--------|-------|--------------|-------------|----------------|
@@ -101,6 +101,7 @@ libs-mcp-service/
 | **Tool Types** | 4 | `/api/token/tool-types` | Tool type management | ✅ Complete |
 | **Tools** | 4 | `/api/token/tools` | Tool management | ✅ Complete |
 | **Actions** | 4 | `/api/token/actions` | Action management | ✅ Complete |
+| **Objects** | 4 | `/api/token/objects` | Object management with formats | ✅ Complete |
 
 ### Tool Operations per Entity:
 1. **`get_[entity]s`** - List all with pagination/search
@@ -147,13 +148,14 @@ libs-mcp-service/
 
 ### **Comprehensive Testing Results:**
 
-#### **✅ Tested Entities (7 out of 8)**
+#### **✅ Tested Entities (8 out of 9)**
 - **Departments**: ✅ CRUD operations, permissions, schema validation
 - **Professions**: ✅ CRUD operations, permissions, schema simplification
 - **Statuses**: ✅ CRUD operations, permissions, schema correction (color field)
 - **Tool Types**: ✅ CRUD operations, permissions, schema correction (name only)
 - **Tools**: ✅ CRUD operations, permissions, schema enhancement (link, toolTypeIds)
 - **Actions**: ✅ CRUD operations, permissions, complex term structure, batch operations
+- **Objects**: ✅ CRUD operations, permissions, complex term structure, format relationships
 - **Languages**: ⏳ Pending testing
 - **Term Types**: ✅ GET operations tested (no CRUD needed)
 
@@ -175,8 +177,11 @@ All entities properly implement security:
 - ✅ **toolTypeIds**: Properly handles array of tool type IDs
 - ✅ **Relationship updates**: Correctly updates tool type associations
 - ✅ **Actions ↔ Terms**: Successfully tested complex term relationships
+- ✅ **Objects ↔ Formats**: Successfully tested many-to-many format relationships
+- ✅ **Objects ↔ Terms**: Successfully tested complex term structure with mainTerm and terms
 - ✅ **Term Types**: Properly handles similar and translation term types
 - ✅ **Batch operations**: Successfully tested clearing and adding multiple terms
+- ✅ **Priority system**: Automatic priority assignment for terms (1-5)
 
 ### **API Environments**
 - **Production**: `https://libs.anyemp.com` - Main microservice for libraries
@@ -194,7 +199,7 @@ All entities properly implement security:
 - ✅ **Proper logging** and error messages
 - ✅ **Security** with Bearer token authentication
 - ✅ **Performance** optimized bundle
-- ✅ **Comprehensive testing** completed for 7/8 entities
+- ✅ **Comprehensive testing** completed for 8/9 entities
 
 ### **Integration Features:**
 - ✅ **Universal MCP client** compatibility
@@ -205,9 +210,9 @@ All entities properly implement security:
 
 ## 📊 Performance Metrics
 
-- **Bundle Size**: 463.9KB (includes official MCP SDK)
-- **Total Tools**: 29 (4 per entity × 8 entities - 3 missing CRUD operations)
-- **API Endpoints**: 8 entity types (7 with full CRUD, 1 with GET only)
+- **Bundle Size**: 466.8KB (includes official MCP SDK)
+- **Total Tools**: 33 (4 per entity × 9 entities - 3 missing CRUD operations)
+- **API Endpoints**: 9 entity types (8 with full CRUD, 1 with GET only)
 - **Code Lines**: ~1,200 (excluding bundled file)
 - **Dependencies**: 1 runtime (MCP SDK), 2 development
 - **Documentation**: 7.0KB README, 7.5KB Project Overview
@@ -230,7 +235,7 @@ The project demonstrates excellent software engineering practices:
 - **Production-ready** deployment strategy
 - **Thorough testing** and quality assurance
 
-**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (7/8 entities tested)
+**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (8/9 entities tested)
 
 ### **Key Improvements Made:**
 - ✅ **Migrated to official MCP SDK**
@@ -238,10 +243,12 @@ The project demonstrates excellent software engineering practices:
 - ✅ **Fixed tool handling** with function-based approach
 - ✅ **Updated documentation** to reflect current implementation
 - ✅ **Maintained modular architecture** for maintainability
-- ✅ **Comprehensive testing** of 7 out of 8 entities
+- ✅ **Comprehensive testing** of 8 out of 9 entities
 - ✅ **Schema corrections** for Statuses, Tool Types, and Tools
 - ✅ **Permission testing** confirmed security implementation
-- ✅ **Relationship testing** for Tools and ToolTypes
+- ✅ **Relationship testing** for Tools, ToolTypes, Actions, and Objects
+- ✅ **Complex term structure** testing for Actions and Objects
+- ✅ **Format relationships** testing for Objects
 
 ### **Remaining Work:**
 - ⏳ **Languages entity**: Need to test CRUD operations, permissions, and schema validation

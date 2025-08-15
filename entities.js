@@ -222,6 +222,36 @@ async function updateAction(actionId, data) {
   });
 }
 
+// Object functions
+async function getObjects(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  
+  return await makeRequest(`objects?${queryParams}`);
+}
+
+async function getObject(objectId) {
+  return await makeRequest(`objects/${objectId}`);
+}
+
+async function createObject(data) {
+  return await makeRequest('objects', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateObject(objectId, data) {
+  return await makeRequest(`objects/${objectId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment,
@@ -238,5 +268,7 @@ export {
   // Tool functions
   getTools, getTool, createTool, updateTool,
   // Action functions
-  getActions, getAction, createAction, updateAction
+  getActions, getAction, createAction, updateAction,
+  // Object functions
+  getObjects, getObject, createObject, updateObject
 };
