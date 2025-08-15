@@ -237,7 +237,7 @@ DEBUG=* npx github:AdminRHS/libs-mcp-service
 
 The service has been thoroughly tested with the following results:
 
-### ✅ Tested Entities (9 out of 10)
+### ✅ Tested Entities (10 out of 10)
 
 | Entity | CRUD Operations | Permissions | Schema | Status |
 |--------|----------------|-------------|--------|--------|
@@ -249,7 +249,7 @@ The service has been thoroughly tested with the following results:
 | **Actions** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
 | **Objects** | ✅ Create, Read, Update | ✅ GET/POST/PUT blocked (403) | ✅ Complex term structure + formats | ✅ Complete |
 | **Formats** | ✅ Create, Read, Update | ✅ GET/POST/PUT allowed | ✅ Simple structure | ✅ Complete |
-| **Languages** | ❌ Not tested yet | ❌ Not tested yet | ❌ Not verified | ⏳ Pending |
+| **Languages** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
 
 ### Key Testing Results
 
@@ -261,9 +261,14 @@ The service has been thoroughly tested with the following results:
 - **Simple Format Model**: Formats successfully tested with minimal structure (name field only)
 - **Error Handling**: Proper validation and error responses confirmed
 
-### Remaining Work
+### Testing Complete
 
-- **Languages**: Need to test CRUD operations, permissions, and schema validation
+All 10 entity types have been thoroughly tested and are fully functional:
+
+- **Languages**: ✅ CRUD operations, permissions, and schema validation completed
+- **Complex Term Structure**: ✅ Successfully tested with mainTerm, terms array, and multiple translations
+- **Permission System**: ✅ All entities properly implement security restrictions
+- **Schema Validation**: ✅ All schemas match actual API structure
 
 ## Architecture
 

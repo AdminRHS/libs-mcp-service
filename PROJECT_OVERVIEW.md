@@ -96,7 +96,7 @@ libs-mcp-service/
 | **Departments** | 4 | `/api/token/departments` | Department management | ✅ Complete |
 | **Professions** | 4 | `/api/token/professions` | Profession management | ✅ Complete |
 | **Statuses** | 4 | `/api/token/statuses` | Status management | ✅ Complete |
-| **Languages** | 4 | `/api/token/languages` | Language management | ⏳ Pending |
+| **Languages** | 4 | `/api/token/languages` | Language management | ✅ Complete |
 | **Term Types** | 1 | `/api/token/term-types` | Term type management | ✅ Complete |
 | **Tool Types** | 4 | `/api/token/tool-types` | Tool type management | ✅ Complete |
 | **Tools** | 4 | `/api/token/tools` | Tool management | ✅ Complete |
@@ -149,7 +149,7 @@ libs-mcp-service/
 
 ### **Comprehensive Testing Results:**
 
-#### **✅ Tested Entities (9 out of 10)**
+#### **✅ Tested Entities (10 out of 10)**
 - **Departments**: ✅ CRUD operations, permissions, schema validation
 - **Professions**: ✅ CRUD operations, permissions, schema simplification
 - **Statuses**: ✅ CRUD operations, permissions, schema correction (color field)
@@ -158,7 +158,7 @@ libs-mcp-service/
 - **Actions**: ✅ CRUD operations, permissions, complex term structure, batch operations
 - **Objects**: ✅ CRUD operations, permissions, complex term structure, format relationships
 - **Formats**: ✅ CRUD operations, permissions, simple structure (name field only)
-- **Languages**: ⏳ Pending testing
+- **Languages**: ✅ CRUD operations, permissions, complex term structure, multiple translations
 - **Term Types**: ✅ GET operations tested (no CRUD needed)
 
 #### **🔧 Schema Corrections Made**
@@ -202,7 +202,7 @@ All entities properly implement security:
 - ✅ **Proper logging** and error messages
 - ✅ **Security** with Bearer token authentication
 - ✅ **Performance** optimized bundle
-- ✅ **Comprehensive testing** completed for 8/9 entities
+- ✅ **Comprehensive testing** completed for all 10 entities
 
 ### **Integration Features:**
 - ✅ **Universal MCP client** compatibility
@@ -238,7 +238,7 @@ The project demonstrates excellent software engineering practices:
 - **Production-ready** deployment strategy
 - **Thorough testing** and quality assurance
 
-**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (9/10 entities tested)
+**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (10/10 entities tested)
 
 ### **Key Improvements Made:**
 - ✅ **Migrated to official MCP SDK**
@@ -246,7 +246,7 @@ The project demonstrates excellent software engineering practices:
 - ✅ **Fixed tool handling** with function-based approach
 - ✅ **Updated documentation** to reflect current implementation
 - ✅ **Maintained modular architecture** for maintainability
-- ✅ **Comprehensive testing** of 9 out of 10 entities
+- ✅ **Comprehensive testing** of all 10 entities
 - ✅ **Schema corrections** for Statuses, Tool Types, and Tools
 - ✅ **Permission testing** confirmed security implementation
 - ✅ **Relationship testing** for Tools, ToolTypes, Actions, and Objects
@@ -254,5 +254,8 @@ The project demonstrates excellent software engineering practices:
 - ✅ **Format relationships** testing for Objects
 - ✅ **Simple Format model** testing with full CRUD operations
 
-### **Remaining Work:**
-- ⏳ **Languages entity**: Need to test CRUD operations, permissions, and schema validation
+### **Testing Complete:**
+- ✅ **Languages entity**: CRUD operations, permissions, and schema validation completed
+- ✅ **Complex term structure**: Successfully tested with mainTerm, terms array, and multiple translations
+- ✅ **Permission system**: All entities properly implement security restrictions
+- ✅ **Schema validation**: All schemas match actual API structure
