@@ -6,11 +6,11 @@
 - **id**: Primary key (INTEGER, auto-increment)
 - **iso2**: ISO 2-letter language code (STRING(2), required)
 - **iso3**: ISO 3-letter language code (STRING(3), required)
-- **library_id**: Foreign key to Library model (INTEGER, nullable)
 - **term_group_id**: Foreign key to TermGroup model (INTEGER, nullable)
 
+**Note**: The `library_id` field was removed in a recent migration. Languages are no longer directly associated with libraries.
+
 ### Relationships
-- **Belongs to Library**: `library_id` → `libraries.id`
 - **Belongs to TermGroup**: `term_group_id` → `term_groups.id`
 - **Has many Terms**: `languages.id` → `terms.language_id`
 
@@ -183,7 +183,6 @@ All MCP functions return JSON objects with the following structure:
   id: INTEGER,                    // Primary key, auto-increment
   iso2: STRING(2),               // REQUIRED - ISO 2-letter language code
   iso3: STRING(3),               // REQUIRED - ISO 3-letter language code
-  library_id: INTEGER,           // Foreign key to Library (nullable)
   term_group_id: INTEGER         // Foreign key to TermGroup (nullable)
 }
 ```
@@ -275,7 +274,6 @@ All MCP functions return JSON objects with the following structure:
 - **language_id**: 1 (usually Russian)
 - **term_type_id**: 1 (usually "main" term type)
 - **status_id**: 1 (usually "Active" status)
-- **library_id**: null (if not provided)
 - **created_by**: "0" (if not provided)
 
 ### Common Language Examples:
@@ -293,7 +291,6 @@ All MCP functions return JSON objects with the following structure:
 ```
 
 ### Relationships:
-- **Language** → **Library** (via `library_id`)
 - **Language** → **TermGroup** (via `term_group_id`)
 - **Language** → **Term** (one-to-many, terms belong to languages)
 - **TermGroup** → **Term** (via `main_term_id` for main term)
@@ -340,7 +337,7 @@ All MCP functions return JSON objects with the following structure:
    GET /api/language/terms?page=1&limit=20&search=search_term
    ```
 
-## Key Differences from Department/Profession Models
+## Key Differences from Other Models
 
 ### 1. **ISO Code Management**:
 - **Required Fields**: iso2 and iso3 codes are mandatory
@@ -352,10 +349,10 @@ All MCP functions return JSON objects with the following structure:
 - **Internationalization**: Core component of multi-language support
 - **Term Language Assignment**: Terms are assigned to specific languages
 
-### 3. **Library Integration**:
-- **Library Assignment**: Languages can be assigned to libraries
-- **Translation Libraries**: Languages can serve as translation targets
-- **Library Hierarchy**: Languages can be part of library structures
+### 3. **Simplified Structure**:
+- **No Library Association**: Languages are no longer directly linked to libraries
+- **ISO Code Focus**: Primary focus on international language standards
+- **Term System Integration**: Full integration with Term system for content management
 
 ## Summary
 
@@ -365,9 +362,8 @@ The MCP service provides a **simplified abstraction** over a complex language cr
 1. **Simplified MCP Interface**: Only `name` and `description` required
 2. **Complex Backend Processing**: Creates TermGroups, Terms, and manages ISO codes
 3. **ISO Code Management**: Handles international language standards
-4. **Library Integration**: Can be assigned to libraries for translation purposes
-5. **Multi-language Support**: Core component of internationalization system
-6. **File Support**: Icon upload and storage capabilities
+4. **Multi-language Support**: Core component of internationalization system
+5. **File Support**: Icon upload and storage capabilities
 
 ### For AI Integration:
 The MCP interface is perfect for AI systems that need to create languages quickly without understanding the underlying complexity. The backend automatically handles all the complex relationships, ISO code validation, and default values.
@@ -376,5 +372,6 @@ The MCP interface is perfect for AI systems that need to create languages quickl
 1. **Language Creation**: Adding new languages to the system
 2. **Translation Support**: Setting up languages for translation workflows
 3. **Internationalization**: Supporting multi-language content
-4. **Library Management**: Assigning languages to specific libraries
-5. **Term Management**: Creating language-specific terms and translations
+4. **Term Management**: Creating language-specific terms and translations
+5. **ISO Code Management**: Managing international language standards
+

@@ -12356,10 +12356,37 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        name: { type: "string", description: "Language name" },
-        description: { type: "string", description: "Language description" }
+        mainTerm: {
+          type: "object",
+          description: "Main term for the language (REQUIRED)",
+          properties: {
+            value: { type: "string", description: "Term value (language name) - REQUIRED" },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the language (optional)",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED" },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED" },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        },
+        iso2: { type: "string", description: "ISO 2-letter language code (REQUIRED)" },
+        iso3: { type: "string", description: "ISO 3-letter language code (REQUIRED)" }
       },
-      required: ["name"]
+      required: ["mainTerm", "iso2", "iso3"]
     }
   },
   {
@@ -12368,11 +12395,38 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        languageId: { type: "string", description: "Language ID" },
-        name: { type: "string", description: "Language name" },
-        description: { type: "string", description: "Language description" }
+        languageId: { type: "string", description: "Language ID (REQUIRED)" },
+        mainTerm: {
+          type: "object",
+          description: "Main term for the language (REQUIRED)",
+          properties: {
+            value: { type: "string", description: "Term value (language name) - REQUIRED" },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the language (optional)",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED" },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED" },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        },
+        iso2: { type: "string", description: "ISO 2-letter language code (REQUIRED)" },
+        iso3: { type: "string", description: "ISO 3-letter language code (REQUIRED)" }
       },
-      required: ["languageId"]
+      required: ["languageId", "mainTerm", "iso2", "iso3"]
     }
   },
   // Term Type tools
