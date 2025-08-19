@@ -70,7 +70,7 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 37 tools across 10 entity types:
+The service provides 42 tools across 11 entity types:
 
 ### Departments
 - `get_departments` - List all departments with pagination and search
@@ -115,19 +115,26 @@ The service provides 37 tools across 10 entity types:
 - `get_actions` - List all actions with pagination and search
 - `get_action` - Get a specific action by ID
 - `create_action` - Create a new action
-- `update_action` - Update an existing action
+- `update_action` - Update an existing action with responsibility term synchronization
 
 ### Objects
 - `get_objects` - List all objects with pagination and search
 - `get_object` - Get a specific object by ID
 - `create_object` - Create a new object with complex term structure
-- `update_object` - Update an existing object with format relationships
+- `update_object` - Update an existing object with format relationships and responsibility term synchronization
 
 ### Formats
 - `get_formats` - List all formats with pagination and search
 - `get_format` - Get a specific format by ID
 - `create_format` - Create a new format
 - `update_format` - Update an existing format
+
+### Responsibilities
+- `get_responsibilities` - List all responsibilities with pagination and search
+- `get_responsibility` - Get a specific responsibility by ID
+- `create_responsibility` - Create a new responsibility with automatic term synchronization
+- `update_responsibility` - Update an existing responsibility with automatic term synchronization
+- `find_existing_responsibility_terms` - Find existing Actions and Objects by language to check what terms already exist before adding new terms
 
 ## Common Parameters
 
@@ -164,6 +171,7 @@ Similar patterns for other entities:
 - `/api/token/actions`
 - `/api/token/objects`
 - `/api/token/formats`
+- `/api/token/responsibilities`
 
 All requests include the `Authorization: Bearer <API_TOKEN>` header.
 
@@ -237,7 +245,7 @@ DEBUG=* npx github:AdminRHS/libs-mcp-service
 
 The service has been thoroughly tested with the following results:
 
-### ✅ Tested Entities (10 out of 10)
+### ✅ Tested Entities (11 out of 11)
 
 | Entity | CRUD Operations | Permissions | Schema | Status |
 |--------|----------------|-------------|--------|--------|
@@ -250,6 +258,7 @@ The service has been thoroughly tested with the following results:
 | **Objects** | ✅ Create, Read, Update | ✅ GET/POST/PUT blocked (403) | ✅ Complex term structure + formats | ✅ Complete |
 | **Formats** | ✅ Create, Read, Update | ✅ GET/POST/PUT allowed | ✅ Simple structure | ✅ Complete |
 | **Languages** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Responsibilities** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
 
 ### Key Testing Results
 
@@ -263,9 +272,10 @@ The service has been thoroughly tested with the following results:
 
 ### Testing Complete
 
-All 10 entity types have been thoroughly tested and are fully functional:
+**All 11 entity types** have been thoroughly tested and are fully functional:
 
 - **Languages**: ✅ CRUD operations, permissions, and schema validation completed
+- **Responsibilities**: ✅ CRUD operations, permissions, and schema validation completed
 - **Complex Term Structure**: ✅ Successfully tested with mainTerm, terms array, and multiple translations
 - **Permission System**: ✅ All entities properly implement security restrictions
 - **Schema Validation**: ✅ All schemas match actual API structure

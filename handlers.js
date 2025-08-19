@@ -18,7 +18,10 @@ import {
   // Object functions
   getObjects, getObject, createObject, updateObject,
   // Format functions
-  getFormats, getFormat, createFormat, updateFormat
+  getFormats, getFormat, createFormat, updateFormat,
+  // Responsibility functions
+  getResponsibilities, getResponsibility, createResponsibility, updateResponsibility,
+  findExistingResponsibilityTerms
 } from './entities.js';
 
 // Tool handlers mapping
@@ -78,7 +81,14 @@ const toolHandlers = {
   get_formats: getFormats,
   get_format: getFormat,
   create_format: createFormat,
-  update_format: updateFormat
+  update_format: updateFormat,
+  
+  // Responsibility handlers
+  get_responsibilities: getResponsibilities,
+  get_responsibility: getResponsibility,
+  create_responsibility: createResponsibility,
+  update_responsibility: updateResponsibility,
+  find_existing_responsibility_terms: findExistingResponsibilityTerms
 };
 
 export default toolHandlers;

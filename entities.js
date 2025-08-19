@@ -282,6 +282,54 @@ async function updateFormat(formatId, data) {
   });
 }
 
+// Responsibility functions
+async function getResponsibilities(params = {}) {
+  const { page = 1, limit = 10, search = '', language_ids, action_id, object_id, filters, all } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+    ...(language_ids && { language_ids: JSON.stringify(language_ids) }),
+    ...(action_id && { action_id: action_id.toString() }),
+    ...(object_id && { object_id: object_id.toString() }),
+    ...(filters && { filters }),
+    ...(all && { all })
+  });
+  
+  return await makeRequest(`responsibilities?${queryParams}`);
+}
+
+async function getResponsibility(responsibilityId) {
+  return await makeRequest(`responsibilities/${responsibilityId}`);
+}
+
+async function createResponsibility(data) {
+  return await makeRequest('responsibilities', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateResponsibility(responsibilityId, data) {
+  return await makeRequest(`responsibilities/${responsibilityId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+async function findExistingResponsibilityTerms(params = {}) {
+  const { language_id, term_type_id, action_id, object_id, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    language_id: language_id.toString(),
+    term_type_id: term_type_id.toString(),
+    action_id: action_id.toString(),
+    object_id: object_id.toString(),
+    ...(search && { search })
+  });
+  
+  return await makeRequest(`responsibilities/find-existing-terms?${queryParams}`);
+}
+
 export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment,
@@ -302,5 +350,8 @@ export {
   // Object functions
   getObjects, getObject, createObject, updateObject,
   // Format functions
-  getFormats, getFormat, createFormat, updateFormat
+  getFormats, getFormat, createFormat, updateFormat,
+  // Responsibility functions
+  getResponsibilities, getResponsibility, createResponsibility, updateResponsibility,
+  findExistingResponsibilityTerms
 };

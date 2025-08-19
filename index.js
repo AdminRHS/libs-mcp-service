@@ -171,6 +171,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { formatId, ...formatUpdateData } = args;
         result = await handler(formatId, formatUpdateData);
         break;
+      case "get_responsibilities":
+        result = await handler(args);
+        break;
+      case "get_responsibility":
+        result = await handler(args.responsibilityId);
+        break;
+      case "create_responsibility":
+        result = await handler(args);
+        break;
+      case "update_responsibility":
+        const { responsibilityId, ...responsibilityUpdateData } = args;
+        result = await handler(responsibilityId, responsibilityUpdateData);
+        break;
+      case "find_existing_responsibility_terms":
+        result = await handler(args);
+        break;
       default:
         throw new Error(`Unhandled tool: ${name}`);
     }

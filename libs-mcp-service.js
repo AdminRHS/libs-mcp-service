@@ -12605,7 +12605,7 @@ var tools = [
   },
   {
     name: "update_action",
-    description: "Update an existing action",
+    description: 'Update an existing action. Use this tool to add new terms (similar, translations) to actions for responsibility synchronization. When adding responsibility similar terms like "Build Applications", parse it to extract "Build" and add this as similar term to the corresponding action. This maintains consistency between responsibilities and their component actions.',
     inputSchema: {
       type: "object",
       properties: {
@@ -12705,7 +12705,7 @@ var tools = [
   },
   {
     name: "update_object",
-    description: "Update an existing object",
+    description: 'Update an existing object. Use this tool to add new terms (similar, translations) to objects for responsibility synchronization. When adding responsibility similar terms like "Build Applications", parse it to extract "Applications" part and add corresponding terms to the object if needed. This maintains consistency between responsibilities and their component objects.',
     inputSchema: {
       type: "object",
       properties: {
@@ -12787,6 +12787,129 @@ var tools = [
         name: { type: "string", description: "Format name - REQUIRED. Must be unique and between 2-100 characters" }
       },
       required: ["formatId", "name"]
+    }
+  },
+  // Responsibility tools
+  {
+    name: "get_responsibilities",
+    description: "Get all responsibilities",
+    inputSchema: {
+      type: "object",
+      properties: {
+        page: { type: "number", description: "Page number (default: 1)" },
+        limit: { type: "number", description: "Number of responsibilities per page (default: 10)" },
+        search: { type: "string", description: "Search by responsibility name or description" },
+        language_ids: { type: "array", description: "Filter by language IDs (optional)", items: { type: "number" } },
+        action_id: { type: "number", description: "Filter by action ID (optional)" },
+        object_id: { type: "number", description: "Filter by object ID (optional)" },
+        filters: { type: "string", description: "Additional filters as JSON string (optional)" },
+        all: { type: "string", description: 'If "true", returns all without pagination (optional)' }
+      }
+    }
+  },
+  {
+    name: "get_responsibility",
+    description: "Get a specific responsibility by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        responsibilityId: { type: "string", description: "Responsibility ID" }
+      },
+      required: ["responsibilityId"]
+    }
+  },
+  {
+    name: "create_responsibility",
+    description: "Create a new responsibility. Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations. When creating similar terms or translations, use find_existing_responsibility_terms to check existing terms, then use update_action and update_object to add corresponding terms to maintain consistency across all entities.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        action_id: { type: "number", description: "Action ID - REQUIRED. Use get_actions to find action ID" },
+        object_id: { type: "number", description: "Object ID - REQUIRED. Use get_objects to find object ID" },
+        mainTerm: {
+          type: "object",
+          description: "Main term for the responsibility (REQUIRED). Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations when changing language_id or term_type_id.",
+          properties: {
+            value: { type: "string", description: 'Term value (responsibility name) - REQUIRED. Should be combination of action and object names (e.g., "Accept Ads", "Add Backgrounds"). Can be edited by user but should match action_id + object_id combination.' },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
+            term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use get_term_types to find term type ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the responsibility (optional but recommended). Include main terms, similar terms, and translations. All term types are important for comprehensive responsibility definition.",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED. Should follow action + object combination pattern for consistency across all term types." },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED. Use different languages for translations." },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use different types for main, similar, and translation terms." },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        }
+      },
+      required: ["action_id", "object_id", "mainTerm"]
+    }
+  },
+  {
+    name: "update_responsibility",
+    description: "Update an existing responsibility. Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations. When adding similar terms or translations, use find_existing_responsibility_terms to check existing terms, then use update_action and update_object to add corresponding terms to maintain consistency across all entities.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        responsibilityId: { type: "string", description: "Responsibility ID (REQUIRED)" },
+        action_id: { type: "number", description: "Action ID - optional. Use get_actions to find action ID" },
+        object_id: { type: "number", description: "Object ID - optional. Use get_objects to find object ID" },
+        mainTerm: {
+          type: "object",
+          description: "Main term for the responsibility (REQUIRED). Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations when changing language_id or term_type_id.",
+          properties: {
+            value: { type: "string", description: 'Term value (responsibility name) - REQUIRED. Should be combination of action and object names (e.g., "Accept Ads", "Add Backgrounds"). Can be edited by user but should match action_id + object_id combination.' },
+            description: { type: "string", description: "Term description (optional)" },
+            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
+            term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use get_term_types to find term type ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
+            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
+          },
+          required: ["value", "language_id", "term_type_id"]
+        },
+        terms: {
+          type: "array",
+          description: "Additional terms for the responsibility (optional but recommended). Include main terms, similar terms, and translations. All term types are important for comprehensive responsibility definition.",
+          items: {
+            type: "object",
+            properties: {
+              value: { type: "string", description: "Term value - REQUIRED. Should follow action + object combination pattern for consistency across all term types." },
+              description: { type: "string", description: "Term description (optional)" },
+              language_id: { type: "number", description: "Language ID - REQUIRED. Use different languages for translations." },
+              term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use different types for main, similar, and translation terms." },
+              status_id: { type: "number", description: "Status ID (optional)" }
+            },
+            required: ["value", "language_id", "term_type_id"]
+          }
+        }
+      },
+      required: ["responsibilityId", "mainTerm"]
+    }
+  },
+  {
+    name: "find_existing_responsibility_terms",
+    description: "Find existing Actions and Objects by language to check what terms already exist. Use this BEFORE adding new terms to responsibilities. Returns actions array with existing terms, objects array with existing terms, and needsUserChoice boolean. After checking existing terms, use update_action and update_object to add missing terms for synchronization. Workflow: 1) Use this tool to check existing terms, 2) Parse responsibility terms into action/object components, 3) Use update_action/update_object to add missing terms to maintain consistency.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID." },
+        term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use get_term_types to find term type ID." },
+        action_id: { type: "number", description: "Action ID - REQUIRED. Use get_actions to find action ID." },
+        object_id: { type: "number", description: "Object ID - REQUIRED. Use get_objects to find object ID." },
+        search: { type: "string", description: "Search term (optional). Use to filter specific action-object combinations." }
+      },
+      required: ["language_id", "term_type_id", "action_id", "object_id"]
     }
   }
 ];
@@ -13039,6 +13162,46 @@ async function updateFormat(formatId, data) {
     body: JSON.stringify(data)
   });
 }
+async function getResponsibilities(params = {}) {
+  const { page = 1, limit = 10, search = "", language_ids, action_id, object_id, filters, all } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...search && { search },
+    ...language_ids && { language_ids: JSON.stringify(language_ids) },
+    ...action_id && { action_id: action_id.toString() },
+    ...object_id && { object_id: object_id.toString() },
+    ...filters && { filters },
+    ...all && { all }
+  });
+  return await makeRequest(`responsibilities?${queryParams}`);
+}
+async function getResponsibility(responsibilityId) {
+  return await makeRequest(`responsibilities/${responsibilityId}`);
+}
+async function createResponsibility(data) {
+  return await makeRequest("responsibilities", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateResponsibility(responsibilityId, data) {
+  return await makeRequest(`responsibilities/${responsibilityId}`, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
+}
+async function findExistingResponsibilityTerms(params = {}) {
+  const { language_id, term_type_id, action_id, object_id, search = "" } = params;
+  const queryParams = new URLSearchParams({
+    language_id: language_id.toString(),
+    term_type_id: term_type_id.toString(),
+    action_id: action_id.toString(),
+    object_id: object_id.toString(),
+    ...search && { search }
+  });
+  return await makeRequest(`responsibilities/find-existing-terms?${queryParams}`);
+}
 
 // handlers.js
 var toolHandlers = {
@@ -13088,7 +13251,13 @@ var toolHandlers = {
   get_formats: getFormats,
   get_format: getFormat,
   create_format: createFormat,
-  update_format: updateFormat
+  update_format: updateFormat,
+  // Responsibility handlers
+  get_responsibilities: getResponsibilities,
+  get_responsibility: getResponsibility,
+  create_responsibility: createResponsibility,
+  update_responsibility: updateResponsibility,
+  find_existing_responsibility_terms: findExistingResponsibilityTerms
 };
 var handlers_default = toolHandlers;
 
@@ -13245,6 +13414,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_format":
         const { formatId, ...formatUpdateData } = args;
         result = await handler(formatId, formatUpdateData);
+        break;
+      case "get_responsibilities":
+        result = await handler(args);
+        break;
+      case "get_responsibility":
+        result = await handler(args.responsibilityId);
+        break;
+      case "create_responsibility":
+        result = await handler(args);
+        break;
+      case "update_responsibility":
+        const { responsibilityId, ...responsibilityUpdateData } = args;
+        result = await handler(responsibilityId, responsibilityUpdateData);
+        break;
+      case "find_existing_responsibility_terms":
+        result = await handler(args);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);

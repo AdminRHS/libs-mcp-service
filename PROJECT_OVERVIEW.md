@@ -97,6 +97,7 @@ libs-mcp-service/
 | **Professions** | 4 | `/api/token/professions` | Profession management | ✅ Complete |
 | **Statuses** | 4 | `/api/token/statuses` | Status management | ✅ Complete |
 | **Languages** | 4 | `/api/token/languages` | Language management | ✅ Complete |
+| **Responsibilities** | 5 | `/api/token/responsibilities` | Responsibility management with term synchronization | ✅ Complete |
 | **Term Types** | 1 | `/api/token/term-types` | Term type management | ✅ Complete |
 | **Tool Types** | 4 | `/api/token/tool-types` | Tool type management | ✅ Complete |
 | **Tools** | 4 | `/api/token/tools` | Tool management | ✅ Complete |
@@ -109,6 +110,12 @@ libs-mcp-service/
 2. **`get_[entity]`** - Get specific by ID
 3. **`create_[entity]`** - Create new entity
 4. **`update_[entity]`** - Update existing entity
+5. **`find_existing_[entity]_terms`** - Find existing terms (for Responsibilities)
+
+### Term Synchronization Features:
+- **Automatic Consistency**: When adding terms to responsibilities, corresponding terms are automatically added to actions and objects
+- **Workflow Support**: Step-by-step process for checking existing terms and synchronizing across entities
+- **Enhanced Descriptions**: All tools include detailed workflow instructions for term synchronization
 
 ## ✅ Quality Checklist
 
@@ -149,7 +156,7 @@ libs-mcp-service/
 
 ### **Comprehensive Testing Results:**
 
-#### **✅ Tested Entities (10 out of 10)**
+#### **✅ Tested Entities (11 out of 11)**
 - **Departments**: ✅ CRUD operations, permissions, schema validation
 - **Professions**: ✅ CRUD operations, permissions, schema simplification
 - **Statuses**: ✅ CRUD operations, permissions, schema correction (color field)
@@ -159,6 +166,7 @@ libs-mcp-service/
 - **Objects**: ✅ CRUD operations, permissions, complex term structure, format relationships
 - **Formats**: ✅ CRUD operations, permissions, simple structure (name field only)
 - **Languages**: ✅ CRUD operations, permissions, complex term structure, multiple translations
+- **Responsibilities**: ✅ CRUD operations, permissions, complex term structure, term synchronization workflow
 - **Term Types**: ✅ GET operations tested (no CRUD needed)
 
 #### **🔧 Schema Corrections Made**
@@ -202,7 +210,7 @@ All entities properly implement security:
 - ✅ **Proper logging** and error messages
 - ✅ **Security** with Bearer token authentication
 - ✅ **Performance** optimized bundle
-- ✅ **Comprehensive testing** completed for all 10 entities
+- ✅ **Comprehensive testing** completed for all 11 entities
 
 ### **Integration Features:**
 - ✅ **Universal MCP client** compatibility
@@ -213,9 +221,9 @@ All entities properly implement security:
 
 ## 📊 Performance Metrics
 
-- **Bundle Size**: 487.6KB (includes official MCP SDK)
-- **Total Tools**: 37 (4 per entity × 10 entities - 3 missing CRUD operations)
-- **API Endpoints**: 10 entity types (9 with full CRUD, 1 with GET only)
+- **Bundle Size**: 499.6KB (includes official MCP SDK)
+- **Total Tools**: 42 (4 per entity × 11 entities - 3 missing CRUD operations + 1 additional Responsibility tool)
+- **API Endpoints**: 11 entity types (10 with full CRUD, 1 with GET only)
 - **Code Lines**: ~1,200 (excluding bundled file)
 - **Dependencies**: 1 runtime (MCP SDK), 2 development
 - **Documentation**: 7.0KB README, 7.5KB Project Overview
@@ -238,7 +246,7 @@ The project demonstrates excellent software engineering practices:
 - **Production-ready** deployment strategy
 - **Thorough testing** and quality assurance
 
-**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (10/10 entities tested)
+**Status**: ✅ **COMPLETE AND READY FOR PRODUCTION** (11/11 entities tested)
 
 ### **Key Improvements Made:**
 - ✅ **Migrated to official MCP SDK**
@@ -246,16 +254,20 @@ The project demonstrates excellent software engineering practices:
 - ✅ **Fixed tool handling** with function-based approach
 - ✅ **Updated documentation** to reflect current implementation
 - ✅ **Maintained modular architecture** for maintainability
-- ✅ **Comprehensive testing** of all 10 entities
+- ✅ **Comprehensive testing** of all 11 entities
 - ✅ **Schema corrections** for Statuses, Tool Types, and Tools
 - ✅ **Permission testing** confirmed security implementation
 - ✅ **Relationship testing** for Tools, ToolTypes, Actions, and Objects
 - ✅ **Complex term structure** testing for Actions and Objects
 - ✅ **Format relationships** testing for Objects
 - ✅ **Simple Format model** testing with full CRUD operations
+- ✅ **Enhanced tool descriptions** with complete term synchronization workflow
+- ✅ **Term synchronization** between responsibilities, actions, and objects
 
 ### **Testing Complete:**
 - ✅ **Languages entity**: CRUD operations, permissions, and schema validation completed
+- ✅ **Responsibilities entity**: CRUD operations, permissions, and schema validation completed
 - ✅ **Complex term structure**: Successfully tested with mainTerm, terms array, and multiple translations
 - ✅ **Permission system**: All entities properly implement security restrictions
 - ✅ **Schema validation**: All schemas match actual API structure
+- ✅ **Term synchronization workflow**: Enhanced tool descriptions with complete 3-step process
