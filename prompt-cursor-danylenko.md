@@ -3115,3 +3115,91 @@ Use update_action and update_object to add missing terms:
 
 ---
 
+\n## AI Term Fields Support in tools.js\n\n**Date**: 2025-08-19\n\n- Added shared  with all AI metadata fields supported by Term model (per TERMGROUP_MODEL_DESCRIPTION.md).\n- Spread  into every  and  schema across: Departments, Professions, Languages, Actions, Objects, Responsibilities.\n- Fields include: ai_generated, ai_model, ai_prompt_version, ai_generation_date, ai_tokens_used, ai_quality_score, ai_validation_status, ai_source_data, ai_metadata, ai_confidence_score, ai_human_reviewed, ai_human_reviewer, ai_review_date, ai_version, ai_batch_id, ai_edit_history, ai_original_data, ai_manual_overrides, ai_market_validated, ai_validation_errors, created_by.\n- No linter issues.\n
+
+## AI Term Fields Support in tools.js
+
+**Date**: 2025-08-19
+
+- Added shared `aiTermProps` with all AI metadata fields supported by Term model (per TERMGROUP_MODEL_DESCRIPTION.md).
+- Spread `aiTermProps` into every `mainTerm` and `terms` schema across: Departments, Professions, Languages, Actions, Objects, Responsibilities.
+- Fields include: ai_generated, ai_model, ai_prompt_version, ai_generation_date, ai_tokens_used, ai_quality_score, ai_validation_status, ai_source_data, ai_metadata, ai_confidence_score, ai_human_reviewed, ai_human_reviewer, ai_review_date, ai_version, ai_batch_id, ai_edit_history, ai_original_data, ai_manual_overrides, ai_market_validated, ai_validation_errors, created_by.
+- No linter issues.
+
+## AI Field Rules and Descriptions Updated in tools.js
+
+**Date**: 2025-08-19
+
+- Refined AI field schemas: enums, formats (date-time), ranges (0..9.99), integer constraints.
+- Added shared conditional `aiTermConditional`: when `ai_generated` is true, require `ai_model`.
+- Applied `allOf: aiTermConditional` to every `mainTerm` and `terms.items` across all entities.
+- No linter issues.
+
+## Note: AI Field Conditional Rationale
+
+- Adopted conditional requirement: when ai_generated=true, require ai_model.
+- Benefits: clearer contracts, better validation, consistent AI metadata.
+- Scope: applied via allOf to mainTerm and terms.items across all entities.
+- Future tweak: we can also auto-fill ai_generation_date on the server and keep it optional.
+
+## Q&A: AI Schema Approach Confirmation
+
+User: Are you sure this is better?
+Assistant: Yes — schema-level condition keeps clients honest and prevents half-filled AI metadata. If you prefer looser input, we can drop the requirement and let the backend auto-populate defaults (e.g., ai_model, ai_generation_date). We can also tighten later (require ai_generation_date, ai_prompt_version) or add an enum/pattern for ai_model.
+
+## AI Autofill in entities.js
+
+**Date**: 2025-08-19
+
+- Added enrichTermAIFields/enrichPayloadAI to auto-set ai_generation_date, bump ai_version, and append ai_edit_history when ai_generated=true.
+- Applied to all create/update functions that send mainTerm/terms (departments, professions, languages, actions, objects, responsibilities).
+- Works alongside schema rule requiring ai_model when ai_generated=true.
+- No linter issues.
+
+## Simplified AI Handling
+
+**Date**: 2025-08-19
+
+- Removed AI autofill helpers from entities.js to keep client thin.
+- Relying on schema validation (ai_model required when ai_generated=true) and callers to populate AI fields.
+- Mixed AI/manual updates still supported by flags without MCP-side mutation.
+
+## AI Flag Auto-Set in handlers.js
+
+**Date**: 2025-08-19
+
+- Added lightweight preprocessing: if a term has ai_model but no ai_generated, set ai_generated=true.
+- Applied to all create/update handlers that accept mainTerm/terms.
+- Keeps client thin while ensuring AI-generated terms are flagged.
+- No linter issues.
+
+## Reverted AI Auto-Flag in handlers.js
+
+**Date**: 2025-08-19
+
+- Removed implicit ai_generated auto-setting to avoid hidden mutations and partial updates.
+- Relying on explicit AI fields from callers and schema guidance in tools.js.
+- This ensures only intended terms (mainTerm or specific items in terms) are flagged/updated by the caller.
+
+## Notes: AI hints added and allOf rationale
+
+- Added short AI metadata hints to tool descriptions in tools.js.
+- allOf is used to attach a reusable conditional (aiTermConditional) without touching existing properties/required.
+- Alternatives: (a) inline the if/then in each schema block, or (b) remove the conditional entirely and rely on docs only.
+- Say the word and I can inline or remove the conditional for simplicity.
+
+## Verify Department 79
+
+Fetched department ID 79. Basic fields present (id, term_group_id, color, timestamps). TermGroup/Terms not returned by this endpoint, so AI term fields cannot be verified via get_department. Creation earlier showed terms present but AI flags not persisted.
+
+## Department 79 AI update verification
+
+- mainTerm: ai_generated=true, ai_model=gpt-4o-mini persisted.
+- similar terms: AI flags not persisted (still false/null).
+- Likely backend only persists AI fields on MainTerm via this route; may require TermGroup/Terms-specific update to set AI on additional terms.
+
+## Commit message suggestions (AI term schema + validation)
+
+1) feat(schema): add shared AI term fields + conditional validation; update tool descriptions
+2) chore(mcp): document AI term support; require ai_model when ai_generated=true; refine types
+3) feat(tools): unify AI metadata for terms; add hints; keep explicit updates only
