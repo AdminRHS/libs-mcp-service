@@ -44,7 +44,9 @@ Add the following to your MCP configuration:
 - **CRUD Operations**: Create, read, update, and delete entities
 - **Search & Pagination**: Get entities with search and pagination support
 - **Official MCP SDK**: Full Model Context Protocol compliance using `@modelcontextprotocol/sdk`
-- **Multiple Entity Types**: Support for departments, professions, statuses, languages, tool types, and tools
+- **Multiple Entity Types**: Support for 16 entity types with 60 total tools
+- **AI Metadata Support**: Comprehensive AI metadata tracking for terms
+- **Term Synchronization**: Automatic consistency between responsibilities, actions, and objects
 - **Standalone**: Runs as a standalone Node.js process
 - **Easy Deployment**: Executable via npx without local installation
 
@@ -70,91 +72,95 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 58 tools across 15 entity types:
+The service provides **60 tools** across **16 entity types**:
 
-### Departments
+### Departments (4 tools)
 - `get_departments` - List all departments with pagination and search
 - `get_department` - Get a specific department by ID
 - `create_department` - Create a new department
 - `update_department` - Update an existing department
 
-### Professions
+### Professions (4 tools)
 - `get_professions` - List all professions with pagination and search
 - `get_profession` - Get a specific profession by ID
 - `create_profession` - Create a new profession
 - `update_profession` - Update an existing profession
 
-### Statuses
+### Statuses (4 tools)
 - `get_statuses` - List all statuses with pagination and search
 - `get_status` - Get a specific status by ID
 - `create_status` - Create a new status
 - `update_status` - Update an existing status
 
-### Languages
+### Languages (4 tools)
 - `get_languages` - List all languages with pagination and search
 - `get_language` - Get a specific language by ID
 - `create_language` - Create a new language
 - `update_language` - Update an existing language
 
-### Term Types
+### Term Types (1 tool)
 - `get_term_types` - List all term types with pagination and search (GET only, no CRUD operations)
 
-### Tool Types
+### Individual Terms (2 tools)
+- `create_term` - Create a new individual term using API token authentication
+- `update_term` - Update an existing individual term using API token authentication
+
+### Tool Types (4 tools)
 - `get_tool_types` - List all tool types with pagination and search
 - `get_tool_type` - Get a specific tool type by ID
 - `create_tool_type` - Create a new tool type
 - `update_tool_type` - Update an existing tool type
 
-### Tools
+### Tools (4 tools)
 - `get_tools` - List all tools with pagination and search
 - `get_tool` - Get a specific tool by ID
 - `create_tool` - Create a new tool
 - `update_tool` - Update an existing tool
 
-### Actions
+### Actions (4 tools)
 - `get_actions` - List all actions with pagination and search
 - `get_action` - Get a specific action by ID
 - `create_action` - Create a new action
 - `update_action` - Update an existing action with responsibility term synchronization
 
-### Objects
+### Objects (4 tools)
 - `get_objects` - List all objects with pagination and search
 - `get_object` - Get a specific object by ID
 - `create_object` - Create a new object with complex term structure
 - `update_object` - Update an existing object with format relationships and responsibility term synchronization
 
-### Formats
+### Formats (4 tools)
 - `get_formats` - List all formats with pagination and search
 - `get_format` - Get a specific format by ID
 - `create_format` - Create a new format
 - `update_format` - Update an existing format
 
-### Responsibilities
+### Responsibilities (5 tools)
 - `get_responsibilities` - List all responsibilities with pagination and search
 - `get_responsibility` - Get a specific responsibility by ID
 - `create_responsibility` - Create a new responsibility with automatic term synchronization
 - `update_responsibility` - Update an existing responsibility with automatic term synchronization
 - `find_existing_responsibility_terms` - Find existing Actions and Objects by language to check what terms already exist before adding new terms
 
-### Countries
+### Countries (4 tools)
 - `get_countries` - List all countries with pagination and search
 - `get_country` - Get a specific country by ID
 - `create_country` - Create a new country (supports terms and ISO codes)
 - `update_country` - Update an existing country (FULL terms array required on update)
 
-### Cities
+### Cities (4 tools)
 - `get_cities` - List all cities with pagination and search
 - `get_city` - Get a specific city by ID
 - `create_city` - Create a new city (supports terms and geo fields)
 - `update_city` - Update an existing city (FULL terms array required on update)
 
-### Industries
+### Industries (4 tools)
 - `get_industries` - List all industries with pagination and search
 - `get_industry` - Get a specific industry by ID
 - `create_industry` - Create a new industry
 - `update_industry` - Update an existing industry
 
-### Sub-Industries
+### Sub-Industries (4 tools)
 - `get_sub_industries` - List all sub-industries with pagination and search
 - `get_sub_industry` - Get a specific sub-industry by ID
 - `create_sub_industry` - Create a new sub-industry
@@ -190,6 +196,8 @@ Similar patterns for other entities:
 - `/api/token/professions`
 - `/api/token/statuses`
 - `/api/token/languages`
+- `/api/token/term-types`
+- `/api/token/terms`
 - `/api/token/tool-types`
 - `/api/token/tools`
 - `/api/token/actions`
@@ -273,7 +281,7 @@ DEBUG=* npx github:AdminRHS/libs-mcp-service
 
 The service has been thoroughly tested with the following results:
 
-### ✅ Tested Entities (11 out of 11)
+### ✅ Tested Entities (16 out of 16)
 
 | Entity | CRUD Operations | Permissions | Schema | Status |
 |--------|----------------|-------------|--------|--------|
@@ -287,6 +295,11 @@ The service has been thoroughly tested with the following results:
 | **Formats** | ✅ Create, Read, Update | ✅ GET/POST/PUT allowed | ✅ Simple structure | ✅ Complete |
 | **Languages** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
 | **Responsibilities** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Countries** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Cities** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Industries** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Sub-Industries** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
+| **Individual Terms** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT allowed | ✅ AI metadata support | ✅ Complete |
 
 ### Key Testing Results
 
@@ -297,27 +310,34 @@ The service has been thoroughly tested with the following results:
 - **Format Relationships**: Objects successfully tested with many-to-many format relationships
 - **Simple Format Model**: Formats successfully tested with minimal structure (name field only)
 - **Error Handling**: Proper validation and error responses confirmed
+- **Industries/Sub-Industries**: Successfully tested with complex term structure and parent-child relationships
+- **Individual Terms**: Successfully tested with AI metadata support and term group relationships
+- **Smart Update Logic**: Integrated into existing update_* tools for automatic term preservation
 
 ### Testing Complete
 
-**All 11 entity types** have been thoroughly tested and are fully functional:
+**All 16 entity types** have been thoroughly tested and are fully functional:
 
 - **Languages**: ✅ CRUD operations, permissions, and schema validation completed
 - **Responsibilities**: ✅ CRUD operations, permissions, and schema validation completed
 - **Complex Term Structure**: ✅ Successfully tested with mainTerm, terms array, and multiple translations
 - **Permission System**: ✅ All entities properly implement security restrictions
 - **Schema Validation**: ✅ All schemas match actual API structure
+- **Industries/Sub-Industries**: ✅ CRUD operations, permissions, and complex term structure completed
+- **Individual Terms**: ✅ CRUD operations with AI metadata support completed
+- **AI Metadata**: ✅ Successfully tested preservation in create_term and update_term tools
 
 ## Architecture
 
 The service uses a modular architecture:
 
-- **`index.js`** - Main MCP server using official SDK
-- **`config.js`** - Environment configuration
-- **`api.js`** - HTTP request utilities
-- **`entities.js`** - CRUD operations for all entities
-- **`tools.js`** - MCP tool definitions
-- **`handlers.js`** - Tool handler mappings
+- **`index.js`** - Main MCP server using official SDK (8.1KB, 282 lines)
+- **`config.js`** - Environment configuration (382B, 17 lines)
+- **`api.js`** - HTTP request utilities (693B, 30 lines)
+- **`entities.js`** - CRUD operations for all entities (19KB, 725 lines)
+- **`tools.js`** - MCP tool definitions (45KB, 909 lines)
+- **`handlers.js`** - Tool handler mappings (3.7KB, 134 lines)
+- **`libs-mcp-service.js`** - Bundled executable (530KB, 13,876 lines)
 
 ## AI Metadata Guide
 

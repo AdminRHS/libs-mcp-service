@@ -29,7 +29,9 @@ import {
   // Industry functions
   getIndustries, getIndustry, createIndustry, updateIndustry,
   // Sub-Industry functions
-  getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry
+  getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry,
+  // Individual Terms functions
+  createTerm, updateTerm
 } from './entities.js';
 
 // Tool handlers mapping
@@ -120,7 +122,12 @@ const toolHandlers = {
   get_responsibility: getResponsibility,
   create_responsibility: createResponsibility,
   update_responsibility: updateResponsibility,
-  find_existing_responsibility_terms: findExistingResponsibilityTerms
+  find_existing_responsibility_terms: findExistingResponsibilityTerms,
+
+  // Individual Terms handlers
+  create_term: createTerm,
+  update_term: updateTerm,
+
 };
 
 export default toolHandlers;

@@ -861,7 +861,48 @@ const tools = [
       },
       required: ['language_id', 'term_type_id', 'action_id', 'object_id']
     }
-  }
+  },
+
+  {
+    name: 'create_term',
+    description: 'Create a new individual term using API token authentication. Terms can exist independently and be linked to term groups. Supports AI metadata for tracking AI-generated content.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        value: { type: 'string', description: 'Term value - REQUIRED' },
+        description: { type: 'string', description: 'Term description (optional)' },
+        language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID' },
+        term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID' },
+        status_id: { type: 'number', description: 'Status ID (optional). Use get_statuses to find status ID' },
+        term_group_id: { type: 'number', description: 'Term group ID (optional). If provided, term will be linked to this group' },
+        aiMetadata: { type: 'object', description: 'AI metadata for tracking AI-generated content (optional)', properties: { ...aiTermProps } }
+      },
+      allOf: aiTermConditional,
+      required: ['value', 'language_id', 'term_type_id']
+    }
+  },
+  {
+    name: 'update_term',
+    description: 'Update an existing individual term using API token authentication. Supports AI metadata updates, version tracking, and term group relation management.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        termId: { type: 'string', description: 'Term ID (REQUIRED)' },
+        value: { type: 'string', description: 'Term value (optional)' },
+        description: { type: 'string', description: 'Term description (optional)' },
+        language_id: { type: 'number', description: 'Language ID (optional). Use get_languages to find language ID' },
+        term_type_id: { type: 'number', description: 'Term type ID (optional). Use get_term_types to find term type ID' },
+        status_id: { type: 'number', description: 'Status ID (optional). Use get_statuses to find status ID' },
+        term_group_id: { type: 'number', description: 'Term group ID (optional). For creating/updating group relation' },
+        aiMetadata: { type: 'object', description: 'AI metadata updates (optional)', properties: { ...aiTermProps } }
+      },
+      allOf: aiTermConditional,
+      required: ['termId']
+    }
+  },
+
+
+
 ];
 
 export { tools };

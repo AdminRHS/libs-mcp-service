@@ -24,9 +24,34 @@ async function createDepartment(data) {
 }
 
 async function updateDepartment(departmentId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingDept = await getDepartment(departmentId);
+    const existingTerms = existingDept.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`departments/${departmentId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -54,9 +79,34 @@ async function createProfession(data) {
 }
 
 async function updateProfession(professionId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingProf = await getProfession(professionId);
+    const existingTerms = existingProf.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`professions/${professionId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -114,9 +164,34 @@ async function createLanguage(data) {
 }
 
 async function updateLanguage(languageId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingLanguage = await getLanguage(languageId);
+    const existingTerms = existingLanguage.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`languages/${languageId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -155,9 +230,34 @@ async function createCountry(data) {
 }
 
 async function updateCountry(countryId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingCountry = await getCountry(countryId);
+    const existingTerms = existingCountry.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`countries/${countryId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -245,9 +345,34 @@ async function createAction(data) {
 }
 
 async function updateAction(actionId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingAction = await getAction(actionId);
+    const existingTerms = existingAction.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`actions/${actionId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -275,9 +400,34 @@ async function createObject(data) {
 }
 
 async function updateObject(objectId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingObject = await getObject(objectId);
+    const existingTerms = existingObject.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`objects/${objectId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -382,9 +532,34 @@ async function createCity(data) {
 }
 
 async function updateCity(cityId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingCity = await getCity(cityId);
+    const existingTerms = existingCity.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`cities/${cityId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -411,9 +586,34 @@ async function createIndustry(data) {
 }
 
 async function updateIndustry(industryId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingIndustry = await getIndustry(industryId);
+    const existingTerms = existingIndustry.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`industries/${industryId}`, {
     method: 'PUT',
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 
@@ -441,7 +641,47 @@ async function createSubIndustry(data) {
 }
 
 async function updateSubIndustry(subIndustryId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingSubIndustry = await getSubIndustry(subIndustryId);
+    const existingTerms = existingSubIndustry.terms || [];
+    
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      
+      newTerms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
+  
   return await makeRequest(`sub_industries/${subIndustryId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updateData)
+  });
+}
+
+// Individual Terms functions
+async function createTerm(data) {
+  return await makeRequest('terms', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateTerm(termId, data) {
+  return await makeRequest(`terms/${termId}`, {
     method: 'PUT',
     body: JSON.stringify(data)
   });
@@ -478,5 +718,7 @@ export {
   // Industry functions
   getIndustries, getIndustry, createIndustry, updateIndustry,
   // Sub-Industry functions
-  getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry
+  getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry,
+  // Individual Terms functions
+  createTerm, updateTerm,
 };

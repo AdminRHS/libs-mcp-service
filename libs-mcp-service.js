@@ -12911,6 +12911,43 @@ var tools = [
       },
       required: ["language_id", "term_type_id", "action_id", "object_id"]
     }
+  },
+  {
+    name: "create_term",
+    description: "Create a new individual term using API token authentication. Terms can exist independently and be linked to term groups. Supports AI metadata for tracking AI-generated content.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        value: { type: "string", description: "Term value - REQUIRED" },
+        description: { type: "string", description: "Term description (optional)" },
+        language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID" },
+        term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use get_term_types to find term type ID" },
+        status_id: { type: "number", description: "Status ID (optional). Use get_statuses to find status ID" },
+        term_group_id: { type: "number", description: "Term group ID (optional). If provided, term will be linked to this group" },
+        aiMetadata: { type: "object", description: "AI metadata for tracking AI-generated content (optional)", properties: { ...aiTermProps } }
+      },
+      allOf: aiTermConditional,
+      required: ["value", "language_id", "term_type_id"]
+    }
+  },
+  {
+    name: "update_term",
+    description: "Update an existing individual term using API token authentication. Supports AI metadata updates, version tracking, and term group relation management.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        termId: { type: "string", description: "Term ID (REQUIRED)" },
+        value: { type: "string", description: "Term value (optional)" },
+        description: { type: "string", description: "Term description (optional)" },
+        language_id: { type: "number", description: "Language ID (optional). Use get_languages to find language ID" },
+        term_type_id: { type: "number", description: "Term type ID (optional). Use get_term_types to find term type ID" },
+        status_id: { type: "number", description: "Status ID (optional). Use get_statuses to find status ID" },
+        term_group_id: { type: "number", description: "Term group ID (optional). For creating/updating group relation" },
+        aiMetadata: { type: "object", description: "AI metadata updates (optional)", properties: { ...aiTermProps } }
+      },
+      allOf: aiTermConditional,
+      required: ["termId"]
+    }
   }
 ];
 
@@ -12956,9 +12993,29 @@ async function createDepartment(data) {
   });
 }
 async function updateDepartment(departmentId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingDept = await getDepartment(departmentId);
+    const existingTerms = existingDept.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`departments/${departmentId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getProfessions(params = {}) {
@@ -12980,9 +13037,29 @@ async function createProfession(data) {
   });
 }
 async function updateProfession(professionId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingProf = await getProfession(professionId);
+    const existingTerms = existingProf.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`professions/${professionId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getStatuses(params = {}) {
@@ -13028,9 +13105,29 @@ async function createLanguage(data) {
   });
 }
 async function updateLanguage(languageId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingLanguage = await getLanguage(languageId);
+    const existingTerms = existingLanguage.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`languages/${languageId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getTermTypes(params = {}) {
@@ -13061,9 +13158,29 @@ async function createCountry(data) {
   });
 }
 async function updateCountry(countryId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingCountry = await getCountry(countryId);
+    const existingTerms = existingCountry.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`countries/${countryId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getToolTypes(params = {}) {
@@ -13133,9 +13250,29 @@ async function createAction(data) {
   });
 }
 async function updateAction(actionId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingAction = await getAction(actionId);
+    const existingTerms = existingAction.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`actions/${actionId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getObjects(params = {}) {
@@ -13157,9 +13294,29 @@ async function createObject(data) {
   });
 }
 async function updateObject(objectId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingObject = await getObject(objectId);
+    const existingTerms = existingObject.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`objects/${objectId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getFormats(params = {}) {
@@ -13245,9 +13402,29 @@ async function createCity(data) {
   });
 }
 async function updateCity(cityId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingCity = await getCity(cityId);
+    const existingTerms = existingCity.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`cities/${cityId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getIndustries(params = {}) {
@@ -13269,9 +13446,29 @@ async function createIndustry(data) {
   });
 }
 async function updateIndustry(industryId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingIndustry = await getIndustry(industryId);
+    const existingTerms = existingIndustry.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`industries/${industryId}`, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify(updateData)
   });
 }
 async function getSubIndustries(params = {}) {
@@ -13294,7 +13491,39 @@ async function createSubIndustry(data) {
   });
 }
 async function updateSubIndustry(subIndustryId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  if (preserveExistingTerms) {
+    const existingSubIndustry = await getSubIndustry(subIndustryId);
+    const existingTerms = existingSubIndustry.terms || [];
+    if (data.terms) {
+      const newTerms = data.terms;
+      const mergedTerms = [...existingTerms];
+      newTerms.forEach((newTerm) => {
+        const existingIndex = mergedTerms.findIndex((t) => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    } else {
+      updateData.terms = existingTerms;
+    }
+  }
   return await makeRequest(`sub_industries/${subIndustryId}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData)
+  });
+}
+async function createTerm(data) {
+  return await makeRequest("terms", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateTerm(termId, data) {
+  return await makeRequest(`terms/${termId}`, {
     method: "PUT",
     body: JSON.stringify(data)
   });
@@ -13374,7 +13603,10 @@ var toolHandlers = {
   get_responsibility: getResponsibility,
   create_responsibility: createResponsibility,
   update_responsibility: updateResponsibility,
-  find_existing_responsibility_terms: findExistingResponsibilityTerms
+  find_existing_responsibility_terms: findExistingResponsibilityTerms,
+  // Individual Terms handlers
+  create_term: createTerm,
+  update_term: updateTerm
 };
 var handlers_default = toolHandlers;
 
@@ -13599,6 +13831,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case "find_existing_responsibility_terms":
         result = await handler(args);
+        break;
+      case "create_term":
+        result = await handler(args);
+        break;
+      case "update_term":
+        const { termId, ...termUpdateData } = args;
+        result = await handler(termId, termUpdateData);
         break;
       default:
         throw new Error(`Unhandled tool: ${name}`);

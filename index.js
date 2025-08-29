@@ -239,6 +239,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "find_existing_responsibility_terms":
         result = await handler(args);
         break;
+      case "create_term":
+        result = await handler(args);
+        break;
+      case "update_term":
+        const { termId, ...termUpdateData } = args;
+        result = await handler(termId, termUpdateData);
+        break;
+
       default:
         throw new Error(`Unhandled tool: ${name}`);
     }
