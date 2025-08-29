@@ -25,7 +25,11 @@ import {
   // Country functions
   getCountries, getCountry, createCountry, updateCountry,
   // City functions
-  getCities, getCity, createCity, updateCity
+  getCities, getCity, createCity, updateCity,
+  // Industry functions
+  getIndustries, getIndustry, createIndustry, updateIndustry,
+  // Sub-Industry functions
+  getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry
 } from './entities.js';
 
 // Tool handlers mapping
@@ -98,6 +102,18 @@ const toolHandlers = {
   get_city: getCity,
   create_city: createCity,
   update_city: updateCity,
+
+  // Industry handlers
+  get_industries: getIndustries,
+  get_industry: getIndustry,
+  create_industry: createIndustry,
+  update_industry: updateIndustry,
+
+  // Sub-Industry handlers
+  get_sub_industries: getSubIndustries,
+  get_sub_industry: getSubIndustry,
+  create_sub_industry: createSubIndustry,
+  update_sub_industry: updateSubIndustry,
 
   // Responsibility handlers
   get_responsibilities: getResponsibilities,

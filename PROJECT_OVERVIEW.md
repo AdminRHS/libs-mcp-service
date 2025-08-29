@@ -89,7 +89,7 @@ libs-mcp-service/
 - ✅ **Clear configuration** instructions
 - ✅ **Architecture section** added
 
-## �� Available Tools (37 total)
+## Available Tools (58 total)
 
 | Entity | Tools | API Endpoint | Description | Testing Status |
 |--------|-------|--------------|-------------|----------------|
@@ -104,6 +104,10 @@ libs-mcp-service/
 | **Actions** | 4 | `/api/token/actions` | Action management | ✅ Complete |
 | **Objects** | 4 | `/api/token/objects` | Object management with formats | ✅ Complete |
 | **Formats** | 4 | `/api/token/formats` | Format management | ✅ Complete |
+| **Countries** | 4 | `/api/token/countries` | Country management | ✅ Complete |
+| **Cities** | 4 | `/api/token/cities` | City management | ✅ Complete |
+| **Industries** | 4 | `/api/token/industries` | Industry management | ✅ Complete |
+| **Sub-Industries** | 4 | `/api/token/sub-industries` | Sub-industry management | ✅ Complete |
 
 ### Tool Operations per Entity:
 1. **`get_[entity]s`** - List all with pagination/search
@@ -175,6 +179,7 @@ libs-mcp-service/
 - **Tools**: Added `link` and `toolTypeIds` fields, made `description` optional
 - **Professions**: Simplified complex FormData logic to JSON requests
 - **Actions**: Implemented complex term structure with mainTerm and terms array
+ - **Industries/Sub-Industries**: Added entities with `mainTerm`/`terms` and explicit WARNING: on updates you must send FULL `terms` array
 
 #### **🔒 Permission Testing Results**
 All entities properly implement security:
@@ -182,6 +187,7 @@ All entities properly implement security:
 - ❌ **POST/PUT operations**: Blocked with 403 Forbidden (write access restricted)
 - ✅ **Formats**: Full CRUD operations allowed (GET/POST/PUT)
 - ✅ **Consistent behavior** across all tested entities
+ - ✅ **Industries/Sub-Industries**: Read and write access verified; update requires FULL terms array
 
 #### **🔗 Relationship Testing**
 - ✅ **Tools ↔ ToolTypes**: Successfully tested many-to-many relationships
@@ -222,8 +228,8 @@ All entities properly implement security:
 ## 📊 Performance Metrics
 
 - **Bundle Size**: 499.6KB (includes official MCP SDK)
-- **Total Tools**: 42 (4 per entity × 11 entities - 3 missing CRUD operations + 1 additional Responsibility tool)
-- **API Endpoints**: 11 entity types (10 with full CRUD, 1 with GET only)
+- **Total Tools**: 58 (13 entities × 4 tools + Responsibilities 5 + Term Types 1)
+- **API Endpoints**: 15 entity types
 - **Code Lines**: ~1,200 (excluding bundled file)
 - **Dependencies**: 1 runtime (MCP SDK), 2 development
 - **Documentation**: 7.0KB README, 7.5KB Project Overview

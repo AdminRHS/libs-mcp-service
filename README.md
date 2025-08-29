@@ -70,7 +70,7 @@ libs-mcp-service
 
 ## Available Tools
 
-The service provides 42 tools across 11 entity types:
+The service provides 58 tools across 15 entity types:
 
 ### Departments
 - `get_departments` - List all departments with pagination and search
@@ -136,6 +136,30 @@ The service provides 42 tools across 11 entity types:
 - `update_responsibility` - Update an existing responsibility with automatic term synchronization
 - `find_existing_responsibility_terms` - Find existing Actions and Objects by language to check what terms already exist before adding new terms
 
+### Countries
+- `get_countries` - List all countries with pagination and search
+- `get_country` - Get a specific country by ID
+- `create_country` - Create a new country (supports terms and ISO codes)
+- `update_country` - Update an existing country (FULL terms array required on update)
+
+### Cities
+- `get_cities` - List all cities with pagination and search
+- `get_city` - Get a specific city by ID
+- `create_city` - Create a new city (supports terms and geo fields)
+- `update_city` - Update an existing city (FULL terms array required on update)
+
+### Industries
+- `get_industries` - List all industries with pagination and search
+- `get_industry` - Get a specific industry by ID
+- `create_industry` - Create a new industry
+- `update_industry` - Update an existing industry
+
+### Sub-Industries
+- `get_sub_industries` - List all sub-industries with pagination and search
+- `get_sub_industry` - Get a specific sub-industry by ID
+- `create_sub_industry` - Create a new sub-industry
+- `update_sub_industry` - Update an existing sub-industry
+
 ## Common Parameters
 
 Most list operations support these parameters:
@@ -172,6 +196,10 @@ Similar patterns for other entities:
 - `/api/token/objects`
 - `/api/token/formats`
 - `/api/token/responsibilities`
+- `/api/token/countries`
+- `/api/token/cities`
+- `/api/token/industries`
+- `/api/token/sub-industries`
 
 All requests include the `Authorization: Bearer <API_TOKEN>` header.
 
@@ -290,6 +318,10 @@ The service uses a modular architecture:
 - **`entities.js`** - CRUD operations for all entities
 - **`tools.js`** - MCP tool definitions
 - **`handlers.js`** - Tool handler mappings
+
+## AI Metadata Guide
+
+For details on attaching AI metadata to `mainTerm` and `terms`, required fields, and update rules (WARNING: always send FULL `terms` array on updates), see `docs-models/AI_METADATA_GUIDE.md`.
 
 ## License
 

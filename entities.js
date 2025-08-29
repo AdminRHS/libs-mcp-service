@@ -388,6 +388,65 @@ async function updateCity(cityId, data) {
   });
 }
 
+// Industry functions
+async function getIndustries(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  return await makeRequest(`industries?${queryParams}`);
+}
+
+async function getIndustry(industryId) {
+  return await makeRequest(`industries/${industryId}`);
+}
+
+async function createIndustry(data) {
+  return await makeRequest('industries', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateIndustry(industryId, data) {
+  return await makeRequest(`industries/${industryId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+// Sub-Industry functions
+async function getSubIndustries(params = {}) {
+  const { page = 1, limit = 10, search = '', industry_id } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+    ...(industry_id && { industry_id: industry_id.toString() })
+  });
+  return await makeRequest(`sub_industries?${queryParams}`);
+}
+
+async function getSubIndustry(subIndustryId) {
+  return await makeRequest(`sub_industries/${subIndustryId}`);
+}
+
+async function createSubIndustry(data) {
+  return await makeRequest('sub_industries', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateSubIndustry(subIndustryId, data) {
+  return await makeRequest(`sub_industries/${subIndustryId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment,
@@ -415,5 +474,9 @@ export {
   getResponsibilities, getResponsibility, createResponsibility, updateResponsibility,
   findExistingResponsibilityTerms,
   // City functions
-  getCities, getCity, createCity, updateCity
+  getCities, getCity, createCity, updateCity,
+  // Industry functions
+  getIndustries, getIndustry, createIndustry, updateIndustry,
+  // Sub-Industry functions
+  getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry
 };

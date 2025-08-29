@@ -197,6 +197,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { cityId, ...cityUpdateData } = args;
         result = await handler(cityId, cityUpdateData);
         break;
+      case "get_industries":
+        result = await handler(args);
+        break;
+      case "get_industry":
+        result = await handler(args.industryId);
+        break;
+      case "create_industry":
+        result = await handler(args);
+        break;
+      case "update_industry":
+        const { industryId, ...industryUpdateData } = args;
+        result = await handler(industryId, industryUpdateData);
+        break;
+      case "get_sub_industries":
+        result = await handler(args);
+        break;
+      case "get_sub_industry":
+        result = await handler(args.subIndustryId);
+        break;
+      case "create_sub_industry":
+        result = await handler(args);
+        break;
+      case "update_sub_industry":
+        const { subIndustryId, ...subIndustryUpdateData } = args;
+        result = await handler(subIndustryId, subIndustryUpdateData);
+        break;
       case "get_responsibilities":
         result = await handler(args);
         break;

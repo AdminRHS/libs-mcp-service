@@ -4091,3 +4091,45 @@ longitude: "30.52000000"
 ✓ update_responsibility: required: ['responsibilityId', 'mainTerm', 'terms']
 ✓ update_language: required: ['languageId', 'mainTerm', 'iso2', 'iso3', 'terms']
 ✓ All UPDATE operations correctly enforce terms as REQUIRED field
+
+[2025-08-29 08:50] Added Industry/Sub-Industry tools (list/get/create/update with WARNING + terms REQUIRED).
+
+[2025-08-29 08:56] Wired Industry/Sub-Industry across entities.js, handlers.js, index.js. Lint: OK.
+
+[2025-08-29 09:06] Industry create failed: HTTP 403 (missing industries:write scope or endpoint disabled).
+
+[2025-08-29 09:09] Fetch industries failed as expected: HTTP 403. Fetch sub-industries failed as expected: HTTP 404 (endpoint off).
+
+[2025-08-29 09:12] Access check: industries OK (0 items). sub-industries still 403.
+
+[2025-08-29 09:15] Batch ops: get_industries=403 earlier, now OK empty; get_sub_industries=403; create_industry OK (id=1); create_sub_industry=403.
+
+[2025-08-29 09:22] Created Industry with AI metadata (Generative AI, id=3). Earlier creates lacked aiMetadata per access test; corrected now.
+
+[2025-08-29 09:27] Reviewed INDUSTRY/SUB-INDUSTRY docs: schemas align with tools; recommend adding explicit AI metadata section and WARNING about sending FULL terms array on updates, plus examples.
+
+[2025-08-29 09:30] Docs updated: README (Industries/Sub-Industries, endpoints, AI guide link), PROJECT_OVERVIEW (tables/sections), added docs-models/AI_METADATA_GUIDE.md.
+
+[2025-08-29 09:34] Docs updated: README (Countries/Cities tools+endpoints), PROJECT_OVERVIEW (tables include Countries/Cities).
+
+[2025-08-29 09:36] Updated tool/entity counts in README and PROJECT_OVERVIEW (58 tools / 15 entities).
+
+[2025-08-29 09:38] Confirmation: Docs/tool counts aligned (58 tools / 15 entities). Logging prompts and results here in prompt-cursor-danylenko.md as requested.
+
+[2025-08-29 09:32] User Prompt: "А передивись. Мені здається, в мене ще щось відсутнє. Здається, по тулзам, кантри і сіті. А нові, відповідно, тулзи, там, для них, ми все тестили, пермішнси і все на світі, все працює."
+Result: Updated README (Countries/Cities tools + endpoints) and PROJECT_OVERVIEW (tables include Countries/Cities). Lint OK.
+
+[2025-08-29 09:35] User Prompt: "Так. Ум, перерахуй там кількість тулзлів і всього такого."
+Result: Updated counts: README → 58 tools across 15 entity types; PROJECT_OVERVIEW → Available Tools (58 total) and Performance Metrics adjusted. Logged.
+
+[2025-08-29 09:38] User Prompt: "Ага, тобто все зараз коректно зроблено? … треба в цей @prompt-cursor-danylenko.md я про промпти."
+Result: Confirmed docs/tool counts aligned; switched to direct file edits for prompt logging in this file.
+
+[2025-08-29 09:40] User Prompt: "Мм, ти створюєш якийсь новий файл… Ану запиши останні промти. Навіщо ти printf юзаєш…"
+Result: Appended latest prompts and outcomes directly into this file (no printf). All set.
+
+[2025-08-29 09:40] User Prompt: "Мм, ти створюєш якийсь новий файл, але це не той файл, що мені треба.Ану запиши останні промти. Навіщо ти принто, printf юзаєш для цього, не розумію."
+Result: Stopped using printf; appending prompts via direct file edits to this file only.
+
+[2025-08-29 09:41] User Prompt: "Але ж треба записувати у кінець файлу."
+Result: Ensured strict append behavior; entries are appended to the end of prompt-cursor-danylenko.md.
