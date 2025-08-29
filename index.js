@@ -171,6 +171,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { formatId, ...formatUpdateData } = args;
         result = await handler(formatId, formatUpdateData);
         break;
+      case "get_countries":
+        result = await handler(args);
+        break;
+      case "get_country":
+        result = await handler(args.countryId);
+        break;
+      case "create_country":
+        result = await handler(args);
+        break;
+      case "update_country":
+        const { countryId, ...countryUpdateData } = args;
+        result = await handler(countryId, countryUpdateData);
+        break;
+      case "get_cities":
+        result = await handler(args);
+        break;
+      case "get_city":
+        result = await handler(args.cityId);
+        break;
+      case "create_city":
+        result = await handler(args);
+        break;
+      case "update_city":
+        const { cityId, ...cityUpdateData } = args;
+        result = await handler(cityId, cityUpdateData);
+        break;
       case "get_responsibilities":
         result = await handler(args);
         break;

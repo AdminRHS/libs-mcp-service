@@ -21,7 +21,11 @@ import {
   getFormats, getFormat, createFormat, updateFormat,
   // Responsibility functions
   getResponsibilities, getResponsibility, createResponsibility, updateResponsibility,
-  findExistingResponsibilityTerms
+  findExistingResponsibilityTerms,
+  // Country functions
+  getCountries, getCountry, createCountry, updateCountry,
+  // City functions
+  getCities, getCity, createCity, updateCity
 } from './entities.js';
 
 // Tool handlers mapping
@@ -83,6 +87,18 @@ const toolHandlers = {
   create_format: createFormat,
   update_format: updateFormat,
   
+  // Country handlers
+  get_countries: getCountries,
+  get_country: getCountry,
+  create_country: createCountry,
+  update_country: updateCountry,
+
+  // City handlers
+  get_cities: getCities,
+  get_city: getCity,
+  create_city: createCity,
+  update_city: updateCity,
+
   // Responsibility handlers
   get_responsibilities: getResponsibilities,
   get_responsibility: getResponsibility,

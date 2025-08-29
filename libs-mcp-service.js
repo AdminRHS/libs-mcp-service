@@ -12073,21 +12073,21 @@ if (!API_BASE_URL) {
 
 // tools.js
 var aiTermProps = {
-  ai_generated: { type: "boolean", description: "Whether the term content was AI-generated" },
-  ai_model: { type: "string", description: "AI model identifier (e.g., gpt-4o-mini, gpt-4o)" },
-  ai_prompt_version: { type: "string", description: "Prompt version used for generation" },
+  ai_generated: { type: "boolean", description: "Whether the term content was AI-generated (defaults to false on create in API)" },
+  ai_model: { type: "string", description: "AI model identifier (e.g., gpt-4o-mini, gpt-4o). Required if ai_generated=true" },
+  ai_prompt_version: { type: "string", description: "Prompt version used for generation (e.g., v1.0, v2.0)" },
   ai_generation_date: { type: "string", description: "Generation timestamp (ISO 8601)", format: "date-time" },
   ai_tokens_used: { type: "integer", description: "Total tokens consumed during generation", minimum: 0 },
   ai_quality_score: { type: "number", description: "Quality score between 0.00 and 9.99", minimum: 0, maximum: 9.99 },
-  ai_validation_status: { type: "string", description: "Validation status", enum: ["pending", "approved", "rejected", "needs_review"] },
-  ai_source_data: { type: "object", description: "Original source data (JSON)" },
-  ai_metadata: { type: "object", description: "Additional metadata (JSON)" },
+  ai_validation_status: { type: "string", description: "Validation status (defaults to pending on create in API)", enum: ["pending", "approved", "rejected", "needs_review"] },
+  ai_source_data: { type: "object", description: 'Original source data (JSON), e.g. {"origin":"import","entity_type":"city"}' },
+  ai_metadata: { type: "object", description: 'Additional metadata (JSON), e.g. {"purpose":"generate_name"}' },
   ai_confidence_score: { type: "number", description: "Confidence score between 0.00 and 9.99", minimum: 0, maximum: 9.99 },
   ai_human_reviewed: { type: "boolean", description: "Whether the term was human reviewed" },
-  ai_human_reviewer: { type: "string", description: "Human reviewer user ID" },
+  ai_human_reviewer: { type: "string", description: "Human reviewer user ID (e.g., test-user)" },
   ai_review_date: { type: "string", description: "Human review timestamp (ISO 8601)", format: "date-time" },
-  ai_version: { type: "integer", description: "AI content version" },
-  ai_batch_id: { type: "string", description: "Batch identifier for AI generation" },
+  ai_version: { type: "integer", description: "AI content version (auto-increments on update)" },
+  ai_batch_id: { type: "string", description: "Batch identifier for AI generation (e.g., batch-001)" },
   ai_edit_history: { type: "object", description: "AI edit history (JSON)" },
   ai_original_data: { type: "object", description: "Original data snapshot (JSON)" },
   ai_manual_overrides: { type: "object", description: "Manual overrides (JSON)" },
@@ -12096,10 +12096,61 @@ var aiTermProps = {
 };
 var aiTermConditional = [
   {
-    if: { properties: { ai_generated: { const: true } } },
-    then: { required: ["ai_generated", "ai_model"] }
+    if: {
+      properties: {
+        aiMetadata: {
+          properties: { ai_generated: { const: true } }
+        }
+      }
+    },
+    then: {
+      properties: {
+        aiMetadata: { required: ["ai_generated", "ai_model"] }
+      }
+    }
   }
 ];
+var baseMainTermProps = {
+  value: { type: "string" },
+  description: { type: "string", description: "Term description (optional)" },
+  language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
+  term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
+  status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
+  aiMetadata: { type: "object", properties: { ...aiTermProps } }
+};
+var baseTermItemProps = {
+  value: { type: "string" },
+  description: { type: "string", description: "Term description (optional)" },
+  language_id: { type: "number", description: "Language ID - REQUIRED" },
+  term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
+  status_id: { type: "number", description: "Status ID (optional)" },
+  aiMetadata: { type: "object", properties: { ...aiTermProps } }
+};
+function buildMainTermSchema(overrides = {}) {
+  return {
+    type: "object",
+    description: overrides.description || "Main term (REQUIRED)",
+    properties: {
+      ...baseMainTermProps,
+      value: { type: "string", description: overrides.valueDescription || "Term value - REQUIRED" }
+    },
+    allOf: aiTermConditional,
+    required: ["value", "language_id", "term_type_id"]
+  };
+}
+function buildTermItemSchema({ withId = false, overrides = {} } = {}) {
+  const props = { ...baseTermItemProps };
+  props.value = { type: "string", description: overrides.valueDescription || "Term value - REQUIRED" };
+  if (withId) {
+    props.id = { type: "number", description: overrides.idDescription || "Existing term ID (include to update a specific term)" };
+  }
+  return {
+    type: "object",
+    properties: props,
+    allOf: aiTermConditional,
+    required: ["value", "language_id", "term_type_id"]
+  };
+}
 var tools = [
   // Department tools
   {
@@ -12131,37 +12182,8 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        mainTerm: {
-          type: "object",
-          description: "Main term for the department (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (department name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the department (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the department (REQUIRED)", valueDescription: "Term value (department name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the department (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         color: { type: "string", description: 'Department color (optional, default: "#1976d2")' }
       },
       required: ["mainTerm"]
@@ -12169,43 +12191,16 @@ var tools = [
   },
   {
     name: "update_department",
-    description: "Update an existing department. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
+    description: "Update an existing department. WARNING: On any update (even color or other non-term fields), you MUST send the FULL terms array to avoid deletions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
     inputSchema: {
       type: "object",
       properties: {
         departmentId: { type: "string", description: "Department ID (REQUIRED)" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the department (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (department name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the department (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the department (REQUIRED)", valueDescription: "Term value (department name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the department (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         color: { type: "string", description: "Department color (optional)" }
       },
-      required: ["departmentId", "mainTerm"]
+      required: ["departmentId", "mainTerm", "terms"]
     }
   },
   // Profession tools
@@ -12238,37 +12233,8 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        mainTerm: {
-          type: "object",
-          description: "Main term for the profession (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (profession name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the profession (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the profession (REQUIRED)", valueDescription: "Term value (profession name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the profession (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         department_id: { type: "number", description: "Department ID (optional)" },
         tool_ids: { type: "array", description: "Array of tool IDs (optional)", items: { type: "number" } }
       },
@@ -12277,44 +12243,17 @@ var tools = [
   },
   {
     name: "update_profession",
-    description: "Update an existing profession. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
+    description: "Update an existing profession. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
     inputSchema: {
       type: "object",
       properties: {
         professionId: { type: "string", description: "Profession ID (REQUIRED)" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the profession (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (profession name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the profession (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the profession (REQUIRED)", valueDescription: "Term value (profession name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the profession (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         department_id: { type: "number", description: "Department ID (optional)" },
         tool_ids: { type: "array", description: "Array of tool IDs (optional)", items: { type: "number" } }
       },
-      required: ["professionId", "mainTerm"]
+      required: ["professionId", "mainTerm", "terms"]
     }
   },
   // Status tools
@@ -12396,37 +12335,8 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        mainTerm: {
-          type: "object",
-          description: "Main term for the language (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (language name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the language (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the language (REQUIRED)", valueDescription: "Term value (language name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the language (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         iso2: { type: "string", description: "ISO 2-letter language code (REQUIRED)" },
         iso3: { type: "string", description: "ISO 3-letter language code (REQUIRED)" }
       },
@@ -12435,44 +12345,17 @@ var tools = [
   },
   {
     name: "update_language",
-    description: "Update an existing language. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
+    description: "Update an existing language. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
     inputSchema: {
       type: "object",
       properties: {
         languageId: { type: "string", description: "Language ID (REQUIRED)" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the language (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (language name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the language (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the language (REQUIRED)", valueDescription: "Term value (language name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the language (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         iso2: { type: "string", description: "ISO 2-letter language code (REQUIRED)" },
         iso3: { type: "string", description: "ISO 3-letter language code (REQUIRED)" }
       },
-      required: ["languageId", "mainTerm", "iso2", "iso3"]
+      required: ["languageId", "mainTerm", "iso2", "iso3", "terms"]
     }
   },
   // Term Type tools
@@ -12618,77 +12501,23 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        mainTerm: {
-          type: "object",
-          description: "Main term for the action (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (action name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the action (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        }
+        mainTerm: buildMainTermSchema({ description: "Main term for the action (REQUIRED)", valueDescription: "Term value (action name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the action (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) }
       },
       required: ["mainTerm"]
     }
   },
   {
     name: "update_action",
-    description: 'Update an existing action. Use this tool to add new terms (similar, translations) to actions for responsibility synchronization. When adding responsibility similar terms like "Build Applications", parse it to extract "Build" and add this as similar term to the corresponding action. This maintains consistency between responsibilities and their component actions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).',
+    description: 'Update an existing action. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Use this tool to add new terms (similar, translations) to actions for responsibility synchronization. When adding responsibility similar terms like "Build Applications", parse it to extract "Build" and add this as similar term to the corresponding action. This maintains consistency between responsibilities and their component actions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).',
     inputSchema: {
       type: "object",
       properties: {
         actionId: { type: "string", description: "Action ID (REQUIRED)" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the action (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (action name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" }
-          },
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the action (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" }
-            },
-            required: ["value", "language_id", "term_type_id"]
-          }
-        }
+        mainTerm: buildMainTermSchema({ description: "Main term for the action (REQUIRED)", valueDescription: "Term value (action name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the action (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) }
       },
-      required: ["actionId", "mainTerm"]
+      required: ["actionId", "mainTerm", "terms"]
     }
   },
   // Object tools
@@ -12721,37 +12550,8 @@ var tools = [
     inputSchema: {
       type: "object",
       properties: {
-        mainTerm: {
-          type: "object",
-          description: "Main term for the object (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (object name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the object (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the object (REQUIRED)", valueDescription: "Term value (object name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the object (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         format_ids: { type: "array", description: "Array of format IDs (optional)", items: { type: "number" } }
       },
       required: ["mainTerm"]
@@ -12759,43 +12559,16 @@ var tools = [
   },
   {
     name: "update_object",
-    description: 'Update an existing object. Use this tool to add new terms (similar, translations) to objects for responsibility synchronization. When adding responsibility similar terms like "Build Applications", parse it to extract "Applications" part and add corresponding terms to the object if needed. This maintains consistency between responsibilities and their component objects. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).',
+    description: 'Update an existing object. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Use this tool to add new terms (similar, translations) to objects for responsibility synchronization. When adding responsibility similar terms like "Build Applications", parse it to extract "Applications" part and add corresponding terms to the object if needed. This maintains consistency between responsibilities and their component objects. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).',
     inputSchema: {
       type: "object",
       properties: {
         objectId: { type: "string", description: "Object ID (REQUIRED)" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the object (REQUIRED)",
-          properties: {
-            value: { type: "string", description: "Term value (object name) - REQUIRED" },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language" },
-            term_type_id: { type: "number", description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the object (optional)",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED" },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED" },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED" },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            required: ["value", "language_id", "term_type_id"]
-          }
-        },
+        mainTerm: buildMainTermSchema({ description: "Main term for the object (REQUIRED)", valueDescription: "Term value (object name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the object (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) },
         format_ids: { type: "array", description: "Array of format IDs (optional)", items: { type: "number" } }
       },
-      required: ["objectId", "mainTerm"]
+      required: ["objectId", "mainTerm", "terms"]
     }
   },
   // Format tools
@@ -12845,6 +12618,118 @@ var tools = [
       required: ["formatId", "name"]
     }
   },
+  // Country tools
+  {
+    name: "get_countries",
+    description: "Get all countries",
+    inputSchema: {
+      type: "object",
+      properties: {
+        page: { type: "number", description: "Page number (default: 1)" },
+        limit: { type: "number", description: "Number of countries per page (default: 10)" },
+        search: { type: "string", description: "Search by country name or description" }
+      }
+    }
+  },
+  {
+    name: "get_country",
+    description: "Get a specific country by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        countryId: { type: "string", description: "Country ID" }
+      },
+      required: ["countryId"]
+    }
+  },
+  {
+    name: "create_country",
+    description: "Create a new country. Terms support AI metadata (set ai_generated=true and provide ai_model when generated by AI).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        mainTerm: buildMainTermSchema({ description: "Main term for the country (REQUIRED)", valueDescription: "Term value (country name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the country (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) },
+        iso2: { type: "string", description: "ISO 2-letter country code (optional)" },
+        iso3: { type: "string", description: "ISO 3-letter country code (optional)" },
+        latitude: { type: "string", description: "Country latitude coordinate (optional)" },
+        longitude: { type: "string", description: "Country longitude coordinate (optional)" }
+      },
+      required: ["mainTerm"]
+    }
+  },
+  {
+    name: "update_country",
+    description: "Update an existing country. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        countryId: { type: "string", description: "Country ID (REQUIRED)" },
+        mainTerm: buildMainTermSchema({ description: "Main term for the country (REQUIRED)", valueDescription: "Term value (country name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the country (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) },
+        iso2: { type: "string", description: "ISO 2-letter country code (optional)" },
+        iso3: { type: "string", description: "ISO 3-letter country code (optional)" },
+        latitude: { type: "string", description: "Country latitude coordinate (optional)" },
+        longitude: { type: "string", description: "Country longitude coordinate (optional)" }
+      },
+      required: ["countryId", "mainTerm", "terms"]
+    }
+  },
+  // City tools
+  {
+    name: "get_cities",
+    description: "Get all cities",
+    inputSchema: {
+      type: "object",
+      properties: {
+        page: { type: "number", description: "Page number (default: 1)" },
+        limit: { type: "number", description: "Number of cities per page (default: 10)" },
+        search: { type: "string", description: "Search by city name or description" }
+      }
+    }
+  },
+  {
+    name: "get_city",
+    description: "Get a specific city by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        cityId: { type: "string", description: "City ID" }
+      },
+      required: ["cityId"]
+    }
+  },
+  {
+    name: "create_city",
+    description: "Create a new city. Terms support AI metadata (set ai_generated=true and provide ai_model when generated by AI).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        mainTerm: buildMainTermSchema({ description: "Main term for the city (REQUIRED)", valueDescription: "Term value (city name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the city (optional)", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED" } }) },
+        country_id: { type: "number", description: "Country ID (optional)" },
+        latitude: { type: "string", description: "City latitude coordinate (optional)" },
+        longitude: { type: "string", description: "City longitude coordinate (optional)" }
+      },
+      required: ["mainTerm"]
+    }
+  },
+  {
+    name: "update_city",
+    description: "Update an existing city. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        cityId: { type: "string", description: "City ID (REQUIRED)" },
+        mainTerm: buildMainTermSchema({ description: "Main term for the city (REQUIRED)", valueDescription: "Term value (city name) - REQUIRED" }),
+        terms: { type: "array", description: "Additional terms for the city (optional). MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED" } }) },
+        country_id: { type: "number", description: "Country ID (optional)" },
+        latitude: { type: "string", description: "City latitude coordinate (optional)" },
+        longitude: { type: "string", description: "City longitude coordinate (optional)" }
+      },
+      required: ["cityId", "mainTerm", "terms"]
+    }
+  },
   // Responsibility tools
   {
     name: "get_responsibilities",
@@ -12882,83 +12767,25 @@ var tools = [
       properties: {
         action_id: { type: "number", description: "Action ID - REQUIRED. Use get_actions to find action ID" },
         object_id: { type: "number", description: "Object ID - REQUIRED. Use get_objects to find object ID" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the responsibility (REQUIRED). Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations when changing language_id or term_type_id.",
-          properties: {
-            value: { type: "string", description: 'Term value (responsibility name) - REQUIRED. Should be combination of action and object names (e.g., "Accept Ads", "Add Backgrounds"). Can be edited by user but should match action_id + object_id combination.' },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
-            term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use get_term_types to find term type ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the responsibility (optional but recommended). Include main terms, similar terms, and translations. All term types are important for comprehensive responsibility definition.",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED. Should follow action + object combination pattern for consistency across all term types." },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED. Use different languages for translations." },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use different types for main, similar, and translation terms." },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        }
+        mainTerm: buildMainTermSchema({ description: "Main term for the responsibility (REQUIRED). Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations when changing language_id or term_type_id.", valueDescription: 'Term value (responsibility name) - REQUIRED. Should be combination of action and object names (e.g., "Accept Ads", "Add Backgrounds"). Can be edited by user but should match action_id + object_id combination.' }),
+        terms: { type: "array", description: "Additional terms for the responsibility (optional but recommended). Include main terms, similar terms, and translations. All term types are important for comprehensive responsibility definition.", items: buildTermItemSchema({ withId: false, overrides: { valueDescription: "Term value - REQUIRED. Should follow action + object combination pattern for consistency across all term types." } }) }
       },
       required: ["action_id", "object_id", "mainTerm"]
     }
   },
   {
     name: "update_responsibility",
-    description: "Update an existing responsibility. Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations. When adding similar terms or translations, use find_existing_responsibility_terms to check existing terms, then use update_action and update_object to add corresponding terms to maintain consistency across all entities. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
+    description: "Update an existing responsibility. WARNING: On any update (even non-term fields), you MUST send the FULL terms array to avoid deletions. Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations. When adding similar terms or translations, use find_existing_responsibility_terms to check existing terms, then use update_action and update_object to add corresponding terms to maintain consistency across all entities. Terms support AI metadata (set ai_generated=true and provide ai_model when updated by AI).",
     inputSchema: {
       type: "object",
       properties: {
         responsibilityId: { type: "string", description: "Responsibility ID (REQUIRED)" },
         action_id: { type: "number", description: "Action ID - optional. Use get_actions to find action ID" },
         object_id: { type: "number", description: "Object ID - optional. Use get_objects to find object ID" },
-        mainTerm: {
-          type: "object",
-          description: "Main term for the responsibility (REQUIRED). Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations when changing language_id or term_type_id.",
-          properties: {
-            value: { type: "string", description: 'Term value (responsibility name) - REQUIRED. Should be combination of action and object names (e.g., "Accept Ads", "Add Backgrounds"). Can be edited by user but should match action_id + object_id combination.' },
-            description: { type: "string", description: "Term description (optional)" },
-            language_id: { type: "number", description: "Language ID - REQUIRED. Use get_languages to find language ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
-            term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use get_term_types to find term type ID. When changed, use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations." },
-            status_id: { type: "number", description: "Status ID - optional. Use get_statuses to find status ID" },
-            ...aiTermProps
-          },
-          allOf: aiTermConditional,
-          required: ["value", "language_id", "term_type_id"]
-        },
-        terms: {
-          type: "array",
-          description: "Additional terms for the responsibility (optional but recommended). Include main terms, similar terms, and translations. All term types are important for comprehensive responsibility definition.",
-          items: {
-            type: "object",
-            properties: {
-              value: { type: "string", description: "Term value - REQUIRED. Should follow action + object combination pattern for consistency across all term types." },
-              description: { type: "string", description: "Term description (optional)" },
-              language_id: { type: "number", description: "Language ID - REQUIRED. Use different languages for translations." },
-              term_type_id: { type: "number", description: "Term type ID - REQUIRED. Use different types for main, similar, and translation terms." },
-              status_id: { type: "number", description: "Status ID (optional)" },
-              ...aiTermProps
-            },
-            allOf: aiTermConditional,
-            required: ["value", "language_id", "term_type_id"]
-          }
-        }
+        mainTerm: buildMainTermSchema({ description: "Main term for the responsibility (REQUIRED). Value should be combination of action and object names. Use find_existing_responsibility_terms to check for existing main terms, similar terms, and translations when changing language_id or term_type_id.", valueDescription: 'Term value (responsibility name) - REQUIRED. Should be combination of action and object names (e.g., "Accept Ads", "Add Backgrounds"). Can be edited by user but should match action_id + object_id combination.' }),
+        terms: { type: "array", description: "Additional terms for the responsibility (optional but recommended). Include main terms, similar terms, and translations. MANDATORY on update: send the FULL terms array including all existing terms with id and required fields (value, language_id, term_type_id) to avoid unintended deletions. Only the targeted term(s) need updated fields; others must be sent unchanged.", items: buildTermItemSchema({ withId: true, overrides: { valueDescription: "Term value - REQUIRED. Should follow action + object combination pattern for consistency across all term types." } }) }
       },
-      required: ["responsibilityId", "mainTerm"]
+      required: ["responsibilityId", "mainTerm", "terms"]
     }
   },
   {
@@ -13105,6 +12932,30 @@ async function getTermTypes(params = {}) {
     ...search && { search }
   });
   return await makeRequest(`term-types?${queryParams}`);
+}
+async function getCountries(params = {}) {
+  const { page = 1, limit = 10, search = "" } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...search && { search }
+  });
+  return await makeRequest(`countries?${queryParams}`);
+}
+async function getCountry(countryId) {
+  return await makeRequest(`countries/${countryId}`);
+}
+async function createCountry(data) {
+  return await makeRequest("countries", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateCountry(countryId, data) {
+  return await makeRequest(`countries/${countryId}`, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
 }
 async function getToolTypes(params = {}) {
   const { page = 1, limit = 10, search = "" } = params;
@@ -13266,6 +13117,30 @@ async function findExistingResponsibilityTerms(params = {}) {
   });
   return await makeRequest(`responsibilities/find-existing-terms?${queryParams}`);
 }
+async function getCities(params = {}) {
+  const { page = 1, limit = 10, search = "" } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...search && { search }
+  });
+  return await makeRequest(`cities?${queryParams}`);
+}
+async function getCity(cityId) {
+  return await makeRequest(`cities/${cityId}`);
+}
+async function createCity(data) {
+  return await makeRequest("cities", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+async function updateCity(cityId, data) {
+  return await makeRequest(`cities/${cityId}`, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
+}
 
 // handlers.js
 var toolHandlers = {
@@ -13316,6 +13191,16 @@ var toolHandlers = {
   get_format: getFormat,
   create_format: createFormat,
   update_format: updateFormat,
+  // Country handlers
+  get_countries: getCountries,
+  get_country: getCountry,
+  create_country: createCountry,
+  update_country: updateCountry,
+  // City handlers
+  get_cities: getCities,
+  get_city: getCity,
+  create_city: createCity,
+  update_city: updateCity,
   // Responsibility handlers
   get_responsibilities: getResponsibilities,
   get_responsibility: getResponsibility,
@@ -13478,6 +13363,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "update_format":
         const { formatId, ...formatUpdateData } = args;
         result = await handler(formatId, formatUpdateData);
+        break;
+      case "get_countries":
+        result = await handler(args);
+        break;
+      case "get_country":
+        result = await handler(args.countryId);
+        break;
+      case "create_country":
+        result = await handler(args);
+        break;
+      case "update_country":
+        const { countryId, ...countryUpdateData } = args;
+        result = await handler(countryId, countryUpdateData);
+        break;
+      case "get_cities":
+        result = await handler(args);
+        break;
+      case "get_city":
+        result = await handler(args.cityId);
+        break;
+      case "create_city":
+        result = await handler(args);
+        break;
+      case "update_city":
+        const { cityId, ...cityUpdateData } = args;
+        result = await handler(cityId, cityUpdateData);
         break;
       case "get_responsibilities":
         result = await handler(args);

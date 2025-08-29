@@ -132,6 +132,35 @@ async function getTermTypes(params = {}) {
   return await makeRequest(`term-types?${queryParams}`);
 }
 
+// Country functions
+async function getCountries(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  return await makeRequest(`countries?${queryParams}`);
+}
+
+async function getCountry(countryId) {
+  return await makeRequest(`countries/${countryId}`);
+}
+
+async function createCountry(data) {
+  return await makeRequest('countries', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateCountry(countryId, data) {
+  return await makeRequest(`countries/${countryId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 // Tool Type functions
 async function getToolTypes(params = {}) {
   const { page = 1, limit = 10, search = '' } = params;
@@ -330,6 +359,35 @@ async function findExistingResponsibilityTerms(params = {}) {
   return await makeRequest(`responsibilities/find-existing-terms?${queryParams}`);
 }
 
+// City functions
+async function getCities(params = {}) {
+  const { page = 1, limit = 10, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search })
+  });
+  return await makeRequest(`cities?${queryParams}`);
+}
+
+async function getCity(cityId) {
+  return await makeRequest(`cities/${cityId}`);
+}
+
+async function createCity(data) {
+  return await makeRequest('cities', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateCity(cityId, data) {
+  return await makeRequest(`cities/${cityId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 export {
   // Department functions
   getDepartments, getDepartment, createDepartment, updateDepartment,
@@ -341,6 +399,8 @@ export {
   getLanguages, getLanguage, createLanguage, updateLanguage,
   // Term Type functions
   getTermTypes,
+  // Country functions
+  getCountries, getCountry, createCountry, updateCountry,
   // Tool Type functions
   getToolTypes, getToolType, createToolType, updateToolType,
   // Tool functions
@@ -353,5 +413,7 @@ export {
   getFormats, getFormat, createFormat, updateFormat,
   // Responsibility functions
   getResponsibilities, getResponsibility, createResponsibility, updateResponsibility,
-  findExistingResponsibilityTerms
+  findExistingResponsibilityTerms,
+  // City functions
+  getCities, getCity, createCity, updateCity
 };
