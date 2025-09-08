@@ -58,7 +58,7 @@ Configure behavior with the `MODE` environment variable:
 
 ### Light Mode (`MODE=light`)
 - **Same tool list**: All tools available (no filtering)
-- **Auto-optimization**: List operations automatically add `all=true` and `iShort=true` parameters
+- **Auto-optimization**: List operations automatically add `all=true` and `isShort=true` parameters
 - **Reduced responses**: Single `get` operations return `{ id, name }` format
 - **Perfect for**: Claude, ChatGPT, and other token-conscious clients
 

@@ -181,17 +181,17 @@ export async function list({ resource, ...params }) {
   const mode = ['light', 'standard'].includes(modeRaw) ? modeRaw : 'standard';
   
   const effectiveParams = mode === 'light' 
-    ? { ...params, all: true, iShort: true }
+    ? { ...params, all: true, isShort: true }
     : params;
     
   return await fn(effectiveParams);
 }
 
-export async function get({ resource, id, iShort }) {
+export async function get({ resource, id, isShort }) {
   const r = resolveResource(resource);
   const fn = RESOURCE_MAP[r]?.get;
   if (!fn) throw new Error(`Get not supported for ${r}`);
-  return await fn(id, { iShort });
+  return await fn(id, { isShort });
 }
 
 export async function create({ resource, payload }) {
@@ -329,7 +329,7 @@ function shouldMergeTerms(resourceKey) {
 async function mergePayloadWithExisting(resourceKey, id, incoming) {
   const getFn = RESOURCE_MAP[resourceKey]?.get;
   if (!getFn) return incoming;
-  const existing = await getFn(id, { iShort: false });
+  const existing = await getFn(id, { isShort: false });
   const merged = { ...existing, ...incoming };
 
   // mainTerm: keep incoming if provided, else use existing

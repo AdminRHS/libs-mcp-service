@@ -63,7 +63,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 ```javascript
 // Mode-based parameter injection for list operations
 const effectiveParams = mode === 'light' 
-  ? { ...params, all: true, iShort: true }
+  ? { ...params, all: true, isShort: true }
   : params;
 
 // Rate limiting with client identification  
@@ -245,7 +245,7 @@ MODE=light                             # UI optimization mode
 |---------|------------|---------------|
 | **Tool List** | All tools available | All available tools |
 | **GET Responses** | `{id, name}` format | Full entity payload |
-| **List Operations** | Auto-adds `all=true, iShort=true` | Manual parameter control |
+| **List Operations** | Auto-adds `all=true, isShort=true` | Manual parameter control |
 | **Use Case** | Token-conscious clients | Development/testing |
 
 ## 🧪 Comprehensive Testing Results

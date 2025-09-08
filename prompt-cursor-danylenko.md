@@ -4436,7 +4436,7 @@ Manual test checklist:
   - list { resource: 'департаменти' } -> resolves to departments
   - get { resource: 'отдел', id: 1 } -> resolves to departments/1
 - Light mode:
-  - MODE=light -> list auto-adds all=true, iShort=true
+  - MODE=light -> list auto-adds all=true, isShort=true
   - MODE=light -> get returns { id, name }
 
 Decision: automated tests skipped per user request; manual checklist retained.
@@ -4445,7 +4445,7 @@ Change: unified toolset + restored essential tools: get_term_types, find_existin
 
 ## Log Entry
 - Prompt: "А-а, запиши все, про що ми спілкувалися в цьому чаті в окремий файл, а-а, по типу як планування, як я досягла певного результату і так далі."
-- Result: Створено файл `docs/session-summary.md` з узагальненням рішень, планом імплементації, режимом `LIBS_MCP_MODE=light`, універсальними інструментами (`list`, `get`, `create`, `update`), логікою UA/RU/EN резолву ресурсів, light-поведінкою (`all=true`, `iShort=true` для списків і `{ id, name }` для одиничних), стратегією міграції та наступними кроками.
+- Result: Створено файл `docs/session-summary.md` з узагальненням рішень, планом імплементації, режимом `LIBS_MCP_MODE=light`, універсальними інструментами (`list`, `get`, `create`, `update`), логікою UA/RU/EN резолву ресурсів, light-поведінкою (`all=true`, `isShort=true` для списків і `{ id, name }` для одиничних), стратегією міграції та наступними кроками.
 
 ## AI Metadata Issue Fix
 
@@ -4581,7 +4581,7 @@ Outcome: The AI client is now compelled to include AI metadata for any created/u
 
 **Result**:
 - **Unified tool availability**: Removed tool filtering in `index.js` - all tools are now available in both `light` and `standard` modes.
-- **Auto-parameter injection**: Modified `list` handler in `handlers.js` to automatically add `all=true` and `iShort=true` parameters when `MODE=light`.
+- **Auto-parameter injection**: Modified `list` handler in `handlers.js` to automatically add `all=true` and `isShort=true` parameters when `MODE=light`.
 - **Updated documentation**: 
   - `README.md`: Updated modes section to reflect same tool list with auto-optimization for light mode.
   - `PROJECT_OVERVIEW.md`: Updated mode behaviors table and implementation examples.
@@ -4592,5 +4592,28 @@ Outcome: The AI client is now compelled to include AI metadata for any created/u
 - Documentation: Clarified that both modes have identical tool availability, difference is in automatic parameter handling.
 
 Outcome: Simplified mode logic - same tools everywhere, automatic optimization only for list operations in light mode.
+
+---
+
+## Log Entry — Parameter Name Fix and Light Mode Testing
+**Date**: 2025-09-08
+
+**User Prompt**: "там не iShort, а isShort! меняй везде" + "по всему проекту!!!" + "обновляй @prompt-cursor-danylenko.md новыми результатами"
+
+**Result**:
+- **Parameter name correction**: Changed `iShort` to `isShort` across entire project:
+  - `entities.js`: Updated all API parameter references
+  - `handlers.js`: Updated parameter injection logic
+  - `tools.js`: Updated schema definitions
+  - `README.md`, `PROJECT_OVERVIEW.md`: Updated documentation
+  - `docs/update-plan.md`, `docs/session-summary.md`: Updated internal docs
+  - `prompt-cursor-danylenko.md`: Updated conversation log
+- **Light mode verification**: Successfully tested with languages list:
+  - **Before**: Full objects with `iso2`, `iso3`, `description`, `term_group_id`, `language`, `term_type`, `status`, `icon`
+  - **After**: Short format `{ id, name }` only
+  - **Auto-parameters**: `all=true&isShort=true` automatically added when `MODE=light`
+- **Build and deployment**: Rebuilt service with `npm run build`, changes pushed to GitHub
+
+**Status**: ✅ Light mode now working correctly with proper parameter naming and short response format.
 
 ---

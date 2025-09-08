@@ -8,8 +8,8 @@
 ### Decisions
 - ENV-based mode: `MODE=light|standard`.
 - Light mode behavior:
-  - For list endpoints: default `all=true` and `iShort=true` if not provided.
-  - For single get: return `{ id, name }` when in light mode or when `iShort=true`.
+  - For list endpoints: default `all=true` and `isShort=true` if not provided.
+  - For single get: return `{ id, name }` when in light mode or when `isShort=true`.
 - Keep a single MCP; avoid duplicating servers.
 - Introduce 4 universal tools: `list`, `get`, `create`, `update`.
 - Resource resolution supports UA/RU/EN via synonyms map in handlers.
@@ -18,7 +18,7 @@
 ### Implementation Plan
 - entities.js
   - Add `isLight()` helper to check `MODE`.
-  - Add `buildListQuery(params)` to augment queries with `all=true` and `iShort=true` in light mode.
+  - Add `buildListQuery(params)` to augment queries with `all=true` and `isShort=true` in light mode.
   - Apply `buildListQuery` across all list functions.
   - For single get functions, support optional short projection `{ id, name }` in light mode.
 
@@ -26,12 +26,12 @@
   - Add `ALIASES` map: UA/RU/EN synonyms → canonical resource keys (e.g., `departments`).
   - `resolveResource(input)` normalizes and resolves to canonical key.
   - `RESOURCE_MAP` binds canonical resource → `{ list, get, create, update }` functions from `entities.js`.
-  - Implement universal handlers: `list({ resource, ...params })`, `get({ resource, id, iShort })`, `create({ resource, payload })`, `update({ resource, id, payload })`.
+  - Implement universal handlers: `list({ resource, ...params })`, `get({ resource, id, isShort })`, `create({ resource, payload })`, `update({ resource, id, payload })`.
 
 - tools.js
   - Add 4 universal tools with minimal schemas:
-    - list: `{ resource, page?, limit?, search?, all?, iShort? }`
-    - get: `{ resource, id, iShort? }`
+    - list: `{ resource, page?, limit?, search?, all?, isShort? }`
+    - get: `{ resource, id, isShort? }`
     - create: `{ resource, payload }`
     - update: `{ resource, id, payload }`
   - Keep descriptions concise to reduce token usage.
@@ -41,8 +41,8 @@
   - In `ListToolsRequest`, if `MODE=light`, optionally return only the universal tools.
 
 ### Light Mode Parameters
-- Lists: `all=true`, `iShort=true` (automatically added unless explicitly provided).
-- Single get: short projection `{ id, name }` in light mode or when `iShort=true`.
+- Lists: `all=true`, `isShort=true` (automatically added unless explicitly provided).
+- Single get: short projection `{ id, name }` in light mode or when `isShort=true`.
 
 ### UA/RU/EN Resource Resolution Examples
 - "департаменти", "відділи", "отделы", "department(s)" → `departments`.
@@ -75,7 +75,7 @@
   - `update_term`
 - Server routing in `index.js` updated to handle only the 4 universal tools and the essential specials listed above.
 - Conditional JSON Schemas added to universal `create` and `update` tools: `payload` is validated per `resource` using `if/then` branches and existing term schema builders. Resources covered: `departments`, `professions`, `languages`, `industries`, `sub_industries`, `countries`, `cities`, `actions`, `objects`, `responsibilities`, `formats`.
-- Light mode behavior implemented in `entities.js`: `buildListQuery` auto-adds `all=true` and `iShort=true` in light mode; single `get` returns `{ id, name }` when light or `iShort=true`.
+- Light mode behavior implemented in `entities.js`: `buildListQuery` auto-adds `all=true` and `isShort=true` in light mode; single `get` returns `{ id, name }` when light or `isShort=true`.
 - UA/RU/EN aliases resolver added in `handlers.js` and used by unified handlers.
 - Tool listing: now returns universal tools; essential specials are also listed. In light mode we still filter to reduce noise where applicable.
 - Tests: automated tests intentionally skipped per request; a manual checklist was documented.

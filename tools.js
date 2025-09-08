@@ -322,7 +322,7 @@ const tools = [
         limit: { type: 'number' },
         search: { type: 'string' },
         all: { type: 'string', enum: ['true','false'] },
-        iShort: { type: 'string', enum: ['true','false'] },
+        isShort: { type: 'string', enum: ['true','false'] },
       },
       required: ['resource']
     }
@@ -335,7 +335,7 @@ const tools = [
       properties: {
         resource: { type: 'string' },
         id: { type: 'string' },
-        iShort: { type: 'string', enum: ['true','false'] },
+        isShort: { type: 'string', enum: ['true','false'] },
       },
       required: ['resource', 'id']
     }

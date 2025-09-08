@@ -19,7 +19,7 @@ function buildListQuery(params = {}) {
   });
   if (isLight()) {
     if (!query.has('all')) query.set('all', 'true');
-    if (!query.has('iShort')) query.set('iShort', 'true');
+    if (!query.has('isShort')) query.set('isShort', 'true');
   }
   return query;
 }
@@ -32,7 +32,7 @@ async function getDepartments(params = {}) {
 
 async function getDepartment(departmentId, opts = {}) {
   const data = await makeRequest(`departments/${departmentId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -83,7 +83,7 @@ async function getProfessions(params = {}) {
 
 async function getProfession(professionId, opts = {}) {
   const data = await makeRequest(`professions/${professionId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -134,7 +134,7 @@ async function getStatuses(params = {}) {
 
 async function getStatus(statusId, opts = {}) {
   const data = await makeRequest(`statuses/${statusId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -160,7 +160,7 @@ async function getLanguages(params = {}) {
 
 async function getLanguage(languageId, opts = {}) {
   const data = await makeRequest(`languages/${languageId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -217,7 +217,7 @@ async function getCountries(params = {}) {
 
 async function getCountry(countryId, opts = {}) {
   const data = await makeRequest(`countries/${countryId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -268,7 +268,7 @@ async function getToolTypes(params = {}) {
 
 async function getToolType(toolTypeId, opts = {}) {
   const data = await makeRequest(`tool-types/${toolTypeId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -294,7 +294,7 @@ async function getTools(params = {}) {
 
 async function getTool(toolId, opts = {}) {
   const data = await makeRequest(`tools/${toolId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -320,7 +320,7 @@ async function getActions(params = {}) {
 
 async function getAction(actionId, opts = {}) {
   const data = await makeRequest(`actions/${actionId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -371,7 +371,7 @@ async function getObjects(params = {}) {
 
 async function getObject(objectId, opts = {}) {
   const data = await makeRequest(`objects/${objectId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -422,7 +422,7 @@ async function getFormats(params = {}) {
 
 async function getFormat(formatId, opts = {}) {
   const data = await makeRequest(`formats/${formatId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -459,7 +459,7 @@ async function getResponsibilities(params = {}) {
 
 async function getResponsibility(responsibilityId, opts = {}) {
   const data = await makeRequest(`responsibilities/${responsibilityId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -498,7 +498,7 @@ async function getCities(params = {}) {
 
 async function getCity(cityId, opts = {}) {
   const data = await makeRequest(`cities/${cityId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -549,7 +549,7 @@ async function getIndustries(params = {}) {
 
 async function getIndustry(industryId, opts = {}) {
   const data = await makeRequest(`industries/${industryId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -600,7 +600,7 @@ async function getSubIndustries(params = {}) {
 
 async function getSubIndustry(subIndustryId, opts = {}) {
   const data = await makeRequest(`sub_industries/${subIndustryId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 

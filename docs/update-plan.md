@@ -3,8 +3,8 @@
 - **ENV режим**: `MODE=light|standard`
 - **Універсальні інструменти**: `list`, `get`, `create`, `update`
 - **Light‑поведінка**:
-  - `list`: автододає `all=true`, `iShort=true` (якщо не передано інакше)
-  - `get`: повертає тільки `{ id, name }` при `MODE=light` або `iShort=true`
+  - `list`: автододає `all=true`, `isShort=true` (якщо не передано інакше)
+  - `get`: повертає тільки `{ id, name }` при `MODE=light` або `isShort=true`
 - **Резолв ресурсів з UA/RU/EN** через мапу синонімів
 
 ### 1) `entities.js`
@@ -27,7 +27,7 @@ function buildListQuery(params = {}) {
   });
   if (isLight()) {
     if (!query.has('all')) query.set('all', 'true');
-    if (!query.has('iShort')) query.set('iShort', 'true');
+    if (!query.has('isShort')) query.set('isShort', 'true');
   }
   return query;
 }
@@ -41,7 +41,7 @@ async function getDepartments(params = {}) {
 // Приклад проекції для одиничного:
 async function getDepartment(departmentId, opts = {}) {
   const data = await makeRequest(`departments/${departmentId}`);
-  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 ```
@@ -105,12 +105,12 @@ export async function list({ resource, ...params }) {
   return await fn(params);
 }
 
-export async function get({ resource, id, iShort }) {
+export async function get({ resource, id, isShort }) {
   const r = resolveResource(resource);
   const fn = RESOURCE_MAP[r]?.get;
   if (!fn) throw new Error(`Get not supported for ${r}`);
-  // передаємо iShort як опцію, щоб одиничні get могли робити коротку проекцію
-  return await fn(id, { iShort });
+  // передаємо isShort як опцію, щоб одиничні get могли робити коротку проекцію
+  return await fn(id, { isShort });
 }
 
 export async function create({ resource, payload }) {
@@ -143,7 +143,7 @@ export async function update({ resource, id, payload }) {
       limit: { type: 'number' },
       search: { type: 'string' },
       all: { type: 'string', enum: ['true','false'] },
-      iShort: { type: 'string', enum: ['true','false'] },
+      isShort: { type: 'string', enum: ['true','false'] },
     },
     required: ['resource']
   }
@@ -156,7 +156,7 @@ export async function update({ resource, id, payload }) {
     properties: {
       resource: { type: 'string' },
       id: { type: 'string' },
-      iShort: { type: 'string', enum: ['true','false'] },
+      isShort: { type: 'string', enum: ['true','false'] },
     },
     required: ['resource', 'id']
   }
@@ -224,7 +224,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   - `list({ resource: 'департаменти' })` → `departments`
   - `get({ resource: 'отдел', id: 1 })` → `departments/1`
 - Light режим:
-  - `MODE=light` → `list` додає `all=true`, `iShort=true`; `get` повертає `{ id, name }`.
+  - `MODE=light` → `list` додає `all=true`, `isShort=true`; `get` повертає `{ id, name }`.
 
 ### 6) Міграція
 - Показуй лише універсальні інструменти у light‑режимі.
