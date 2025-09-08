@@ -34,6 +34,174 @@ import {
   createTerm, updateTerm
 } from './entities.js';
 
+// UA/RU/EN resource aliases
+const ALIASES = {
+  // departments
+  'департамент': 'departments', 'департаменти': 'departments', 'відділ': 'departments', 'відділи': 'departments',
+  'отдел': 'departments', 'отделы': 'departments', 'department': 'departments', 'departments': 'departments',
+  // professions
+  'професія': 'professions', 'професії': 'professions', 'профессия': 'professions', 'профессии': 'professions',
+  'profession': 'professions', 'professions': 'professions',
+  // languages
+  'мова': 'languages', 'мови': 'languages', 'язык': 'languages', 'языки': 'languages',
+  'language': 'languages', 'languages': 'languages',
+  // statuses
+  'статус': 'statuses', 'статуси': 'statuses', 'статусы': 'statuses', 'status': 'statuses', 'statuses': 'statuses',
+  // countries
+  'країна': 'countries', 'країни': 'countries', 'страна': 'countries', 'страны': 'countries', 'country': 'countries', 'countries': 'countries',
+  // cities
+  'місто': 'cities', 'міста': 'cities', 'город': 'cities', 'города': 'cities', 'city': 'cities', 'cities': 'cities',
+  // industries
+  'індустрія': 'industries', 'індустрії': 'industries', 'индустрия': 'industries', 'индустрии': 'industries', 'industry': 'industries', 'industries': 'industries',
+  // sub-industries
+  'субіндустрія': 'sub_industries', 'субіндустрії': 'sub_industries', 'субиндустрия': 'sub_industries', 'субиндустрии': 'sub_industries', 'sub-industry': 'sub_industries', 'sub-industries': 'sub_industries',
+  // tools
+  'інструмент': 'tools', 'інструменти': 'tools', 'инструмент': 'tools', 'инструменты': 'tools', 'tool': 'tools', 'tools': 'tools',
+  // tool types
+  'тип інструменту': 'tool-types', 'типи інструментів': 'tool-types', 'тип инструмента': 'tool-types', 'типы инструментов': 'tool-types', 'tool type': 'tool-types', 'tool types': 'tool-types',
+  // term types
+  'тип терміну': 'term-types', 'типи термінів': 'term-types', 'тип термина': 'term-types', 'типы терминов': 'term-types', 'term type': 'term-types', 'term types': 'term-types',
+  // actions
+  'дія': 'actions', 'дії': 'actions', 'действие': 'actions', 'действия': 'actions', 'action': 'actions', 'actions': 'actions',
+  // objects
+  'обʼєкт': 'objects', 'объект': 'objects', 'объекты': 'objects', 'objects': 'objects', 'object': 'objects', 'обʼєкти': 'objects',
+  // formats
+  'формат': 'formats', 'формати': 'formats', 'форматы': 'formats', 'format': 'formats', 'formats': 'formats',
+};
+
+function resolveResource(input) {
+  if (!input) throw new Error('Resource is required');
+  const key = String(input).toLowerCase().trim();
+  const canonical = ALIASES[key] || null;
+  if (!canonical) {
+    const known = [...new Set(Object.values(ALIASES))].sort();
+    throw new Error(`Unknown resource "${input}". Try one of: ${known.join(', ')}`);
+  }
+  return canonical;
+}
+
+// Unified resource map
+const RESOURCE_MAP = {
+  departments: {
+    list: getDepartments,
+    get: getDepartment,
+    create: createDepartment,
+    update: updateDepartment,
+  },
+  professions: {
+    list: getProfessions,
+    get: getProfession,
+    create: createProfession,
+    update: updateProfession,
+  },
+  languages: {
+    list: getLanguages,
+    get: getLanguage,
+    create: createLanguage,
+    update: updateLanguage,
+  },
+  statuses: {
+    list: getStatuses,
+    get: getStatus,
+    create: createStatus,
+    update: updateStatus,
+  },
+  countries: {
+    list: getCountries,
+    get: getCountry,
+    create: createCountry,
+    update: updateCountry,
+  },
+  cities: {
+    list: getCities,
+    get: getCity,
+    create: createCity,
+    update: updateCity,
+  },
+  industries: {
+    list: getIndustries,
+    get: getIndustry,
+    create: createIndustry,
+    update: updateIndustry,
+  },
+  'sub_industries': {
+    list: getSubIndustries,
+    get: getSubIndustry,
+    create: createSubIndustry,
+    update: updateSubIndustry,
+  },
+  tools: {
+    list: getTools,
+    get: getTool,
+    create: createTool,
+    update: updateTool,
+  },
+  'tool-types': {
+    list: getToolTypes,
+    get: getToolType,
+    create: createToolType,
+    update: updateToolType,
+  },
+  'term-types': {
+    list: getTermTypes,
+  },
+  actions: {
+    list: getActions,
+    get: getAction,
+    create: createAction,
+    update: updateAction,
+  },
+  objects: {
+    list: getObjects,
+    get: getObject,
+    create: createObject,
+    update: updateObject,
+  },
+  formats: {
+    list: getFormats,
+    get: getFormat,
+    create: createFormat,
+    update: updateFormat,
+  },
+  responsibilities: {
+    list: getResponsibilities,
+    get: getResponsibility,
+    create: createResponsibility,
+    update: updateResponsibility,
+  },
+};
+
+export async function list({ resource, ...params }) {
+  const r = resolveResource(resource);
+  const fn = RESOURCE_MAP[r]?.list;
+  if (!fn) throw new Error(`List not supported for ${r}`);
+  return await fn(params);
+}
+
+export async function get({ resource, id, iShort }) {
+  const r = resolveResource(resource);
+  const fn = RESOURCE_MAP[r]?.get;
+  if (!fn) throw new Error(`Get not supported for ${r}`);
+  return await fn(id, { iShort });
+}
+
+export async function create({ resource, payload }) {
+  const r = resolveResource(resource);
+  const fn = RESOURCE_MAP[r]?.create;
+  if (!fn) throw new Error(`Create not supported for ${r}`);
+  return await fn(payload);
+}
+
+export async function update({ resource, id, payload }) {
+  const r = resolveResource(resource);
+  const fn = RESOURCE_MAP[r]?.update;
+  if (!fn) throw new Error(`Update not supported for ${r}`);
+  return await fn(id, payload);
+}
+
+// Re-export essential specialized handlers for direct routing
+export { getTermTypes, findExistingResponsibilityTerms, createTerm, updateTerm };
+
 // Tool handlers mapping
 const toolHandlers = {
   // Department handlers

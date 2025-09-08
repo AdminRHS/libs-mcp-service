@@ -16,7 +16,8 @@ Add the following to your MCP configuration:
       "args": ["github:AdminRHS/libs-mcp-service"],
       "env": {
         "API_TOKEN": "your_actual_token_here",
-        "API_BASE_URL": "https://libs.anyemp.com"
+        "API_BASE_URL": "https://libs.anyemp.com",
+        "MODE": "light"
       }
     }
   }
@@ -31,334 +32,307 @@ Add the following to your MCP configuration:
 |----------|----------|-------------|---------|
 | `API_TOKEN` | Yes | Authentication token for the external platform | - |
 | `API_BASE_URL` | Yes | Base URL for the external API | - |
+| `MODE` | No | UI mode: `light` (minimal) or `standard` (full). Affects tool list and response shape | `standard` |
 
 ### API Environments
 
 - **Production**: `https://libs.anyemp.com` - Main microservice for libraries
-- **Development**: `https://libdev.anyemp.com` - Test environment for developers (recommended for development and testing)
+- **Development**: `https://libdev.anyemp.com` - Recommended for development and testing
 
-**Note**: For development and testing, it's recommended to use the development environment (`https://libdev.anyemp.com`) to avoid affecting production data.
+**Recommendation**: Use the development environment for testing to avoid affecting production data.
 
-## Features
+## ✨ Features
 
-- **CRUD Operations**: Create, read, update, and delete entities
-- **Search & Pagination**: Get entities with search and pagination support
-- **Official MCP SDK**: Full Model Context Protocol compliance using `@modelcontextprotocol/sdk`
-- **Multiple Entity Types**: Support for 16 entity types with 60 total tools
-- **AI Metadata Support**: Comprehensive AI metadata tracking for terms
-- **Term Synchronization**: Automatic consistency between responsibilities, actions, and objects
-- **Standalone**: Runs as a standalone Node.js process
-- **Easy Deployment**: Executable via npx without local installation
+- **🏢 Official MCP SDK**: Full MCP compliance using `@modelcontextprotocol/sdk`
+- **🔧 Universal Tools**: `list`, `get`, `create`, `update` for all 16+ entity types
+- **⚡ Performance**: Response caching with TTL and smart invalidation
+- **🛡️ Security**: Rate limiting, request size caps, and bearer token authentication
+- **🔄 Smart Updates**: Automatic term preservation in update operations
+- **🤖 AI Metadata**: Comprehensive tracking for AI-generated content
+- **📱 Dual Modes**: Light mode for minimal UIs, standard mode for full functionality
+- **🚀 Easy Deployment**: Executable via npx without local installation
 
-## Prerequisites
+## 🎛️ Modes
 
-- Node.js 18.0.0 or higher
-- API token from your external platform
+Configure behavior with the `MODE` environment variable:
 
-## Manual Installation (Optional)
+### Light Mode (`MODE=light`)
+- **Minimal tool list**: Shows only universal tools (`list`, `get`, `create`, `update`) + essential specials
+- **Reduced responses**: Single `get` operations return `{ id, name }` format
+- **Auto-optimization**: List operations automatically use short output format
+- **Perfect for**: Claude, ChatGPT, and other token-conscious clients
 
-### Option 1: Direct npx execution
+### Standard Mode (`MODE=standard`)
+- **Full tool list**: All available tools shown
+- **Complete responses**: Full entity payloads in all operations
+- **Comprehensive data**: Complete records unless explicitly constrained
+- **Perfect for**: Development, testing, and comprehensive data access
 
+## 🛠️ Available Tools
+
+### Universal Tools (All Entities)
+- **`list`** — List entities with pagination and search
+- **`get`** — Fetch single entity by ID
+- **`create`** — Create new entity with AI metadata support
+- **`update`** — Update entity with automatic term preservation
+
+### Essential Specialized Tools
+- **`get_term_types`** — Retrieve available term types
+- **`find_existing_responsibility_terms`** — Check existing action-object term combinations
+- **`create_term`** — Create individual terms with AI metadata
+- **`update_term`** — Update individual terms with AI metadata
+
+### Supported Entities (16 Types)
+- **Core**: Departments, Professions, Languages, Countries, Cities
+- **Content**: Actions, Objects, Responsibilities, Formats  
+- **Organization**: Industries, Sub-Industries, Tools, Tool Types
+- **System**: Statuses, Term Types, Individual Terms
+
+## 📚 Common Usage Patterns
+
+### List Entities with Search
+```javascript
+// List departments with search
+{
+  "resource": "departments",
+  "search": "engineering", 
+  "limit": 5
+}
+```
+
+### Create Entity with AI Metadata
+```javascript
+// Create department with AI tracking
+{
+  "resource": "departments",
+  "payload": {
+    "mainTerm": {
+      "value": "Data Science",
+      "language_id": 1,
+      "term_type_id": 1,
+      "aiMetadata": {
+        "ai_generated": true,
+        "ai_model": "gpt-4o",
+        "ai_confidence_score": 9.5
+      }
+    }
+  }
+}
+```
+
+### Update with Term Preservation
+```javascript
+// Update preserves existing terms automatically
+{
+  "resource": "departments", 
+  "id": "123",
+  "payload": {
+    "mainTerm": {
+      "value": "Updated Name",
+      "language_id": 1,
+      "term_type_id": 1
+    }
+    // Existing terms automatically preserved
+  }
+}
+```
+
+## 🏗️ Architecture
+
+### Core Components
+- **`index.js`** - Main MCP server with official SDK integration
+- **`config.js`** - Environment validation and configuration
+- **`api.js`** - HTTP client with caching, timeouts, and error handling
+- **`entities.js`** - CRUD operations for all 16 entity types
+- **`tools.js`** - MCP tool definitions with JSON Schema validation
+- **`handlers.js`** - Tool handler mappings and routing
+
+### Advanced Features
+- **`src/errors.js`** - Structured error handling with MCP formatting
+- **`src/cache.js`** - Response caching with TTL and smart invalidation
+- **`src/rateLimit.js`** - Fixed-window rate limiting per client
+
+### Build System
+- **`libs-mcp-service.js`** - Bundled executable (530KB) for npx deployment
+
+## 🧪 Testing Status
+
+### ✅ Comprehensive Testing Complete (16/16 Entities)
+
+| Entity Category | Entities | Status | Features Tested |
+|----------------|----------|--------|-----------------|
+| **Core** | Departments, Professions, Languages | ✅ Complete | CRUD, AI metadata, term preservation |
+| **Geography** | Countries, Cities | ✅ Complete | Complex terms, ISO codes, coordinates |
+| **Content** | Actions, Objects, Responsibilities | ✅ Complete | Term relationships, format linking |
+| **Organization** | Industries, Sub-Industries | ✅ Complete | Parent-child relationships |
+| **System** | Tools, Tool Types, Formats | ✅ Complete | Many-to-many relationships |
+| **Meta** | Statuses, Term Types, Terms | ✅ Complete | Individual term management |
+
+### Key Testing Results
+- **✅ Schema Validation**: All entity schemas validated against actual API
+- **✅ Permission Testing**: Proper 403 handling for restricted operations
+- **✅ AI Metadata**: Comprehensive testing of AI tracking fields
+- **✅ Term Preservation**: Smart update logic maintains existing terms
+- **✅ Relationship Handling**: Complex entity relationships working correctly
+- **✅ Error Handling**: Structured errors with proper MCP formatting
+
+## 🔒 Security Features
+
+- **🛡️ Bearer Authentication**: Secure API token handling
+- **⏱️ Rate Limiting**: 60 requests/minute per client (configurable)
+- **📏 Request Size Limits**: 100KB body size cap
+- **🔐 Secret Masking**: Authorization headers masked in cache keys
+- **⏰ Timeout Protection**: 30-second request timeouts with AbortController
+
+## 📈 Performance Optimizations
+
+- **💾 Response Caching**: 5-minute TTL with smart invalidation
+- **🗂️ Cache Management**: Automatic prefix-based invalidation on writes
+- **📦 Bundle Optimization**: Minified 530KB bundle with tree-shaking
+- **⚡ Efficient Updates**: Term preservation reduces API calls
+
+## 🚀 Installation & Deployment
+
+### Option 1: Direct Execution (Recommended)
 ```bash
 npx github:AdminRHS/libs-mcp-service
 ```
 
-### Option 2: Local installation
-
+### Option 2: Global Installation
 ```bash
 npm install -g github:AdminRHS/libs-mcp-service
 libs-mcp-service
 ```
 
-## Available Tools
-
-The service provides **60 tools** across **16 entity types**:
-
-### Departments (4 tools)
-- `get_departments` - List all departments with pagination and search
-- `get_department` - Get a specific department by ID
-- `create_department` - Create a new department
-- `update_department` - Update an existing department
-
-### Professions (4 tools)
-- `get_professions` - List all professions with pagination and search
-- `get_profession` - Get a specific profession by ID
-- `create_profession` - Create a new profession
-- `update_profession` - Update an existing profession
-
-### Statuses (4 tools)
-- `get_statuses` - List all statuses with pagination and search
-- `get_status` - Get a specific status by ID
-- `create_status` - Create a new status
-- `update_status` - Update an existing status
-
-### Languages (4 tools)
-- `get_languages` - List all languages with pagination and search
-- `get_language` - Get a specific language by ID
-- `create_language` - Create a new language
-- `update_language` - Update an existing language
-
-### Term Types (1 tool)
-- `get_term_types` - List all term types with pagination and search (GET only, no CRUD operations)
-
-### Individual Terms (2 tools)
-- `create_term` - Create a new individual term using API token authentication
-- `update_term` - Update an existing individual term using API token authentication
-
-### Tool Types (4 tools)
-- `get_tool_types` - List all tool types with pagination and search
-- `get_tool_type` - Get a specific tool type by ID
-- `create_tool_type` - Create a new tool type
-- `update_tool_type` - Update an existing tool type
-
-### Tools (4 tools)
-- `get_tools` - List all tools with pagination and search
-- `get_tool` - Get a specific tool by ID
-- `create_tool` - Create a new tool
-- `update_tool` - Update an existing tool
-
-### Actions (4 tools)
-- `get_actions` - List all actions with pagination and search
-- `get_action` - Get a specific action by ID
-- `create_action` - Create a new action
-- `update_action` - Update an existing action with responsibility term synchronization
-
-### Objects (4 tools)
-- `get_objects` - List all objects with pagination and search
-- `get_object` - Get a specific object by ID
-- `create_object` - Create a new object with complex term structure
-- `update_object` - Update an existing object with format relationships and responsibility term synchronization
-
-### Formats (4 tools)
-- `get_formats` - List all formats with pagination and search
-- `get_format` - Get a specific format by ID
-- `create_format` - Create a new format
-- `update_format` - Update an existing format
-
-### Responsibilities (5 tools)
-- `get_responsibilities` - List all responsibilities with pagination and search
-- `get_responsibility` - Get a specific responsibility by ID
-- `create_responsibility` - Create a new responsibility with automatic term synchronization
-- `update_responsibility` - Update an existing responsibility with automatic term synchronization
-- `find_existing_responsibility_terms` - Find existing Actions and Objects by language to check what terms already exist before adding new terms
-
-### Countries (4 tools)
-- `get_countries` - List all countries with pagination and search
-- `get_country` - Get a specific country by ID
-- `create_country` - Create a new country (supports terms and ISO codes)
-- `update_country` - Update an existing country (FULL terms array required on update)
-
-### Cities (4 tools)
-- `get_cities` - List all cities with pagination and search
-- `get_city` - Get a specific city by ID
-- `create_city` - Create a new city (supports terms and geo fields)
-- `update_city` - Update an existing city (FULL terms array required on update)
-
-### Industries (4 tools)
-- `get_industries` - List all industries with pagination and search
-- `get_industry` - Get a specific industry by ID
-- `create_industry` - Create a new industry
-- `update_industry` - Update an existing industry
-
-### Sub-Industries (4 tools)
-- `get_sub_industries` - List all sub-industries with pagination and search
-- `get_sub_industry` - Get a specific sub-industry by ID
-- `create_sub_industry` - Create a new sub-industry
-- `update_sub_industry` - Update an existing sub-industry
-
-## Common Parameters
-
-Most list operations support these parameters:
-- `page` (number, optional): Page number (default: 1)
-- `limit` (number, optional): Number of items per page (default: 10)
-- `search` (string, optional): Search by name or description
-
-Create operations require:
-- `name` (string, required): Entity name
-- `description` (string, required): Entity description
-
-Update operations require:
-- `[entityId]` (string, required): Entity ID
-- `name` (string, optional): Entity name
-- `description` (string, optional): Entity description
-
-## API Endpoints
-
-The service expects the following REST API endpoints on your external platform:
-
-- `GET /api/token/departments` - List departments (with query parameters: page, limit, search)
-- `GET /api/token/departments/:id` - Get specific department
-- `POST /api/token/departments` - Create department
-- `PUT /api/token/departments/:id` - Update department
-- `DELETE /api/token/departments/:id` - Delete department
-
-Similar patterns for other entities:
-- `/api/token/professions`
-- `/api/token/statuses`
-- `/api/token/languages`
-- `/api/token/term-types`
-- `/api/token/terms`
-- `/api/token/tool-types`
-- `/api/token/tools`
-- `/api/token/actions`
-- `/api/token/objects`
-- `/api/token/formats`
-- `/api/token/responsibilities`
-- `/api/token/countries`
-- `/api/token/cities`
-- `/api/token/industries`
-- `/api/token/sub-industries`
-
-All requests include the `Authorization: Bearer <API_TOKEN>` header.
-
-## Development
-
-### Building the Service
-
+### Option 3: Development Mode
 ```bash
+git clone https://github.com/AdminRHS/libs-mcp-service.git
+cd libs-mcp-service
 npm install
-npm run build
-```
-
-This creates the bundled `libs-mcp-service.js` file that includes all dependencies.
-
-### Running in Development Mode
-
-```bash
 npm run dev
 ```
 
-## Error Handling
+## 🔧 API Integration
 
-The service includes comprehensive error handling using the official MCP SDK:
+The service expects RESTful endpoints following this pattern:
 
-- **Configuration Errors**: Missing API token or base URL results in immediate exit
-- **HTTP Errors**: API request failures are properly formatted and returned
-- **Tool Errors**: Invalid tool calls include detailed error messages
-- **MCP Protocol Errors**: Handled automatically by the official SDK
-- **Response Format**: All errors follow proper MCP content structure
+```
+GET    /api/token/{entity}           # List with pagination
+GET    /api/token/{entity}/:id       # Get by ID  
+POST   /api/token/{entity}           # Create new
+PUT    /api/token/{entity}/:id       # Update existing
+DELETE /api/token/{entity}/:id       # Delete (where permitted)
+```
 
-## Security Notes
+All requests include `Authorization: Bearer <API_TOKEN>` header.
 
-- **API Token**: Never commit your actual API token to version control
-- **Environment Variables**: Use environment variables for sensitive configuration
-- **HTTPS**: Ensure your API_BASE_URL uses HTTPS in production
-- **Bearer Token**: Uses Authorization header with Bearer token for authentication
+### Supported Endpoints
+- `/api/token/departments` - Department management
+- `/api/token/professions` - Profession management  
+- `/api/token/languages` - Language and term management
+- `/api/token/countries` - Country data with ISO codes
+- `/api/token/cities` - City data with coordinates
+- `/api/token/actions` - Action definitions with terms
+- `/api/token/objects` - Object definitions with formats
+- `/api/token/responsibilities` - Responsibility linking
+- `/api/token/industries` - Industry classifications
+- `/api/token/sub-industries` - Sub-industry definitions
+- `/api/token/tools` - Tool management with types
+- `/api/token/tool-types` - Tool type definitions
+- `/api/token/formats` - Format specifications
+- `/api/token/statuses` - Status management
+- `/api/token/term-types` - Term type definitions
+- `/api/token/terms` - Individual term management
 
-## Troubleshooting
+## 🐛 Troubleshooting
 
 ### Common Issues
 
-1. **"API_TOKEN environment variable is required"**
-   - Ensure the API_TOKEN environment variable is set
-   - Check your MCP client configuration
+**❌ "API_TOKEN environment variable is required"**
+- Verify API_TOKEN is set in your MCP client configuration
+- Check for typos in environment variable names
 
-2. **"API_BASE_URL environment variable is required"**
-   - Ensure the API_BASE_URL environment variable is set
-   - Verify the URL format is correct
+**❌ "HTTP error! status: 401"**  
+- Verify your API token is valid and not expired
+- Ensure proper Bearer token format
 
-3. **"HTTP error! status: 401"**
-   - Verify your API token is valid
-   - Check if the token has expired
+**❌ "HTTP error! status: 403"**
+- Normal behavior for write operations on most entities
+- Only certain entities allow POST/PUT operations
 
-4. **"HTTP error! status: 404"**
-   - Verify the API_BASE_URL is correct
-   - Check if the API endpoints exist
+**❌ "Rate limit exceeded"**
+- Check if multiple clients are using same configuration
 
-5. **Service not starting**
-   - Ensure Node.js 18+ is installed
-   - Check if all dependencies are available
+**❌ Service not starting**
+- Ensure Node.js 18+ is installed
+- Check network connectivity to API_BASE_URL
 
 ### Debug Mode
 
-To enable debug logging, set the `DEBUG` environment variable:
-
+Enable detailed logging:
 ```bash
 DEBUG=* npx github:AdminRHS/libs-mcp-service
 ```
 
-## Testing Status
+### Health Check
 
-The service has been thoroughly tested with the following results:
+Test connectivity:
+```javascript
+// Use 'list' tool with minimal parameters
+{
+  "resource": "term_types",
+  "limit": 1
+}
+```
 
-### ✅ Tested Entities (16 out of 16)
+## 📊 Metrics & Monitoring
 
-| Entity | CRUD Operations | Permissions | Schema | Status |
-|--------|----------------|-------------|--------|--------|
-| **Departments** | ✅ Create, Read, Update | ✅ GET allowed, POST blocked (403) | ✅ Corrected | ✅ Complete |
-| **Professions** | ✅ Create, Read, Update | ✅ GET allowed, POST blocked (403) | ✅ Simplified | ✅ Complete |
-| **Statuses** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Corrected | ✅ Complete |
-| **Tool Types** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Corrected | ✅ Complete |
-| **Tools** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Enhanced | ✅ Complete |
-| **Actions** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Objects** | ✅ Create, Read, Update | ✅ GET/POST/PUT blocked (403) | ✅ Complex term structure + formats | ✅ Complete |
-| **Formats** | ✅ Create, Read, Update | ✅ GET/POST/PUT allowed | ✅ Simple structure | ✅ Complete |
-| **Languages** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Responsibilities** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Countries** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Cities** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Industries** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Sub-Industries** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT blocked (403) | ✅ Complex term structure | ✅ Complete |
-| **Individual Terms** | ✅ Create, Read, Update | ✅ GET allowed, POST/PUT allowed | ✅ AI metadata support | ✅ Complete |
+The service includes built-in metrics tracking:
+- **Request counts** by tool and entity type
+- **Error rates** with status code breakdown  
+- **Cache hit/miss ratios** for performance monitoring
+- **Rate limit statistics** per client
+- **Response times** for performance analysis
 
-### Key Testing Results
+## 🤖 AI Metadata Support
 
-- **Schema Corrections**: Fixed schemas for Statuses, Tool Types, and Tools to match actual API structure
-- **Permission Testing**: All entities properly restrict write operations (403 Forbidden)
-- **Relationship Testing**: Tools successfully tested with toolTypeIds relationships, Objects tested with format relationships
-- **Complex Term Structure**: Actions and Objects successfully tested with mainTerm and terms array
-- **Format Relationships**: Objects successfully tested with many-to-many format relationships
-- **Simple Format Model**: Formats successfully tested with minimal structure (name field only)
-- **Error Handling**: Proper validation and error responses confirmed
-- **Industries/Sub-Industries**: Successfully tested with complex term structure and parent-child relationships
-- **Individual Terms**: Successfully tested with AI metadata support and term group relationships
-- **Smart Update Logic**: Integrated into existing update_* tools for automatic term preservation
+Comprehensive AI tracking for all terms and entities:
 
-### Testing Complete
+### Supported Fields
+- `ai_generated` - Whether content was AI-generated
+- `ai_model` - AI model used (e.g., "gpt-4o", "claude-3.5")
+- `ai_confidence_score` - Confidence rating (0.00-9.99)
+- `ai_quality_score` - Quality assessment (0.00-9.99)
+- `ai_validation_status` - Review status ("pending", "approved", "rejected")
+- `ai_human_reviewed` - Human review flag
+- `ai_source_data` - Original source information
+- `ai_metadata` - Additional AI-specific data
 
-**All 16 entity types** have been thoroughly tested and are fully functional:
+### Usage Examples
+See `docs-models/AI_METADATA_GUIDE.md` for comprehensive examples and best practices.
 
-- **Languages**: ✅ CRUD operations, permissions, and schema validation completed
-- **Responsibilities**: ✅ CRUD operations, permissions, and schema validation completed
-- **Complex Term Structure**: ✅ Successfully tested with mainTerm, terms array, and multiple translations
-- **Permission System**: ✅ All entities properly implement security restrictions
-- **Schema Validation**: ✅ All schemas match actual API structure
-- **Industries/Sub-Industries**: ✅ CRUD operations, permissions, and complex term structure completed
-- **Individual Terms**: ✅ CRUD operations with AI metadata support completed
-- **AI Metadata**: ✅ Successfully tested preservation in create_term and update_term tools
-
-## Architecture
-
-The service uses a modular architecture:
-
-- **`index.js`** - Main MCP server using official SDK (8.1KB, 282 lines)
-- **`config.js`** - Environment configuration (382B, 17 lines)
-- **`api.js`** - HTTP request utilities (693B, 30 lines)
-- **`entities.js`** - CRUD operations for all entities (19KB, 725 lines)
-- **`tools.js`** - MCP tool definitions (45KB, 909 lines)
-- **`handlers.js`** - Tool handler mappings (3.7KB, 134 lines)
-- **`libs-mcp-service.js`** - Bundled executable (530KB, 13,876 lines)
-
-## AI Metadata Guide
-
-For details on attaching AI metadata to `mainTerm` and `terms`, required fields, and update rules (WARNING: always send FULL `terms` array on updates), see `docs-models/AI_METADATA_GUIDE.md`.
-
-## License
+## 📄 License
 
 MIT License - see LICENSE file for details.
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Run `npm run build` to update the bundled file
 5. Commit both source and bundled files
 6. Submit a pull request
 
-## Support
+## 📞 Support
 
-For issues and questions:
-- Create an issue on GitHub
-- Check the troubleshooting section above
-- Verify your API token and base URL configuration
+- **Issues**: Create an issue on GitHub
+- **Documentation**: Check the `docs-models/` directory
+- **API Questions**: Verify API_BASE_URL and token configuration
+- **Performance**: Monitor cache hit rates and adjust TTL settings
+
+---
+
+**Status**: ✅ **Production Ready** - All 16 entities tested and validated
+
+Built with ❤️ using the official Model Context Protocol SDK

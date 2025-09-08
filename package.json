@@ -8,7 +8,7 @@
     "libs-mcp-service": "./libs-mcp-service.js"
   },
   "scripts": {
-    "build": "npx esbuild index.js --bundle --platform=node --target=node18 --format=esm --outfile=libs-mcp-service.js --external:child_process --external:readline --external:process --external:fs --external:path --external:url",
+    "build": "npx esbuild index.js --bundle --platform=node --target=node18 --format=esm --outfile=libs-mcp-service.js --external:child_process --external:readline --external:process --external:fs --external:path --external:url --minify --tree-shaking --drop:console",
     "start": "node libs-mcp-service.js",
     "dev": "node index.js"
   },

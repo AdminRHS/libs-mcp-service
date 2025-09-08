@@ -1,6 +1,56 @@
 # Prompt Cursor Danylenko - MCP Service Implementation
 
 ## User Request
+получи список отделов используя мсп
+
+## Result
+Получен список отделов через MCP сервис. Всего найдено 41 отдел. Вот основные отделы:
+
+1. **Final Test Department** (ID: 14) - тестовый отдел с AI метаданными
+2. **test** (ID: 15) - тестовый отдел
+3. **asfdasf** (ID: 16) - тестовый отдел
+4. **Designers** (ID: 17) - отдел дизайнеров с переводами на польский, украинский, немецкий
+5. **Developers** (ID: 18) - отдел разработчиков с множественными профессиями (Data analyst, Frontend Developer, Backend Developer, Full stack developer, Mobile developer, Project manager, QA, System administrator, DevOps Engineer, Data Scientist и др.)
+6. **fffddd** (ID: 19) - тестовый отдел
+7. **import group** (ID: 20) - группа импорта
+8. **Managers** (ID: 21) - отдел менеджеров с переводами на множество языков
+9. **Marketers** (ID: 23) - отдел маркетологов
+
+**Ключевые особенности системы:**
+- Многоязычная поддержка (английский, польский, украинский, немецкий, французский, арабский, испанский, русский, хинди, китайский, японский)
+- AI метаданные для отслеживания AI-генерированного контента
+- Система статусов (Active, Pending, Approved)
+- Связи между отделами и профессиями
+
+---
+
+## User Request
+професссий
+
+## Result
+Получен список профессий через MCP сервис. Всего найдено 90 профессий. Вот основные профессии:
+
+1. **Final Test Profession** (ID: 14) - тестовая профессия с AI метаданными
+2. **3d designer** (ID: 47) - 3D дизайнер с множественными переводами
+3. **656565** (ID: 50) - тестовая профессия
+4. **Account manager** (ID: 51) - менеджер по работе с клиентами (отдел Managers)
+5. **Affiliate manager** (ID: 52) - аффилиат менеджер (отдел Marketers)
+6. **Analyst** (ID: 53) - аналитик
+7. **Backend Developer** (ID: 54) - бэкенд разработчик (отдел Developers)
+8. **Chat operator** (ID: 55) - оператор чата (отдел Managers)
+9. **Content manager** (ID: 56) - контент менеджер (отдел Marketers)
+10. **Copywriter** (ID: 57) - копирайтер
+
+**Ключевые особенности профессий:**
+- Связи с отделами (Developers, Managers, Marketers)
+- Множественные инструменты для каждой профессии (Adobe Creative Suite, разработческие инструменты, системы управления проектами)
+- Многоязычные переводы профессий
+- AI метаданные для отслеживания AI-генерированного контента
+- Система статусов и валидации
+
+---
+
+## User Request
 Create a minimal MCP service for integration with an external platform.
 
 ## Requirements
@@ -4366,3 +4416,141 @@ Translation: "Review the entire project and update documentation, check for dupl
 ### Summary
 
 The comprehensive review revealed several documentation discrepancies that have been corrected. The project is now fully documented with accurate information, no duplicates, and all missing data addressed. The documentation accurately reflects the current state of the project with 60 tools across 16 entity types, comprehensive AI metadata support, and complete testing coverage.
+
+Q: Я ж налаштовувала всі схеми, що ти витворяєш?
+A: Ми свідомо замінили перелікові пер-сутнісні тулзи (з їхніми схемами) на 4 універсальні: list/get/create/update. Залишили незамінні спец‑тулзи: get_term_types, find_existing_responsibility_terms, create_term, update_term. Твоє останнє редагування опису create_term збережено. Якщо потрібно повернути будь‑які детальні схеми для конкретних сутностей — скажи, відновлю точково.
+Migration progress:
+1) entities.js: added light helpers and query builder; updated list and get to support light short form.
+2) handlers.js: added UA/RU/EN aliases, resolveResource, RESOURCE_MAP; implemented unified list/get/create/update.
+3) tools.js: added unified tools list/get/create/update.
+4) index.js: wired unified tools and filtered tool list in light mode.
+
+Next: add tests for UA/RU aliases and light-mode behavior.
+
+Minor: reverted variable name in index.js back to mode.
+Env: replaced LIBS_MCP_MODE with MODE in entities.js and index.js.
+Validation: MODE now only accepts 'light' or 'standard' (defaults to 'standard').
+
+Manual test checklist:
+- UA/RU aliases:
+  - list { resource: 'департаменти' } -> resolves to departments
+  - get { resource: 'отдел', id: 1 } -> resolves to departments/1
+- Light mode:
+  - MODE=light -> list auto-adds all=true, iShort=true
+  - MODE=light -> get returns { id, name }
+
+Decision: automated tests skipped per user request; manual checklist retained.
+
+Change: unified toolset + restored essential tools: get_term_types, find_existing_responsibility_terms, create_term, update_term. Server routing updated accordingly.
+
+## Log Entry
+- Prompt: "А-а, запиши все, про що ми спілкувалися в цьому чаті в окремий файл, а-а, по типу як планування, як я досягла певного результату і так далі."
+- Result: Створено файл `docs/session-summary.md` з узагальненням рішень, планом імплементації, режимом `LIBS_MCP_MODE=light`, універсальними інструментами (`list`, `get`, `create`, `update`), логікою UA/RU/EN резолву ресурсів, light-поведінкою (`all=true`, `iShort=true` для списків і `{ id, name }` для одиничних), стратегією міграції та наступними кроками.
+
+## AI Metadata Issue Fix
+
+**Date**: 2025-01-27
+
+**Problem**: AI модель не всегда заполняет AI metadata поля при создании/обновлении сущностей.
+
+**Root Cause Analysis**:
+- AI metadata поля правильно определены в схемах tools.js
+- Проблема в том, что AI модель не понимает, когда и как заполнять эти поля
+- Отсутствуют четкие инструкции в описаниях инструментов
+
+**Solution Implemented**:
+
+1. **Enhanced Tool Descriptions**:
+   - Updated `create` tool description: Added "IMPORTANT: When creating AI-generated content, ALWAYS include aiMetadata fields with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date"
+   - Updated `update` tool description: Added "IMPORTANT: When updating AI-generated content, ALWAYS include aiMetadata fields with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date"
+   - Updated `create_term` tool description: Added "IMPORTANT: When creating AI-generated terms, ALWAYS include aiMetadata with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date for proper tracking"
+   - Updated `update_term` tool description: Added "IMPORTANT: When updating AI-generated terms, ALWAYS include aiMetadata with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date for proper tracking"
+
+2. **Enhanced AI Field Descriptions**:
+   - `ai_generated`: Added "ALWAYS set to true when creating/updating AI-generated content"
+   - `ai_model`: Added "ALWAYS include when creating/updating AI-generated content"
+   - `ai_generation_date`: Added "ALWAYS include current timestamp when creating/updating AI-generated content"
+
+3. **Created AI Metadata Examples Documentation**:
+   - Created `docs/AI_METADATA_EXAMPLES.md` with comprehensive examples
+   - Included mandatory fields for AI-generated content
+   - Provided complete examples for departments, professions, etc.
+   - Added important rules and validation guidelines
+
+**Expected Result**: AI модель теперь должна лучше понимать, когда заполнять AI metadata поля, благодаря четким инструкциям в описаниях инструментов и примерам использования.
+
+**Files Modified**:
+- `tools.js`: Enhanced tool descriptions and AI field descriptions
+- `docs/AI_METADATA_EXAMPLES.md`: Created comprehensive examples and guidelines
+
+## Error Handling Improvements (Sprint 1 / High Priority)
+
+Date: 2025-01-27
+
+Changes:
+- Added `src/errors.js` with structured error classes: `BaseError`, `APIError`, `TimeoutError`, `RateLimitError`, plus helpers `handleError`, `formatMCPError`.
+- Updated `api.js` to use request timeouts via `AbortController`, convert HTTP failures into `APIError` with response body context, and normalize unexpected errors via `handleError`.
+- Updated `index.js` to return formatted MCP errors using `formatMCPError` and to normalize thrown errors with `handleError`.
+
+Benefits:
+- Consistent, structured error payloads with codes and statusCode.
+- Timeout protection (default 30s) for all requests.
+- Better context for debugging (endpoint, method, response body excerpt).
+
+Next steps (optional):
+- Add rate limiting and response caching per IMPROVEMENT_PLAN.md.
+
+## Response Caching (Sprint 2 / Medium Priority)
+
+Date: 2025-01-27
+
+Changes:
+- Added `src/cache.js` with `SimpleCache`, global `apiCache`, and `generateCacheKey`.
+- Integrated GET response caching into `api.js` with TTL (default 5m), `cacheTtl` override, and `skipCache` option to bypass cache.
+
+Behavior:
+- Cache only applies to GET requests.
+- Key format: `endpoint:JSON.stringify(headers)`.
+- `skipCache: true` disables read/write for a specific request.
+
+Next steps:
+- Consider cache key to include query/body when used for GET with params.
+- Add manual invalidation hooks if needed by tools.
+
+Update:
+- Enhanced cache key to include url/headers/query/extras.
+- Added `invalidateCacheByPrefix` and `invalidateExactKey` in `src/cache.js`.
+- Wired targeted invalidation in `api.js` after successful non-GET requests (invalidates collection prefix, e.g., `departments`).
+
+## Rate Limiting (Sprint 2 / Medium Priority)
+
+Date: 2025-01-27
+
+Changes:
+- Added `src/rateLimit.js` with `RateLimiter` and a global `rateLimiter` instance (env: `MAX_REQUESTS_PER_MINUTE`, window 60s).
+- Enforced rate limiting in `index.js` before tool execution. Returns structured 429 via `formatMCPError` when exceeded.
+
+Notes:
+- Client identity uses `request.params.$clientId` if provided, otherwise `default-client`.
+
+## JSDoc Comments
+
+Date: 2025-01-27
+
+Changes:
+- Added comprehensive JSDoc to `api.js` (`makeRequest`), `src/errors.js` (error classes and helpers), `src/cache.js` (cache API), and `src/rateLimit.js` (limiter API).
+
+Benefit:
+- Better DX and inline documentation for maintainers; improves IDE IntelliSense.
+
+## Decision: Security Enhancements
+
+Date: 2025-01-27
+
+Question: Do we need to implement the Security Enhancements now?
+
+Decision: Safe to skip for now. This MCP service runs locally over stdio with validated env vars, rate limiting, timeouts, and structured errors already in place.
+
+Minimal changes implemented for npx usage:
+- Request body cap at 100KB with 413 in `api.js`.
+- Authorization header masked in cache key generation (`src/cache.js`).

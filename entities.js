@@ -1,19 +1,39 @@
 import { makeRequest } from './api.js';
 
-// Department functions
-async function getDepartments(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`departments?${queryParams}`);
+// Light-mode helpers
+function isLight() {
+  return process.env.MODE === 'light';
 }
 
-async function getDepartment(departmentId) {
-  return await makeRequest(`departments/${departmentId}`);
+function buildListQuery(params = {}) {
+  const { page = 1, limit = 10, search = '', ...rest } = params;
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    ...(search && { search })
+  });
+  Object.entries(rest).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      query.set(key, typeof value === 'boolean' ? String(value) : String(value));
+    }
+  });
+  if (isLight()) {
+    if (!query.has('all')) query.set('all', 'true');
+    if (!query.has('iShort')) query.set('iShort', 'true');
+  }
+  return query;
+}
+
+// Department functions
+async function getDepartments(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`departments?${query}`);
+}
+
+async function getDepartment(departmentId, opts = {}) {
+  const data = await makeRequest(`departments/${departmentId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createDepartment(data) {
@@ -57,18 +77,14 @@ async function updateDepartment(departmentId, data) {
 
 // Profession functions
 async function getProfessions(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`professions?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`professions?${query}`);
 }
 
-async function getProfession(professionId) {
-  return await makeRequest(`professions/${professionId}`);
+async function getProfession(professionId, opts = {}) {
+  const data = await makeRequest(`professions/${professionId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createProfession(data) {
@@ -112,18 +128,14 @@ async function updateProfession(professionId, data) {
 
 // Status functions
 async function getStatuses(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`statuses?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`statuses?${query}`);
 }
 
-async function getStatus(statusId) {
-  return await makeRequest(`statuses/${statusId}`);
+async function getStatus(statusId, opts = {}) {
+  const data = await makeRequest(`statuses/${statusId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createStatus(data) {
@@ -142,18 +154,14 @@ async function updateStatus(statusId, data) {
 
 // Language functions
 async function getLanguages(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`languages?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`languages?${query}`);
 }
 
-async function getLanguage(languageId) {
-  return await makeRequest(`languages/${languageId}`);
+async function getLanguage(languageId, opts = {}) {
+  const data = await makeRequest(`languages/${languageId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createLanguage(data) {
@@ -197,29 +205,20 @@ async function updateLanguage(languageId, data) {
 
 // Term Type functions
 async function getTermTypes(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`term-types?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`term-types?${query}`);
 }
 
 // Country functions
 async function getCountries(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  return await makeRequest(`countries?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`countries?${query}`);
 }
 
-async function getCountry(countryId) {
-  return await makeRequest(`countries/${countryId}`);
+async function getCountry(countryId, opts = {}) {
+  const data = await makeRequest(`countries/${countryId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createCountry(data) {
@@ -263,18 +262,14 @@ async function updateCountry(countryId, data) {
 
 // Tool Type functions
 async function getToolTypes(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`tool-types?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`tool-types?${query}`);
 }
 
-async function getToolType(toolTypeId) {
-  return await makeRequest(`tool-types/${toolTypeId}`);
+async function getToolType(toolTypeId, opts = {}) {
+  const data = await makeRequest(`tool-types/${toolTypeId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createToolType(data) {
@@ -293,18 +288,14 @@ async function updateToolType(toolTypeId, data) {
 
 // Tool functions
 async function getTools(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`tools?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`tools?${query}`);
 }
 
-async function getTool(toolId) {
-  return await makeRequest(`tools/${toolId}`);
+async function getTool(toolId, opts = {}) {
+  const data = await makeRequest(`tools/${toolId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createTool(data) {
@@ -323,18 +314,14 @@ async function updateTool(toolId, data) {
 
 // Action functions
 async function getActions(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`actions?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`actions?${query}`);
 }
 
-async function getAction(actionId) {
-  return await makeRequest(`actions/${actionId}`);
+async function getAction(actionId, opts = {}) {
+  const data = await makeRequest(`actions/${actionId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createAction(data) {
@@ -378,18 +365,14 @@ async function updateAction(actionId, data) {
 
 // Object functions
 async function getObjects(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`objects?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`objects?${query}`);
 }
 
-async function getObject(objectId) {
-  return await makeRequest(`objects/${objectId}`);
+async function getObject(objectId, opts = {}) {
+  const data = await makeRequest(`objects/${objectId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createObject(data) {
@@ -433,18 +416,14 @@ async function updateObject(objectId, data) {
 
 // Format functions
 async function getFormats(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  
-  return await makeRequest(`formats?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`formats?${query}`);
 }
 
-async function getFormat(formatId) {
-  return await makeRequest(`formats/${formatId}`);
+async function getFormat(formatId, opts = {}) {
+  const data = await makeRequest(`formats/${formatId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createFormat(data) {
@@ -478,8 +457,10 @@ async function getResponsibilities(params = {}) {
   return await makeRequest(`responsibilities?${queryParams}`);
 }
 
-async function getResponsibility(responsibilityId) {
-  return await makeRequest(`responsibilities/${responsibilityId}`);
+async function getResponsibility(responsibilityId, opts = {}) {
+  const data = await makeRequest(`responsibilities/${responsibilityId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createResponsibility(data) {
@@ -511,17 +492,14 @@ async function findExistingResponsibilityTerms(params = {}) {
 
 // City functions
 async function getCities(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  return await makeRequest(`cities?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`cities?${query}`);
 }
 
-async function getCity(cityId) {
-  return await makeRequest(`cities/${cityId}`);
+async function getCity(cityId, opts = {}) {
+  const data = await makeRequest(`cities/${cityId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createCity(data) {
@@ -565,17 +543,14 @@ async function updateCity(cityId, data) {
 
 // Industry functions
 async function getIndustries(params = {}) {
-  const { page = 1, limit = 10, search = '' } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search })
-  });
-  return await makeRequest(`industries?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`industries?${query}`);
 }
 
-async function getIndustry(industryId) {
-  return await makeRequest(`industries/${industryId}`);
+async function getIndustry(industryId, opts = {}) {
+  const data = await makeRequest(`industries/${industryId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createIndustry(data) {
@@ -619,18 +594,14 @@ async function updateIndustry(industryId, data) {
 
 // Sub-Industry functions
 async function getSubIndustries(params = {}) {
-  const { page = 1, limit = 10, search = '', industry_id } = params;
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search }),
-    ...(industry_id && { industry_id: industry_id.toString() })
-  });
-  return await makeRequest(`sub_industries?${queryParams}`);
+  const query = buildListQuery(params);
+  return await makeRequest(`sub_industries?${query}`);
 }
 
-async function getSubIndustry(subIndustryId) {
-  return await makeRequest(`sub_industries/${subIndustryId}`);
+async function getSubIndustry(subIndustryId, opts = {}) {
+  const data = await makeRequest(`sub_industries/${subIndustryId}`);
+  if (isLight() && opts.iShort !== false) return { id: data?.id, name: data?.name };
+  return data;
 }
 
 async function createSubIndustry(data) {
