@@ -196,7 +196,14 @@ export async function update({ resource, id, payload }) {
   const r = resolveResource(resource);
   const fn = RESOURCE_MAP[r]?.update;
   if (!fn) throw new Error(`Update not supported for ${r}`);
-  return await fn(id, payload);
+  let effectivePayload = payload;
+  // Merge with existing terms to always send FULL terms array when applicable
+  if (shouldMergeTerms(r)) {
+    effectivePayload = await mergePayloadWithExisting(r, id, effectivePayload);
+    // Downstream updaters that also merge can skip their internal merge
+    effectivePayload = { preserveExistingTerms: false, ...effectivePayload };
+  }
+  return await fn(id, effectivePayload);
 }
 
 // Re-export essential specialized handlers for direct routing
@@ -299,3 +306,48 @@ const toolHandlers = {
 };
 
 export default toolHandlers;
+
+// --- Merge helpers for updates ---
+const TERM_MANAGED_RESOURCES = new Set([
+  'departments','professions','languages','countries','cities',
+  'industries','sub_industries','actions','objects','responsibilities','formats'
+]);
+
+function shouldMergeTerms(resourceKey) {
+  return TERM_MANAGED_RESOURCES.has(resourceKey);
+}
+
+async function mergePayloadWithExisting(resourceKey, id, incoming) {
+  const getFn = RESOURCE_MAP[resourceKey]?.get;
+  if (!getFn) return incoming;
+  const existing = await getFn(id, { iShort: false });
+  const merged = { ...existing, ...incoming };
+
+  // mainTerm: keep incoming if provided, else use existing
+  if (incoming && Object.prototype.hasOwnProperty.call(incoming, 'mainTerm')) {
+    merged.mainTerm = incoming.mainTerm || existing.mainTerm;
+  } else if (existing.mainTerm) {
+    merged.mainTerm = existing.mainTerm;
+  }
+
+  // terms: if provided, merge by id; else keep existing
+  if (Array.isArray(incoming?.terms)) {
+    const existingTerms = Array.isArray(existing.terms) ? existing.terms : [];
+    const mergedTerms = [...existingTerms];
+    for (const newTerm of incoming.terms) {
+      const idx = newTerm && newTerm.id != null ? mergedTerms.findIndex(t => t.id === newTerm.id) : -1;
+      if (idx >= 0) {
+        mergedTerms[idx] = { ...mergedTerms[idx], ...newTerm };
+      } else {
+        mergedTerms.push(newTerm);
+      }
+    }
+    merged.terms = mergedTerms;
+  } else if (Array.isArray(existing.terms)) {
+    merged.terms = existing.terms;
+  }
+
+  // Strip fields that backend may not accept on update (like id on root level)
+  delete merged.id;
+  return merged;
+}

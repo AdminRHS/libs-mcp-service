@@ -4554,3 +4554,20 @@ Decision: Safe to skip for now. This MCP service runs locally over stdio with va
 Minimal changes implemented for npx usage:
 - Request body cap at 100KB with 413 in `api.js`.
 - Authorization header masked in cache key generation (`src/cache.js`).
+
+## Log Entry — AI Metadata Requirement and Update Merge Logic
+**Date**: 2025-09-08
+
+**User Prompt**: "Ага, супер, тепер додай в файл @prompt-cursor-danylenko.md, що ми зробили. Тобто, додали їм метадати в реклайент, в термінах і. Для пдейт лишив мерч термінів."
+
+**Result**:
+- Enforced AI metadata at schema level for terms:
+  - `tools.js`: `aiMetadata` is required for `mainTerm` and each item in `terms`.
+  - Inside `aiMetadata`, required fields: `ai_generated`, `ai_model`, `ai_generation_date`.
+  - Conditional kept: when `ai_generated = true`, `ai_model` must be present (aiTermConditional).
+- Update behavior preserved in handlers:
+  - Retained term-merge strategy for `update` tools to send full `terms` array while only modifying targeted terms; prevents unintended overwrites/deletions of unrelated terms.
+- No auto-enrichment:
+  - Removed/avoided automatic AI autofill; callers provide AI fields explicitly, and schemas enforce presence.
+
+Outcome: The AI client is now compelled to include AI metadata for any created/updated terms, and updates safely merge existing terms.

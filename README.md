@@ -82,6 +82,10 @@ Configure behavior with the `MODE` environment variable:
 - **`create_term`** — Create individual terms with AI metadata
 - **`update_term`** — Update individual terms with AI metadata
 
+AI metadata behavior:
+- Create: include `aiMetadata` only for the term(s) you want marked/recorded as AI-generated; others remain unchanged.
+- Update: include `aiMetadata` only for term(s) you intend to change; omitting it leaves existing AI fields as-is.
+
 ### Supported Entities (16 Types)
 - **Core**: Departments, Professions, Languages, Countries, Cities
 - **Content**: Actions, Objects, Responsibilities, Formats  

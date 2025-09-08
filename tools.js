@@ -42,13 +42,15 @@ const aiTermConditional = [
 ];
 
 // Reusable term schema builders to reduce duplication
+const REQUIRED_AI_FIELDS = ['ai_generated', 'ai_model', 'ai_generation_date'];
+
 const baseMainTermProps = {
   value: { type: 'string' },
   description: { type: 'string', description: 'Term description (optional)' },
   language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID. English is recommended as primary language' },
   term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID. "main" is recommended as primary term type' },
   status_id: { type: 'number', description: 'Status ID - optional. Use get_statuses to find status ID' },
-  aiMetadata: { type: 'object', properties: { ...aiTermProps } }
+  aiMetadata: { type: 'object', properties: { ...aiTermProps }, required: [...REQUIRED_AI_FIELDS] }
 };
 
 const baseTermItemProps = {
@@ -57,7 +59,7 @@ const baseTermItemProps = {
   language_id: { type: 'number', description: 'Language ID - REQUIRED' },
   term_type_id: { type: 'number', description: 'Term type ID - REQUIRED' },
   status_id: { type: 'number', description: 'Status ID (optional)' },
-  aiMetadata: { type: 'object', properties: { ...aiTermProps } }
+  aiMetadata: { type: 'object', properties: { ...aiTermProps }, required: [...REQUIRED_AI_FIELDS] }
 };
 
 function buildMainTermSchema(overrides = {}) {
@@ -69,7 +71,7 @@ function buildMainTermSchema(overrides = {}) {
       value: { type: 'string', description: overrides.valueDescription || 'Term value - REQUIRED' },
     },
     allOf: aiTermConditional,
-    required: ['value', 'language_id', 'term_type_id']
+    required: ['value', 'language_id', 'term_type_id', 'aiMetadata']
   };
 }
 
@@ -83,7 +85,7 @@ function buildTermItemSchema({ withId = false, overrides = {} } = {}) {
     type: 'object',
     properties: props,
     allOf: aiTermConditional,
-    required: ['value', 'language_id', 'term_type_id']
+    required: ['value', 'language_id', 'term_type_id', 'aiMetadata']
   };
 }
 
@@ -340,7 +342,7 @@ const tools = [
   },
   {
     name: 'create',
-    description: 'Create an entity for the given resource. Payload shape depends on resource (e.g., departments, professions, languages, etc.). For entities with terms, provide mainTerm and optional terms with correct IDs/types. IMPORTANT: When creating AI-generated content, ALWAYS include aiMetadata fields with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date. This ensures proper tracking of AI-generated content.',
+    description: 'Create an entity for the given resource. Payload shape depends on resource (e.g., departments, professions, languages, etc.). For entities with terms, provide mainTerm and optional terms with correct IDs/types. IMPORTANT: When creating AI-generated content, ALWAYS include aiMetadata fields with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date. Only attach aiMetadata to the specific term(s) you are creating; terms without aiMetadata will not be touched.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -366,7 +368,7 @@ const tools = [
   },
   {
     name: 'update',
-    description: 'Update an entity by ID for the given resource. Payload shape depends on resource. For term-managed entities, send the FULL terms array on update to avoid deletions (include unchanged terms with their IDs). IMPORTANT: When updating AI-generated content, ALWAYS include aiMetadata fields with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date. This ensures proper tracking of AI-generated content updates.',
+    description: 'Update an entity by ID for the given resource. Payload shape depends on resource. For term-managed entities, send the FULL terms array on update to avoid deletions (include unchanged terms with their IDs). IMPORTANT: Include aiMetadata ONLY for the term(s) you want to update; other terms without aiMetadata in the payload will keep their existing AI metadata. Recommended fields when updating AI-generated content: ai_generated=true, ai_model (e.g., "gpt-4o-mini"), ai_generation_date.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -421,7 +423,7 @@ const tools = [
   },
   {
     name: 'create_term',
-    description: 'Create a new individual term using API token authentication. Terms can exist independently and be linked to term groups. IMPORTANT: When creating AI-generated terms, ALWAYS include aiMetadata with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date for proper tracking.',
+    description: 'Create a new individual term using API token authentication. Terms can exist independently and be linked to term groups. IMPORTANT: When creating AI-generated terms, ALWAYS include aiMetadata with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date for proper tracking. Only the created term’s AI metadata is affected.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -439,7 +441,7 @@ const tools = [
   },
   {
     name: 'update_term',
-    description: 'Update an existing individual term using API token authentication. IMPORTANT: When updating AI-generated terms, ALWAYS include aiMetadata with ai_generated=true, ai_model (e.g., "gpt-4o-mini"), and ai_generation_date for proper tracking. Supports AI metadata updates, version tracking, and term group relation management.',
+    description: 'Update an existing individual term using API token authentication. IMPORTANT: Send aiMetadata only when you intend to change AI fields for this term; omitting aiMetadata leaves existing AI fields unchanged. Recommended: include ai_generated=true, ai_model, ai_generation_date. Supports version tracking and term group relation management.',
     inputSchema: {
       type: 'object',
       properties: {
