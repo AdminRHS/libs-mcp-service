@@ -57,16 +57,16 @@ Add the following to your MCP configuration:
 Configure behavior with the `MODE` environment variable:
 
 ### Light Mode (`MODE=light`)
-- **Minimal tool list**: Shows only universal tools (`list`, `get`, `create`, `update`) + essential specials
+- **Same tool list**: All tools available (no filtering)
+- **Auto-optimization**: List operations automatically add `all=true` and `iShort=true` parameters
 - **Reduced responses**: Single `get` operations return `{ id, name }` format
-- **Auto-optimization**: List operations automatically use short output format
 - **Perfect for**: Claude, ChatGPT, and other token-conscious clients
 
 ### Standard Mode (`MODE=standard`)
 - **Full tool list**: All available tools shown
 - **Complete responses**: Full entity payloads in all operations
-- **Comprehensive data**: Complete records unless explicitly constrained
-- **Perfect for**: Development, testing, and comprehensive data access
+- **Manual control**: Explicit parameters required for optimization
+- **Perfect for**: Development and full-featured applications
 
 ## 🛠️ Available Tools
 

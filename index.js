@@ -35,17 +35,8 @@ const server = new Server(
 
 // Handle tool calls with proper function approach
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-  const modeRaw = process.env.MODE || 'standard';
-  const allowedModes = ['light', 'standard'];
-  const mode = allowedModes.includes(modeRaw) ? modeRaw : 'standard';
-  if (!allowedModes.includes(modeRaw)) {
-    console.warn('MODE must be "light" or "standard"; defaulting to "standard"');
-  }
-  const base = tools;
-  const filtered = mode === 'light'
-    ? base.filter(t => ['list','get','create','update'].includes(t.name))
-    : base;
-  return { tools: filtered };
+  // All tools are available in both modes
+  return { tools };
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {

@@ -4571,3 +4571,26 @@ Minimal changes implemented for npx usage:
   - Removed/avoided automatic AI autofill; callers provide AI fields explicitly, and schemas enforce presence.
 
 Outcome: The AI client is now compelled to include AI metadata for any created/updated terms, and updates safely merge existing terms.
+
+---
+
+## Log Entry — Mode Logic Simplification
+**Date**: 2025-09-08
+
+**User Prompt**: "Пересмотрел логику. По факту, у меня для разных мод должны быть абсолютно одинаковые тулзы. Единственное, что тулза лист должна обязательно включать такие параметры, как "ол тру ис шорт тру"."
+
+**Result**:
+- **Unified tool availability**: Removed tool filtering in `index.js` - all tools are now available in both `light` and `standard` modes.
+- **Auto-parameter injection**: Modified `list` handler in `handlers.js` to automatically add `all=true` and `iShort=true` parameters when `MODE=light`.
+- **Updated documentation**: 
+  - `README.md`: Updated modes section to reflect same tool list with auto-optimization for light mode.
+  - `PROJECT_OVERVIEW.md`: Updated mode behaviors table and implementation examples.
+
+**Technical Changes**:
+- `index.js`: Removed tool filtering logic, all tools returned regardless of mode.
+- `handlers.js`: Added mode detection and parameter injection for `list` function.
+- Documentation: Clarified that both modes have identical tool availability, difference is in automatic parameter handling.
+
+Outcome: Simplified mode logic - same tools everywhere, automatic optimization only for list operations in light mode.
+
+---

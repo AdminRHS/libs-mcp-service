@@ -61,10 +61,10 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 **Implementation Highlights:**
 ```javascript
-// Mode-based tool filtering
-const filtered = mode === 'light' 
-  ? base.filter(t => ['list','get','create','update'].includes(t.name))
-  : base;
+// Mode-based parameter injection for list operations
+const effectiveParams = mode === 'light' 
+  ? { ...params, all: true, iShort: true }
+  : params;
 
 // Rate limiting with client identification  
 if (!rateLimiter.isAllowed(clientId)) {
@@ -243,9 +243,9 @@ MODE=light                             # UI optimization mode
 
 | Feature | Light Mode | Standard Mode |
 |---------|------------|---------------|
-| **Tool List** | Universal + essentials only | All available tools |
+| **Tool List** | All tools available | All available tools |
 | **GET Responses** | `{id, name}` format | Full entity payload |
-| **List Operations** | Auto-short format | Complete records |
+| **List Operations** | Auto-adds `all=true, iShort=true` | Manual parameter control |
 | **Use Case** | Token-conscious clients | Development/testing |
 
 ## 🧪 Comprehensive Testing Results

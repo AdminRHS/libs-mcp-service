@@ -175,7 +175,16 @@ export async function list({ resource, ...params }) {
   const r = resolveResource(resource);
   const fn = RESOURCE_MAP[r]?.list;
   if (!fn) throw new Error(`List not supported for ${r}`);
-  return await fn(params);
+  
+  // Auto-add light mode parameters
+  const modeRaw = process.env.MODE || 'standard';
+  const mode = ['light', 'standard'].includes(modeRaw) ? modeRaw : 'standard';
+  
+  const effectiveParams = mode === 'light' 
+    ? { ...params, all: true, iShort: true }
+    : params;
+    
+  return await fn(effectiveParams);
 }
 
 export async function get({ resource, id, iShort }) {
