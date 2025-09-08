@@ -32,7 +32,6 @@ async function getDepartments(params = {}) {
 
 async function getDepartment(departmentId, opts = {}) {
   const data = await makeRequest(`departments/${departmentId}`);
-  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -83,7 +82,6 @@ async function getProfessions(params = {}) {
 
 async function getProfession(professionId, opts = {}) {
   const data = await makeRequest(`professions/${professionId}`);
-  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -134,7 +132,6 @@ async function getStatuses(params = {}) {
 
 async function getStatus(statusId, opts = {}) {
   const data = await makeRequest(`statuses/${statusId}`);
-  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -160,7 +157,6 @@ async function getLanguages(params = {}) {
 
 async function getLanguage(languageId, opts = {}) {
   const data = await makeRequest(`languages/${languageId}`);
-  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -294,7 +290,6 @@ async function getTools(params = {}) {
 
 async function getTool(toolId, opts = {}) {
   const data = await makeRequest(`tools/${toolId}`);
-  if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
@@ -595,17 +590,17 @@ async function updateIndustry(industryId, data) {
 // Sub-Industry functions
 async function getSubIndustries(params = {}) {
   const query = buildListQuery(params);
-  return await makeRequest(`sub_industries?${query}`);
+  return await makeRequest(`sub-industries?${query}`);
 }
 
 async function getSubIndustry(subIndustryId, opts = {}) {
-  const data = await makeRequest(`sub_industries/${subIndustryId}`);
+  const data = await makeRequest(`sub-industries/${subIndustryId}`);
   if (isLight() && opts.isShort !== false) return { id: data?.id, name: data?.name };
   return data;
 }
 
 async function createSubIndustry(data) {
-  return await makeRequest('sub_industries', {
+  return await makeRequest('sub-industries', {
     method: 'POST',
     body: JSON.stringify(data)
   });
@@ -637,7 +632,7 @@ async function updateSubIndustry(subIndustryId, data) {
     }
   }
   
-  return await makeRequest(`sub_industries/${subIndustryId}`, {
+  return await makeRequest(`sub-industries/${subIndustryId}`, {
     method: 'PUT',
     body: JSON.stringify(updateData)
   });

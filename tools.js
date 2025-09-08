@@ -125,21 +125,25 @@ const createPayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the industry (REQUIRED)', valueDescription: 'Term value (industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
-      description: { type: 'string' },
-      icon: { type: 'string' },
       subIndustryIds: { type: 'array', items: { type: 'number' } },
     },
     required: ['mainTerm']
   },
-  sub_industries: {
+  'sub-industries': {
     type: 'object',
     properties: {
       industry_id: { type: 'number' },
       mainTerm: buildMainTermSchema({ description: 'Main term for the sub-industry (REQUIRED)', valueDescription: 'Term value (sub-industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
-      description: { type: 'string' },
     },
     required: ['mainTerm']
+  },
+  'tool-types': {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+    },
+    required: ['name']
   },
   countries: {
     type: 'object',
@@ -150,8 +154,9 @@ const createPayloadSchemas = {
       iso3: { type: 'string' },
       latitude: { type: 'string' },
       longitude: { type: 'string' },
+      cityIds: { type: 'array', items: { type: 'number' } },
     },
-    required: ['mainTerm']
+    required: ['mainTerm', 'iso2', 'iso3']
   },
   cities: {
     type: 'object',
@@ -198,6 +203,24 @@ const createPayloadSchemas = {
     },
     required: ['name']
   },
+  statuses: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      color: { type: 'string' },
+    },
+    required: ['name']
+  },
+  tools: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      link: { type: 'string' },
+      description: { type: 'string' },
+      toolTypeIds: { type: 'array', items: { type: 'number' } },
+    },
+    required: ['name']
+  },
 };
 
 const updatePayloadSchemas = {
@@ -235,21 +258,25 @@ const updatePayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the industry (REQUIRED)', valueDescription: 'Term value (industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
-      description: { type: 'string' },
-      icon: { type: 'string' },
       subIndustryIds: { type: 'array', items: { type: 'number' } },
     },
     required: ['mainTerm', 'terms']
   },
-  sub_industries: {
+  'sub-industries': {
     type: 'object',
     properties: {
       industry_id: { type: 'number' },
       mainTerm: buildMainTermSchema({ description: 'Main term for the sub-industry (REQUIRED)', valueDescription: 'Term value (sub-industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
-      description: { type: 'string' },
     },
     required: ['mainTerm', 'terms']
+  },
+  'tool-types': {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+    },
+    required: ['name']
   },
   countries: {
     type: 'object',
@@ -260,8 +287,9 @@ const updatePayloadSchemas = {
       iso3: { type: 'string' },
       latitude: { type: 'string' },
       longitude: { type: 'string' },
+      cityIds: { type: 'array', items: { type: 'number' } },
     },
-    required: ['mainTerm', 'terms']
+    required: ['mainTerm', 'terms', 'iso2', 'iso3']
   },
   cities: {
     type: 'object',
@@ -299,12 +327,30 @@ const updatePayloadSchemas = {
       mainTerm: buildMainTermSchema({ description: 'Main term for the responsibility (REQUIRED)', valueDescription: 'Term value (responsibility name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
     },
-    required: ['mainTerm', 'terms']
+    required: ['action_id', 'object_id', 'mainTerm', 'terms']
   },
   formats: {
     type: 'object',
     properties: {
       name: { type: 'string' },
+    },
+    required: ['name']
+  },
+  statuses: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      color: { type: 'string' },
+    },
+    required: ['name']
+  },
+  tools: {
+    type: 'object',
+    properties: {
+      name: { type: 'string' },
+      link: { type: 'string' },
+      description: { type: 'string' },
+      toolTypeIds: { type: 'array', items: { type: 'number' } },
     },
     required: ['name']
   },
@@ -349,20 +395,22 @@ const tools = [
         resource: { type: 'string' },
         payload: { type: 'object' },
       },
-      required: ['resource', 'payload']
-      ,
+      required: ['resource', 'payload'],
       allOf: [
         { if: { properties: { resource: { const: 'departments' } } }, then: { properties: { payload: createPayloadSchemas.departments } } },
         { if: { properties: { resource: { const: 'professions' } } }, then: { properties: { payload: createPayloadSchemas.professions } } },
         { if: { properties: { resource: { const: 'languages' } } }, then: { properties: { payload: createPayloadSchemas.languages } } },
         { if: { properties: { resource: { const: 'industries' } } }, then: { properties: { payload: createPayloadSchemas.industries } } },
-        { if: { properties: { resource: { const: 'sub_industries' } } }, then: { properties: { payload: createPayloadSchemas.sub_industries } } },
+        { if: { properties: { resource: { const: 'sub-industries' } } }, then: { properties: { payload: createPayloadSchemas['sub-industries'] } } },
+        { if: { properties: { resource: { const: 'tool-types' } } }, then: { properties: { payload: createPayloadSchemas['tool-types'] } } },
         { if: { properties: { resource: { const: 'countries' } } }, then: { properties: { payload: createPayloadSchemas.countries } } },
         { if: { properties: { resource: { const: 'cities' } } }, then: { properties: { payload: createPayloadSchemas.cities } } },
         { if: { properties: { resource: { const: 'actions' } } }, then: { properties: { payload: createPayloadSchemas.actions } } },
         { if: { properties: { resource: { const: 'objects' } } }, then: { properties: { payload: createPayloadSchemas.objects } } },
         { if: { properties: { resource: { const: 'responsibilities' } } }, then: { properties: { payload: createPayloadSchemas.responsibilities } } },
         { if: { properties: { resource: { const: 'formats' } } }, then: { properties: { payload: createPayloadSchemas.formats } } },
+        { if: { properties: { resource: { const: 'statuses' } } }, then: { properties: { payload: createPayloadSchemas.statuses } } },
+        { if: { properties: { resource: { const: 'tools' } } }, then: { properties: { payload: createPayloadSchemas.tools } } },
       ]
     }
   },
@@ -383,13 +431,16 @@ const tools = [
         { if: { properties: { resource: { const: 'professions' } } }, then: { properties: { payload: updatePayloadSchemas.professions } } },
         { if: { properties: { resource: { const: 'languages' } } }, then: { properties: { payload: updatePayloadSchemas.languages } } },
         { if: { properties: { resource: { const: 'industries' } } }, then: { properties: { payload: updatePayloadSchemas.industries } } },
-        { if: { properties: { resource: { const: 'sub_industries' } } }, then: { properties: { payload: updatePayloadSchemas.sub_industries } } },
+        { if: { properties: { resource: { const: 'sub-industries' } } }, then: { properties: { payload: updatePayloadSchemas['sub-industries'] } } },
+        { if: { properties: { resource: { const: 'tool-types' } } }, then: { properties: { payload: updatePayloadSchemas['tool-types'] } } },
         { if: { properties: { resource: { const: 'countries' } } }, then: { properties: { payload: updatePayloadSchemas.countries } } },
         { if: { properties: { resource: { const: 'cities' } } }, then: { properties: { payload: updatePayloadSchemas.cities } } },
         { if: { properties: { resource: { const: 'actions' } } }, then: { properties: { payload: updatePayloadSchemas.actions } } },
         { if: { properties: { resource: { const: 'objects' } } }, then: { properties: { payload: updatePayloadSchemas.objects } } },
         { if: { properties: { resource: { const: 'responsibilities' } } }, then: { properties: { payload: updatePayloadSchemas.responsibilities } } },
         { if: { properties: { resource: { const: 'formats' } } }, then: { properties: { payload: updatePayloadSchemas.formats } } },
+        { if: { properties: { resource: { const: 'statuses' } } }, then: { properties: { payload: updatePayloadSchemas.statuses } } },
+        { if: { properties: { resource: { const: 'tools' } } }, then: { properties: { payload: updatePayloadSchemas.tools } } },
       ]
     }
   },
@@ -436,7 +487,7 @@ const tools = [
         aiMetadata: { type: 'object', description: 'AI metadata for tracking AI-generated content (optional)', properties: { ...aiTermProps } }
       },
       allOf: aiTermConditional,
-      required: ['value', 'language_id', 'term_type_id']
+      required: ['value', 'language_id', 'term_type_id', 'term_group_id']
     }
   },
   {
@@ -455,7 +506,7 @@ const tools = [
         aiMetadata: { type: 'object', description: 'AI metadata updates (optional)', properties: { ...aiTermProps } }
       },
       allOf: aiTermConditional,
-      required: ['termId']
+      required: ['termId', 'term_group_id']
     }
   },
 ];

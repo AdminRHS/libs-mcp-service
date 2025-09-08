@@ -54,13 +54,13 @@ const ALIASES = {
   // industries
   'індустрія': 'industries', 'індустрії': 'industries', 'индустрия': 'industries', 'индустрии': 'industries', 'industry': 'industries', 'industries': 'industries',
   // sub-industries
-  'субіндустрія': 'sub_industries', 'субіндустрії': 'sub_industries', 'субиндустрия': 'sub_industries', 'субиндустрии': 'sub_industries', 'sub-industry': 'sub_industries', 'sub-industries': 'sub_industries',
+  'субіндустрія': 'sub-industries', 'субіндустрії': 'sub-industries', 'субиндустрия': 'sub-industries', 'субиндустрии': 'sub-industries', 'sub-industry': 'sub-industries', 'sub-industries': 'sub-industries',
   // tools
   'інструмент': 'tools', 'інструменти': 'tools', 'инструмент': 'tools', 'инструменты': 'tools', 'tool': 'tools', 'tools': 'tools',
   // tool types
-  'тип інструменту': 'tool-types', 'типи інструментів': 'tool-types', 'тип инструмента': 'tool-types', 'типы инструментов': 'tool-types', 'tool type': 'tool-types', 'tool types': 'tool-types',
+  'тип інструменту': 'tool-types', 'типи інструментів': 'tool-types', 'тип инструмента': 'tool-types', 'типы инструментов': 'tool-types', 'tool type': 'tool-types', 'tool types': 'tool-types', 'tool-types': 'tool-types',
   // term types
-  'тип терміну': 'term-types', 'типи термінів': 'term-types', 'тип термина': 'term-types', 'типы терминов': 'term-types', 'term type': 'term-types', 'term types': 'term-types',
+  'тип терміну': 'term-types', 'типи термінів': 'term-types', 'тип термина': 'term-types', 'типы терминов': 'term-types', 'term type': 'term-types', 'term types': 'term-types', 'term-types': 'term-types',
   // actions
   'дія': 'actions', 'дії': 'actions', 'действие': 'actions', 'действия': 'actions', 'action': 'actions', 'actions': 'actions',
   // objects
@@ -124,7 +124,7 @@ const RESOURCE_MAP = {
     create: createIndustry,
     update: updateIndustry,
   },
-  'sub_industries': {
+  'sub-industries': {
     list: getSubIndustries,
     get: getSubIndustry,
     create: createSubIndustry,
@@ -187,11 +187,11 @@ export async function list({ resource, ...params }) {
   return await fn(effectiveParams);
 }
 
-export async function get({ resource, id, isShort }) {
+export async function get({ resource, id }) {
   const r = resolveResource(resource);
   const fn = RESOURCE_MAP[r]?.get;
   if (!fn) throw new Error(`Get not supported for ${r}`);
-  return await fn(id, { isShort });
+  return await fn(id);
 }
 
 export async function create({ resource, payload }) {
@@ -319,7 +319,7 @@ export default toolHandlers;
 // --- Merge helpers for updates ---
 const TERM_MANAGED_RESOURCES = new Set([
   'departments','professions','languages','countries','cities',
-  'industries','sub_industries','actions','objects','responsibilities','formats'
+  'industries','sub-industries','actions','objects','responsibilities'
 ]);
 
 function shouldMergeTerms(resourceKey) {
@@ -329,7 +329,7 @@ function shouldMergeTerms(resourceKey) {
 async function mergePayloadWithExisting(resourceKey, id, incoming) {
   const getFn = RESOURCE_MAP[resourceKey]?.get;
   if (!getFn) return incoming;
-  const existing = await getFn(id, { isShort: false });
+  const existing = await getFn(id);
   const merged = { ...existing, ...incoming };
 
   // mainTerm: keep incoming if provided, else use existing
