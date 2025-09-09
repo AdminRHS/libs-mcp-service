@@ -638,6 +638,134 @@ async function updateSubIndustry(subIndustryId, data) {
   });
 }
 
+// Shift functions
+async function getShifts(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`shifts?${query}`);
+}
+
+async function getShift(shiftId, opts = {}) {
+  const data = await makeRequest(`shifts/${shiftId}`);
+  return data;
+}
+
+async function createShift(data) {
+  return await makeRequest('shifts', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateShift(shiftId, data) {
+  return await makeRequest(`shifts/${shiftId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+// Currency functions
+async function getCurrencies(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`currencies?${query}`);
+}
+
+async function getCurrency(currencyId, opts = {}) {
+  const data = await makeRequest(`currencies/${currencyId}`);
+  return data;
+}
+
+async function createCurrency(data) {
+  return await makeRequest('currencies', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateCurrency(currencyId, data) {
+  return await makeRequest(`currencies/${currencyId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+// Level functions
+async function getLevels(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`levels?${query}`);
+}
+
+async function getLevel(levelId, opts = {}) {
+  const data = await makeRequest(`levels/${levelId}`);
+  return data;
+}
+
+async function createLevel(data) {
+  return await makeRequest('levels', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateLevel(levelId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingLevel = await getLevel(levelId);
+    const existingTerms = existingLevel.terms || [];
+    const existingMainTerm = existingLevel.mainTerm || {};
+    
+    // Merge existing terms with new ones
+    const mergedTerms = [...existingTerms];
+    if (updateData.terms) {
+      updateData.terms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+    }
+    
+    updateData.terms = mergedTerms;
+    
+    // Preserve mainTerm if not provided
+    if (!updateData.mainTerm && existingMainTerm) {
+      updateData.mainTerm = existingMainTerm;
+    }
+  }
+  
+  return await makeRequest(`levels/${levelId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updateData)
+  });
+}
+
+// Rate functions
+async function getRates(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`rates?${query}`);
+}
+
+async function getRate(rateId, opts = {}) {
+  const data = await makeRequest(`rates/${rateId}`);
+  return data;
+}
+
+async function createRate(data) {
+  return await makeRequest('rates', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateRate(rateId, data) {
+  return await makeRequest(`rates/${rateId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 // Individual Terms functions
 async function createTerm(data) {
   return await makeRequest('terms', {
@@ -685,6 +813,14 @@ export {
   getIndustries, getIndustry, createIndustry, updateIndustry,
   // Sub-Industry functions
   getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry,
+  // Shift functions
+  getShifts, getShift, createShift, updateShift,
+  // Currency functions
+  getCurrencies, getCurrency, createCurrency, updateCurrency,
+  // Level functions
+  getLevels, getLevel, createLevel, updateLevel,
+  // Rate functions
+  getRates, getRate, createRate, updateRate,
   // Individual Terms functions
   createTerm, updateTerm,
 };

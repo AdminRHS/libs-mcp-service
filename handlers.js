@@ -30,6 +30,14 @@ import {
   getIndustries, getIndustry, createIndustry, updateIndustry,
   // Sub-Industry functions
   getSubIndustries, getSubIndustry, createSubIndustry, updateSubIndustry,
+  // Shift functions
+  getShifts, getShift, createShift, updateShift,
+  // Currency functions
+  getCurrencies, getCurrency, createCurrency, updateCurrency,
+  // Rate functions
+  getRates, getRate, createRate, updateRate,
+  // Level functions
+  getLevels, getLevel, createLevel, updateLevel,
   // Individual Terms functions
   createTerm, updateTerm
 } from './entities.js';
@@ -67,6 +75,14 @@ const ALIASES = {
   'обʼєкт': 'objects', 'объект': 'objects', 'объекты': 'objects', 'objects': 'objects', 'object': 'objects', 'обʼєкти': 'objects',
   // formats
   'формат': 'formats', 'формати': 'formats', 'форматы': 'formats', 'format': 'formats', 'formats': 'formats',
+  // shifts
+  'зміна': 'shifts', 'зміни': 'shifts', 'смена': 'shifts', 'смены': 'shifts', 'shift': 'shifts', 'shifts': 'shifts',
+  // currencies
+  'валюта': 'currencies', 'валюти': 'currencies', 'валюты': 'currencies', 'currency': 'currencies', 'currencies': 'currencies',
+  // rates
+  'ставка': 'rates', 'ставки': 'rates', 'тариф': 'rates', 'тарифы': 'rates', 'rate': 'rates', 'rates': 'rates',
+  // levels
+  'рівень': 'levels', 'рівні': 'levels', 'уровень': 'levels', 'уровни': 'levels', 'level': 'levels', 'levels': 'levels',
 };
 
 function resolveResource(input) {
@@ -168,6 +184,30 @@ const RESOURCE_MAP = {
     get: getResponsibility,
     create: createResponsibility,
     update: updateResponsibility,
+  },
+  shifts: {
+    list: getShifts,
+    get: getShift,
+    create: createShift,
+    update: updateShift,
+  },
+  currencies: {
+    list: getCurrencies,
+    get: getCurrency,
+    create: createCurrency,
+    update: updateCurrency,
+  },
+  rates: {
+    list: getRates,
+    get: getRate,
+    create: createRate,
+    update: updateRate,
+  },
+  levels: {
+    list: getLevels,
+    get: getLevel,
+    create: createLevel,
+    update: updateLevel,
   },
 };
 
@@ -311,6 +351,30 @@ const toolHandlers = {
   // Individual Terms handlers
   create_term: createTerm,
   update_term: updateTerm,
+
+  // Shift handlers
+  get_shifts: getShifts,
+  get_shift: getShift,
+  create_shift: createShift,
+  update_shift: updateShift,
+
+  // Currency handlers
+  get_currencies: getCurrencies,
+  get_currency: getCurrency,
+  create_currency: createCurrency,
+  update_currency: updateCurrency,
+
+  // Rate handlers
+  get_rates: getRates,
+  get_rate: getRate,
+  create_rate: createRate,
+  update_rate: updateRate,
+
+  // Level handlers
+  get_levels: getLevels,
+  get_level: getLevel,
+  create_level: createLevel,
+  update_level: updateLevel,
 
 };
 

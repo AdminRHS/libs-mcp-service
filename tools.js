@@ -221,6 +221,42 @@ const createPayloadSchemas = {
     },
     required: ['name']
   },
+  shifts: {
+    type: 'object',
+    properties: {
+      name: { type: 'string', description: 'Shift name - REQUIRED' },
+      start_time: { type: 'string', description: 'Start time in HH:MM:SS format - REQUIRED' },
+      end_time: { type: 'string', description: 'End time in HH:MM:SS format - REQUIRED' },
+    },
+    required: ['name', 'start_time', 'end_time']
+  },
+  currencies: {
+    type: 'object',
+    properties: {
+      name: { type: 'string', description: 'Currency name - REQUIRED' },
+      iso3: { type: 'string', description: 'ISO 3-letter currency code - REQUIRED' },
+      symbol: { type: 'string', description: 'Currency symbol - REQUIRED' },
+    },
+    required: ['name', 'iso3', 'symbol']
+  },
+  rates: {
+    type: 'object',
+    properties: {
+      name: { type: 'string', description: 'Rate name - REQUIRED' },
+      value: { type: 'number', description: 'Rate value (decimal) - REQUIRED' },
+      hours: { type: 'number', description: 'Number of hours - REQUIRED' },
+    },
+    required: ['name', 'value', 'hours']
+  },
+  levels: {
+    type: 'object',
+    properties: {
+      mainTerm: buildMainTermSchema({ description: 'Main term for the level (REQUIRED)', valueDescription: 'Term value (level name) - REQUIRED' }),
+      terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
+      short_name: { type: 'string', description: 'Short name identifier - REQUIRED' },
+    },
+    required: ['mainTerm', 'short_name']
+  },
 };
 
 const updatePayloadSchemas = {
@@ -354,6 +390,42 @@ const updatePayloadSchemas = {
     },
     required: ['name']
   },
+  shifts: {
+    type: 'object',
+    properties: {
+      name: { type: 'string', description: 'Shift name - REQUIRED' },
+      start_time: { type: 'string', description: 'Start time in HH:MM:SS format - REQUIRED' },
+      end_time: { type: 'string', description: 'End time in HH:MM:SS format - REQUIRED' },
+    },
+    required: ['name', 'start_time', 'end_time']
+  },
+  currencies: {
+    type: 'object',
+    properties: {
+      name: { type: 'string', description: 'Currency name - REQUIRED' },
+      iso3: { type: 'string', description: 'ISO 3-letter currency code - REQUIRED' },
+      symbol: { type: 'string', description: 'Currency symbol - REQUIRED' },
+    },
+    required: ['name', 'iso3', 'symbol']
+  },
+  rates: {
+    type: 'object',
+    properties: {
+      name: { type: 'string', description: 'Rate name - REQUIRED' },
+      value: { type: 'number', description: 'Rate value (decimal) - REQUIRED' },
+      hours: { type: 'number', description: 'Number of hours - REQUIRED' },
+    },
+    required: ['name', 'value', 'hours']
+  },
+  levels: {
+    type: 'object',
+    properties: {
+      mainTerm: buildMainTermSchema({ description: 'Main term for the level (REQUIRED)', valueDescription: 'Term value (level name) - REQUIRED' }),
+      terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
+      short_name: { type: 'string', description: 'Short name identifier - REQUIRED' },
+    },
+    required: ['mainTerm', 'short_name']
+  },
 };
 
 const tools = [
@@ -411,6 +483,10 @@ const tools = [
         { if: { properties: { resource: { const: 'formats' } } }, then: { properties: { payload: createPayloadSchemas.formats } } },
         { if: { properties: { resource: { const: 'statuses' } } }, then: { properties: { payload: createPayloadSchemas.statuses } } },
         { if: { properties: { resource: { const: 'tools' } } }, then: { properties: { payload: createPayloadSchemas.tools } } },
+        { if: { properties: { resource: { const: 'shifts' } } }, then: { properties: { payload: createPayloadSchemas.shifts } } },
+        { if: { properties: { resource: { const: 'currencies' } } }, then: { properties: { payload: createPayloadSchemas.currencies } } },
+        { if: { properties: { resource: { const: 'rates' } } }, then: { properties: { payload: createPayloadSchemas.rates } } },
+        { if: { properties: { resource: { const: 'levels' } } }, then: { properties: { payload: createPayloadSchemas.levels } } },
       ]
     }
   },
@@ -441,6 +517,10 @@ const tools = [
         { if: { properties: { resource: { const: 'formats' } } }, then: { properties: { payload: updatePayloadSchemas.formats } } },
         { if: { properties: { resource: { const: 'statuses' } } }, then: { properties: { payload: updatePayloadSchemas.statuses } } },
         { if: { properties: { resource: { const: 'tools' } } }, then: { properties: { payload: updatePayloadSchemas.tools } } },
+        { if: { properties: { resource: { const: 'shifts' } } }, then: { properties: { payload: updatePayloadSchemas.shifts } } },
+        { if: { properties: { resource: { const: 'currencies' } } }, then: { properties: { payload: updatePayloadSchemas.currencies } } },
+        { if: { properties: { resource: { const: 'rates' } } }, then: { properties: { payload: updatePayloadSchemas.rates } } },
+        { if: { properties: { resource: { const: 'levels' } } }, then: { properties: { payload: updatePayloadSchemas.levels } } },
       ]
     }
   },

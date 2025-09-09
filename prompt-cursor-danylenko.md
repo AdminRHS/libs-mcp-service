@@ -4415,7 +4415,15 @@ Translation: "Review the entire project and update documentation, check for dupl
 
 ### Summary
 
-The comprehensive review revealed several documentation discrepancies that have been corrected. The project is now fully documented with accurate information, no duplicates, and all missing data addressed. The documentation accurately reflects the current state of the project with 60 tools across 16 entity types, comprehensive AI metadata support, and complete testing coverage.
+The comprehensive review revealed several documentation discrepancies that have been corrected. The project is now fully documented with accurate information, no duplicates, and all missing data addressed. The documentation accurately reflects the current state of the project with 60 tools across 20 entity types, comprehensive AI metadata support, and complete testing coverage.
+
+**Recently Added Entities (2025-01-09):**
+- **Shifts**: Working time management (start_time, end_time, name)
+- **Currencies**: Financial currency support (name, iso3, symbol) 
+- **Rates**: Rate management (name, value, hours)
+- **Levels**: Position levels with TermGroup support (mainTerm, terms, short_name)
+
+All new entities follow the unified MCP pattern with full CRUD operations, multi-language aliases (UA/RU/EN), and AI metadata support.
 
 Q: Я ж налаштовувала всі схеми, що ти витворяєш?
 A: Ми свідомо замінили перелікові пер-сутнісні тулзи (з їхніми схемами) на 4 універсальні: list/get/create/update. Залишили незамінні спец‑тулзи: get_term_types, find_existing_responsibility_terms, create_term, update_term. Твоє останнє редагування опису create_term збережено. Якщо потрібно повернути будь‑які детальні схеми для конкретних сутностей — скажи, відновлю точково.
@@ -4614,6 +4622,121 @@ Outcome: Simplified mode logic - same tools everywhere, automatic optimization o
   - **Auto-parameters**: `all=true&isShort=true` automatically added when `MODE=light`
 - **Build and deployment**: Rebuilt service with `npm run build`, changes pushed to GitHub
 
-**Status**: ✅ Light mode now working correctly with proper parameter naming and short response format.
+**Status**: ✅ Light mode now working correctly with proper parameter naming and short response format.     
+
+---
+
+## New Entity Implementations (2025-01-09)
+
+### Shifts Implementation
+**Request**: "давай реалізуєм ще додаткові тулзи для shifts @SHIFT_MODEL_DESCRIPTION.md"
+
+**Implementation Details**:
+- **File**: `docs-models/SHIFT_MODEL_DESCRIPTION.md` - Working time management model
+- **Core Fields**: `id`, `name`, `start_time`, `end_time`
+- **API Endpoints**: `GET /shifts`, `GET /shifts/:id`, `POST /shifts`, `PUT /shifts/:id`
+- **Aliases**: 'зміна', 'смена', 'shift' → 'shifts'
+
+**Code Changes**:
+- `entities.js`: Added `getShifts`, `getShift`, `createShift`, `updateShift`
+- `tools.js`: Added shifts schemas to `createPayloadSchemas` and `updatePayloadSchemas`
+- `handlers.js`: Added shifts aliases and resource mapping
+
+**Testing Results**:
+- ✅ Initial 403 errors (expected - missing API key scopes)
+- ✅ Full CRUD operations working after permission granted
+- ✅ Multi-language alias support (UA/RU/EN)
+
+### Currencies Implementation  
+**Request**: "Давай реалізуємо currencies @CURRENCY_MODEL_DESCRIPTION.md"
+
+**Implementation Details**:
+- **File**: `docs-models/CURRENCY_MODEL_DESCRIPTION.md` - Financial currency model
+- **Core Fields**: `id`, `name`, `iso3`, `symbol`
+- **API Endpoints**: `GET /currencies`, `GET /currencies/:id`, `POST /currencies`, `PUT /currencies/:id`
+- **Aliases**: 'валюта', 'валюти', 'currency' → 'currencies'
+
+**Code Changes**:
+- `entities.js`: Added `getCurrencies`, `getCurrency`, `createCurrency`, `updateCurrency`
+- `tools.js`: Added currencies schemas to payload schemas
+- `handlers.js`: Added currencies aliases and resource mapping
+
+**Testing Results**:
+- ✅ Initial 403 errors (expected - missing API key scopes)
+- ✅ Full CRUD operations working after permission granted
+- ✅ Intermittent 500 errors resolved (server-side issue)
+
+### Rates Implementation
+**Request**: "продовжимо, реалізуй rates @RATE_MODEL_DESCRIPTION.md"
+
+**Implementation Details**:
+- **File**: `docs-models/RATE_MODEL_DESCRIPTION.md` - Rate management model
+- **Core Fields**: `id`, `name`, `value`, `hours`
+- **API Endpoints**: `GET /rates`, `GET /rates/:id`, `POST /rates`, `PUT /rates/:id`
+- **Aliases**: 'ставка', 'ставки', 'тариф', 'тарифы', 'rate' → 'rates'
+
+**Code Changes**:
+- `entities.js`: Added `getRates`, `getRate`, `createRate`, `updateRate`
+- `tools.js`: Added rates schemas to payload schemas
+- `handlers.js`: Added rates aliases and resource mapping
+
+**Testing Results**:
+- ✅ Initial 403 errors (expected - missing API key scopes)
+- ✅ Full CRUD operations working after permission granted
+- ✅ Simple entity model (no TermGroups)
+
+### Levels Implementation
+**Request**: "Тепер давай реалізуємо левел.@LEVEL_MODEL_DESCRIPTION.md"
+
+**Implementation Details**:
+- **File**: `docs-models/LEVEL_MODEL_DESCRIPTION.md` - Position levels with TermGroup support
+- **Core Fields**: `id`, `short_name`, `term_group_id`
+- **Complex Model**: Uses TermGroups with `mainTerm`, `terms`, `short_name`
+- **API Endpoints**: `GET /levels`, `GET /levels/:id`, `POST /levels`, `PUT /levels/:id`
+- **Aliases**: 'рівень', 'рівні', 'уровень', 'уровни', 'level' → 'levels'
+
+**Code Changes**:
+- `entities.js`: Added `getLevels`, `getLevel`, `createLevel`, `updateLevel`
+- `tools.js`: Added levels schemas with TermGroup support
+- `handlers.js`: Added levels aliases, resource mapping, and `TERM_MANAGED_RESOURCES`
+
+**Special Implementation Notes**:
+- **TermGroup Integration**: Levels use complex TermGroup model similar to Departments/Professions
+- **Merge Logic**: `updateLevel` includes `preserveExistingTerms` logic to merge existing terms
+- **AI Metadata**: Full support for AI-generated content tracking
+
+**Testing Results**:
+- ✅ Initial 403 errors (expected - missing API key scopes)
+- ✅ Full CRUD operations working after permission granted
+- ✅ TermGroup creation and management working
+- ✅ AI metadata properly saved and tracked
+
+**Critical Fix**: Initial 500 errors resolved by using correct `language_id: 61` (English) instead of `language_id: 1`
+
+### Implementation Pattern Summary
+
+All four new entities follow the unified MCP pattern:
+
+1. **Entity Functions** (`entities.js`):
+   - `get{Entity}s()` - List with query parameters
+   - `get{Entity}(id)` - Get single entity
+   - `create{Entity}(data)` - Create new entity
+   - `update{Entity}(id, data)` - Update existing entity
+
+2. **Schema Definitions** (`tools.js`):
+   - Added to `createPayloadSchemas` and `updatePayloadSchemas`
+   - Integrated into unified `create` and `update` tools via conditional `allOf`
+
+3. **Resource Mapping** (`handlers.js`):
+   - Added multi-language aliases (UA/RU/EN)
+   - Added to `RESOURCE_MAP` for unified tool routing
+   - Added to `TERM_MANAGED_RESOURCES` where applicable (levels)
+
+4. **Testing Protocol**:
+   - Initial 403 errors (expected - API key scope validation)
+   - Full CRUD operations after permission granted
+   - Multi-language alias verification
+
+**Current Status**: ✅ All four entities (shifts, currencies, rates, levels) fully implemented and tested with working CRUD operations, multi-language support, and AI metadata integration.
 
 ---

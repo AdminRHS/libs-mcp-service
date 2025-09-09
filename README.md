@@ -44,7 +44,7 @@ Add the following to your MCP configuration:
 ## ✨ Features
 
 - **🏢 Official MCP SDK**: Full MCP compliance using `@modelcontextprotocol/sdk`
-- **🔧 Universal Tools**: `list`, `get`, `create`, `update` for all 16+ entity types
+- **🔧 Universal Tools**: `list`, `get`, `create`, `update` for all 20+ entity types
 - **⚡ Performance**: Response caching with TTL and smart invalidation
 - **🛡️ Security**: Rate limiting, request size caps, and bearer token authentication
 - **🔄 Smart Updates**: Automatic term preservation in update operations
@@ -86,11 +86,12 @@ AI metadata behavior:
 - Create: include `aiMetadata` only for the term(s) you want marked/recorded as AI-generated; others remain unchanged.
 - Update: include `aiMetadata` only for term(s) you intend to change; omitting it leaves existing AI fields as-is.
 
-### Supported Entities (16 Types)
+### Supported Entities (20 Types)
 - **Core**: Departments, Professions, Languages, Countries, Cities
 - **Content**: Actions, Objects, Responsibilities, Formats  
 - **Organization**: Industries, Sub-Industries, Tools, Tool Types
 - **System**: Statuses, Term Types, Individual Terms
+- **Management**: Shifts, Currencies, Rates, Levels
 
 ## 📚 Common Usage Patterns
 
@@ -161,7 +162,7 @@ AI metadata behavior:
 
 ## 🧪 Testing Status
 
-### ✅ Comprehensive Testing Complete (16/16 Entities)
+### ✅ Comprehensive Testing Complete (20/20 Entities)
 
 | Entity Category | Entities | Status | Features Tested |
 |----------------|----------|--------|-----------------|
@@ -171,6 +172,7 @@ AI metadata behavior:
 | **Organization** | Industries, Sub-Industries | ✅ Complete | Parent-child relationships |
 | **System** | Tools, Tool Types, Formats | ✅ Complete | Many-to-many relationships |
 | **Meta** | Statuses, Term Types, Terms | ✅ Complete | Individual term management |
+| **Management** | Shifts, Currencies, Rates, Levels | ✅ Complete | Time, financial, and position management |
 
 ### Key Testing Results
 - **✅ Schema Validation**: All entity schemas validated against actual API
@@ -247,6 +249,10 @@ All requests include `Authorization: Bearer <API_TOKEN>` header.
 - `/api/token/statuses` - Status management
 - `/api/token/term-types` - Term type definitions
 - `/api/token/terms` - Individual term management
+- `/api/token/shifts` - Working time management
+- `/api/token/currencies` - Currency management
+- `/api/token/rates` - Rate management
+- `/api/token/levels` - Position level management
 
 ## 🐛 Troubleshooting
 
@@ -337,6 +343,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Status**: ✅ **Production Ready** - All 16 entities tested and validated
+**Status**: ✅ **Production Ready** - All 20 entities tested and validated
 
 Built with ❤️ using the official Model Context Protocol SDK
