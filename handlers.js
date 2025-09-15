@@ -38,6 +38,8 @@ import {
   getRates, getRate, createRate, updateRate,
   // Level functions
   getLevels, getLevel, createLevel, updateLevel,
+  // Position functions
+  getPositions, getPosition, createPosition, updatePosition,
   // Individual Terms functions
   createTerm, updateTerm
 } from './entities.js';
@@ -83,6 +85,8 @@ const ALIASES = {
   'ставка': 'rates', 'ставки': 'rates', 'тариф': 'rates', 'тарифы': 'rates', 'rate': 'rates', 'rates': 'rates',
   // levels
   'рівень': 'levels', 'рівні': 'levels', 'уровень': 'levels', 'уровни': 'levels', 'level': 'levels', 'levels': 'levels',
+  // positions
+  'позиція': 'positions', 'позиції': 'positions', 'должность': 'positions', 'должности': 'positions', 'position': 'positions', 'positions': 'positions',
 };
 
 function resolveResource(input) {
@@ -208,6 +212,12 @@ const RESOURCE_MAP = {
     get: getLevel,
     create: createLevel,
     update: updateLevel,
+  },
+  positions: {
+    list: getPositions,
+    get: getPosition,
+    create: createPosition,
+    update: updatePosition,
   },
 };
 
@@ -376,6 +386,12 @@ const toolHandlers = {
   create_level: createLevel,
   update_level: updateLevel,
 
+  // Position handlers
+  get_positions: getPositions,
+  get_position: getPosition,
+  create_position: createPosition,
+  update_position: updatePosition,
+
 };
 
 export default toolHandlers;
@@ -383,7 +399,7 @@ export default toolHandlers;
 // --- Merge helpers for updates ---
 const TERM_MANAGED_RESOURCES = new Set([
   'departments','professions','languages','countries','cities',
-  'industries','sub-industries','actions','objects','responsibilities'
+  'industries','sub-industries','actions','objects','responsibilities','levels','positions'
 ]);
 
 function shouldMergeTerms(resourceKey) {

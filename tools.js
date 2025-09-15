@@ -257,6 +257,14 @@ const createPayloadSchemas = {
     },
     required: ['mainTerm', 'short_name']
   },
+  positions: {
+    type: 'object',
+    properties: {
+      mainTerm: buildMainTermSchema({ description: 'Main term for the position (REQUIRED)', valueDescription: 'Term value (position name) - REQUIRED' }),
+      terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
+    },
+    required: ['mainTerm']
+  },
 };
 
 const updatePayloadSchemas = {
@@ -421,10 +429,18 @@ const updatePayloadSchemas = {
     type: 'object',
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the level (REQUIRED)', valueDescription: 'Term value (level name) - REQUIRED' }),
-      terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
+      terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
       short_name: { type: 'string', description: 'Short name identifier - REQUIRED' },
     },
     required: ['mainTerm', 'short_name']
+  },
+  positions: {
+    type: 'object',
+    properties: {
+      mainTerm: buildMainTermSchema({ description: 'Main term for the position (REQUIRED)', valueDescription: 'Term value (position name) - REQUIRED' }),
+      terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
+    },
+    required: ['mainTerm']
   },
 };
 
@@ -487,6 +503,7 @@ const tools = [
         { if: { properties: { resource: { const: 'currencies' } } }, then: { properties: { payload: createPayloadSchemas.currencies } } },
         { if: { properties: { resource: { const: 'rates' } } }, then: { properties: { payload: createPayloadSchemas.rates } } },
         { if: { properties: { resource: { const: 'levels' } } }, then: { properties: { payload: createPayloadSchemas.levels } } },
+        { if: { properties: { resource: { const: 'positions' } } }, then: { properties: { payload: createPayloadSchemas.positions } } },
       ]
     }
   },
@@ -521,6 +538,7 @@ const tools = [
         { if: { properties: { resource: { const: 'currencies' } } }, then: { properties: { payload: updatePayloadSchemas.currencies } } },
         { if: { properties: { resource: { const: 'rates' } } }, then: { properties: { payload: updatePayloadSchemas.rates } } },
         { if: { properties: { resource: { const: 'levels' } } }, then: { properties: { payload: updatePayloadSchemas.levels } } },
+        { if: { properties: { resource: { const: 'positions' } } }, then: { properties: { payload: updatePayloadSchemas.positions } } },
       ]
     }
   },

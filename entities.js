@@ -766,6 +766,59 @@ async function updateRate(rateId, data) {
   });
 }
 
+// Position functions
+async function getPositions(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`positions?${query}`);
+}
+
+async function getPosition(positionId, opts = {}) {
+  const data = await makeRequest(`positions/${positionId}`);
+  return data;
+}
+
+async function createPosition(data) {
+  return await makeRequest('positions', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updatePosition(positionId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingPosition = await getPosition(positionId);
+    const existingTerms = existingPosition.terms || [];
+    const existingMainTerm = existingPosition.mainTerm || {};
+    
+    // Merge existing terms with new ones
+    const mergedTerms = [...existingTerms];
+    if (updateData.terms) {
+      updateData.terms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+    }
+    
+    updateData.terms = mergedTerms;
+    
+    // Preserve mainTerm if not provided
+    if (!updateData.mainTerm && existingMainTerm) {
+      updateData.mainTerm = existingMainTerm;
+    }
+  }
+  
+  return await makeRequest(`positions/${positionId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updateData)
+  });
+}
+
 // Individual Terms functions
 async function createTerm(data) {
   return await makeRequest('terms', {
@@ -819,6 +872,8 @@ export {
   getCurrencies, getCurrency, createCurrency, updateCurrency,
   // Level functions
   getLevels, getLevel, createLevel, updateLevel,
+  // Position functions
+  getPositions, getPosition, createPosition, updatePosition,
   // Rate functions
   getRates, getRate, createRate, updateRate,
   // Individual Terms functions

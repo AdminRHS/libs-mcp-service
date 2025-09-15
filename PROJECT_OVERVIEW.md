@@ -2,9 +2,9 @@
 
 ## 📋 Executive Summary
 
-The Libs MCP Service is a production-ready Model Context Protocol (MCP) server that provides standardized access to 20+ entity types through a comprehensive CRUD interface. Built with the official MCP SDK, it features advanced capabilities including response caching, rate limiting, AI metadata tracking, and intelligent term preservation.
+The Libs MCP Service is a production-ready Model Context Protocol (MCP) server that provides standardized access to 21+ entity types through a comprehensive CRUD interface. Built with the official MCP SDK, it features advanced capabilities including response caching, rate limiting, AI metadata tracking, and intelligent term preservation.
 
-**Current Status**: ✅ **Production Ready** - All 20 entities fully tested and validated
+**Current Status**: ✅ **Production Ready** - All 21 entities fully tested and validated
 
 ## 🏗️ Project Architecture
 
@@ -89,12 +89,12 @@ const timeoutId = setTimeout(() => controller.abort(), timeout);
 
 ### **3. `entities.js` - CRUD Operations**
 
-**Entity Coverage (20 Types):**
+**Entity Coverage (21 Types):**
 - **Core Entities**: Departments, Professions, Languages, Countries, Cities
 - **Content Entities**: Actions, Objects, Responsibilities, Formats
 - **Organization**: Industries, Sub-Industries, Tools, Tool Types  
 - **System**: Statuses, Term Types, Individual Terms
-- **Management**: Shifts, Currencies, Rates, Levels
+- **Management**: Shifts, Currencies, Rates, Levels, Positions
 
 **Smart Update Logic:**
 ```javascript
@@ -251,7 +251,7 @@ MODE=light                             # UI optimization mode
 
 ## 🧪 Comprehensive Testing Results
 
-### **Entity Testing Matrix (20/20 Complete)**
+### **Entity Testing Matrix (21/21 Complete)**
 
 | Category | Entities | CRUD | Permissions | AI Metadata | Relationships |
 |----------|----------|------|-------------|-------------|---------------|
@@ -261,12 +261,12 @@ MODE=light                             # UI optimization mode
 | **Organization** | Industries, Sub-Industries | ✅ | ✅ | ✅ | ✅ |
 | **System** | Tools, Tool Types, Formats | ✅ | ✅ | ✅ | ✅ |
 | **Meta** | Statuses, Term Types, Terms | ✅ | ✅ | ✅ | ✅ |
-| **Management** | Shifts, Currencies, Rates, Levels | ✅ | ✅ | ✅ | ✅ |
+| **Management** | Shifts, Currencies, Rates, Levels, Positions | ✅ | ✅ | ✅ | ✅ |
 
 ### **Key Testing Achievements**
 
 **✅ Schema Validation**
-- All 20 entity schemas validated against actual API responses
+- All 21 entity schemas validated against actual API responses
 - Complex term structures tested (mainTerm + terms arrays)
 - AI metadata field validation across all supported entities
 
@@ -429,7 +429,7 @@ Build Output
 - ✅ **Core Implementation**: All CRUD operations functional
 - ✅ **MCP Compliance**: Official SDK integration complete
 - ✅ **Advanced Features**: Caching, rate limiting, error handling
-- ✅ **Testing Coverage**: 20/20 entities thoroughly tested
+- ✅ **Testing Coverage**: 21/21 entities thoroughly tested
 - ✅ **Documentation**: Comprehensive user and developer docs
 - ✅ **Production Readiness**: Deployed and ready for use
 
@@ -444,11 +444,11 @@ Build Output
 This project demonstrates **excellent software engineering practices**:
 - **Modern Architecture**: Official MCP SDK with clean functional design
 - **Production Quality**: Comprehensive error handling, caching, and security
-- **Thorough Testing**: Real-world validation of all 20 entity types
+- **Thorough Testing**: Real-world validation of all 21 entity types
 - **Clear Documentation**: User-friendly README with complete technical overview
 - **Deployment Ready**: Single-command execution via npx
 
-**Final Status**: ✅ **PRODUCTION READY** - Fully tested, documented, and deployed
+**Final Status**: ✅ **PRODUCTION READY** - All 21 entities fully tested, documented, and deployed
 
 ---
 
