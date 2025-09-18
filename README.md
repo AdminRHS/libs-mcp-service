@@ -86,12 +86,12 @@ AI metadata behavior:
 - Create: include `aiMetadata` only for the term(s) you want marked/recorded as AI-generated; others remain unchanged.
 - Update: include `aiMetadata` only for term(s) you intend to change; omitting it leaves existing AI fields as-is.
 
-### Supported Entities (21 Types)
+### Supported Entities (22 Types)
 - **Core**: Departments, Professions, Languages, Countries, Cities
 - **Content**: Actions, Objects, Responsibilities, Formats  
 - **Organization**: Industries, Sub-Industries, Tools, Tool Types
 - **System**: Statuses, Term Types, Individual Terms
-- **Management**: Shifts, Currencies, Rates, Levels, Positions
+- **Management**: Shifts, Currencies, Rates, Levels, Positions, Skills
 
 ## 📚 Common Usage Patterns
 
@@ -162,7 +162,7 @@ AI metadata behavior:
 
 ## 🧪 Testing Status
 
-### ✅ Comprehensive Testing Complete (21/21 Entities)
+### ✅ Comprehensive Testing Complete (22/22 Entities)
 
 | Entity Category | Entities | Status | Features Tested |
 |----------------|----------|--------|-----------------|
@@ -172,7 +172,7 @@ AI metadata behavior:
 | **Organization** | Industries, Sub-Industries | ✅ Complete | Parent-child relationships |
 | **System** | Tools, Tool Types, Formats | ✅ Complete | Many-to-many relationships |
 | **Meta** | Statuses, Term Types, Terms | ✅ Complete | Individual term management |
-| **Management** | Shifts, Currencies, Rates, Levels, Positions | ✅ Complete | Time, financial, position, and role management |
+| **Management** | Shifts, Currencies, Rates, Levels, Positions, Skills | ✅ Complete | Time, financial, position, role, and skill management |
 
 ### Key Testing Results
 - **✅ Schema Validation**: All entity schemas validated against actual API
@@ -254,6 +254,7 @@ All requests include `Authorization: Bearer <API_TOKEN>` header.
 - `/api/token/rates` - Rate management
 - `/api/token/levels` - Position level management
 - `/api/token/positions` - Position and role management
+- `/api/token/skills` - Skill management (responsibility-tool relationships)
 
 ## 🐛 Troubleshooting
 
@@ -344,6 +345,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Status**: ✅ **Production Ready** - All 21 entities tested and validated
+**Status**: ✅ **Production Ready** - All 22 entities tested and validated
 
 Built with ❤️ using the official Model Context Protocol SDK

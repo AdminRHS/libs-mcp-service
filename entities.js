@@ -485,6 +485,19 @@ async function findExistingResponsibilityTerms(params = {}) {
   return await makeRequest(`responsibilities/find-existing-terms?${queryParams}`);
 }
 
+async function findExistingSkillTerms(params = {}) {
+  const { language_id, term_type_id, responsibility_id, tool_id, search = '' } = params;
+  const queryParams = new URLSearchParams({
+    language_id: language_id.toString(),
+    term_type_id: term_type_id.toString(),
+    responsibility_id: responsibility_id.toString(),
+    tool_id: tool_id.toString(),
+    ...(search && { search })
+  });
+  
+  return await makeRequest(`skills/find-existing-terms?${queryParams}`);
+}
+
 // City functions
 async function getCities(params = {}) {
   const query = buildListQuery(params);
@@ -819,6 +832,58 @@ async function updatePosition(positionId, data) {
   });
 }
 
+// Skills functions
+async function getSkills(params = {}) {
+  const query = buildListQuery(params);
+  return await makeRequest(`skills?${query}`);
+}
+
+async function getSkill(skillId, opts = {}) {
+  const data = await makeRequest(`skills/${skillId}`);
+  return data;
+}
+
+async function createSkill(data) {
+  return await makeRequest('skills', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updateSkill(skillId, data) {
+  const { preserveExistingTerms = true, ...updateData } = data;
+  
+  if (preserveExistingTerms) {
+    const existingSkill = await getSkill(skillId);
+    const existingTerms = existingSkill.terms || [];
+    const existingMainTerm = existingSkill.mainTerm || {};
+    
+    // Merge existing terms with new ones
+    const mergedTerms = [...existingTerms];
+    if (updateData.terms) {
+      updateData.terms.forEach(newTerm => {
+        const existingIndex = mergedTerms.findIndex(t => t.id === newTerm.id);
+        if (existingIndex >= 0) {
+          mergedTerms[existingIndex] = { ...mergedTerms[existingIndex], ...newTerm };
+        } else {
+          mergedTerms.push(newTerm);
+        }
+      });
+      updateData.terms = mergedTerms;
+    }
+    
+    // Preserve mainTerm if not provided
+    if (!updateData.mainTerm && existingMainTerm) {
+      updateData.mainTerm = existingMainTerm;
+    }
+  }
+  
+  return await makeRequest(`skills/${skillId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updateData)
+  });
+}
+
 // Individual Terms functions
 async function createTerm(data) {
   return await makeRequest('terms', {
@@ -874,6 +939,9 @@ export {
   getLevels, getLevel, createLevel, updateLevel,
   // Position functions
   getPositions, getPosition, createPosition, updatePosition,
+  // Skills functions
+  getSkills, getSkill, createSkill, updateSkill,
+  findExistingSkillTerms,
   // Rate functions
   getRates, getRate, createRate, updateRate,
   // Individual Terms functions

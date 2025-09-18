@@ -105,8 +105,15 @@ const createPayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the profession (REQUIRED)', valueDescription: 'Term value (profession name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
-      department_id: { type: 'number' },
-      tool_ids: { type: 'array', items: { type: 'number' } },
+      department_id: { 
+        type: 'number', 
+        description: 'Department ID - optional. Use list departments to get available department IDs' 
+      },
+      tool_ids: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of Tool IDs - optional. Use list tools to get available tool IDs' 
+      },
     },
     required: ['mainTerm']
   },
@@ -125,14 +132,21 @@ const createPayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the industry (REQUIRED)', valueDescription: 'Term value (industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
-      subIndustryIds: { type: 'array', items: { type: 'number' } },
+      subIndustryIds: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of Sub-Industry IDs - optional. Use list sub-industries to get available sub-industry IDs' 
+      },
     },
     required: ['mainTerm']
   },
   'sub-industries': {
     type: 'object',
     properties: {
-      industry_id: { type: 'number' },
+      industry_id: { 
+        type: 'number',
+        description: 'Industry ID - optional. Use list industries to get available industry IDs' 
+      },
       mainTerm: buildMainTermSchema({ description: 'Main term for the sub-industry (REQUIRED)', valueDescription: 'Term value (sub-industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
     },
@@ -152,9 +166,19 @@ const createPayloadSchemas = {
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
       iso2: { type: 'string' },
       iso3: { type: 'string' },
-      latitude: { type: 'string' },
-      longitude: { type: 'string' },
-      cityIds: { type: 'array', items: { type: 'number' } },
+      latitude: { 
+        type: 'string',
+        description: 'Latitude coordinate - optional' 
+      },
+      longitude: { 
+        type: 'string',
+        description: 'Longitude coordinate - optional' 
+      },
+      cityIds: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of City IDs - optional. Use list cities to get available city IDs' 
+      },
     },
     required: ['mainTerm', 'iso2', 'iso3']
   },
@@ -163,9 +187,18 @@ const createPayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the city (REQUIRED)', valueDescription: 'Term value (city name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
-      country_id: { type: 'number' },
-      latitude: { type: 'string' },
-      longitude: { type: 'string' },
+      country_id: { 
+        type: 'number',
+        description: 'Country ID - optional. Use list countries to get available country IDs' 
+      },
+      latitude: { 
+        type: 'string',
+        description: 'Latitude coordinate - optional' 
+      },
+      longitude: { 
+        type: 'string',
+        description: 'Longitude coordinate - optional' 
+      },
     },
     required: ['mainTerm']
   },
@@ -182,15 +215,25 @@ const createPayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the object (REQUIRED)', valueDescription: 'Term value (object name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
-      format_ids: { type: 'array', items: { type: 'number' } },
+      format_ids: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of Format IDs - optional. Use list formats to get available format IDs' 
+      },
     },
     required: ['mainTerm']
   },
   responsibilities: {
     type: 'object',
     properties: {
-      action_id: { type: 'number' },
-      object_id: { type: 'number' },
+      action_id: { 
+        type: 'number',
+        description: 'Action ID - REQUIRED. Use list actions to get available action IDs' 
+      },
+      object_id: { 
+        type: 'number',
+        description: 'Object ID - REQUIRED. Use list objects to get available object IDs' 
+      },
       mainTerm: buildMainTermSchema({ description: 'Main term for the responsibility (REQUIRED)', valueDescription: 'Term value (responsibility name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
     },
@@ -265,6 +308,22 @@ const createPayloadSchemas = {
     },
     required: ['mainTerm']
   },
+  skills: {
+    type: 'object',
+    properties: {
+      mainTerm: buildMainTermSchema({ description: 'Main term for the skill (REQUIRED)', valueDescription: 'Term value (skill name) - REQUIRED' }),
+      terms: { type: 'array', items: buildTermItemSchema({ withId: false }) },
+      responsibility_id: { 
+        type: 'number', 
+        description: 'Responsibility ID - REQUIRED. Use list responsibilities to get available responsibility IDs, or use find_existing_responsibility_terms to find existing responsibility by action_id and object_id. If responsibility doesn\'t exist, create it first using actions and objects resources.' 
+      },
+      tool_id: { 
+        type: 'number', 
+        description: 'Tool ID - REQUIRED. Use list tools to get available tool IDs. Each skill represents a relationship between a responsibility and a tool' 
+      },
+    },
+    required: ['mainTerm', 'responsibility_id', 'tool_id']
+  },
 };
 
 const updatePayloadSchemas = {
@@ -282,8 +341,15 @@ const updatePayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the profession (REQUIRED)', valueDescription: 'Term value (profession name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
-      department_id: { type: 'number' },
-      tool_ids: { type: 'array', items: { type: 'number' } },
+      department_id: { 
+        type: 'number', 
+        description: 'Department ID - optional. Use list departments to get available department IDs' 
+      },
+      tool_ids: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of Tool IDs - optional. Use list tools to get available tool IDs' 
+      },
     },
     required: ['mainTerm', 'terms']
   },
@@ -302,14 +368,21 @@ const updatePayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the industry (REQUIRED)', valueDescription: 'Term value (industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
-      subIndustryIds: { type: 'array', items: { type: 'number' } },
+      subIndustryIds: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of Sub-Industry IDs - optional. Use list sub-industries to get available sub-industry IDs' 
+      },
     },
     required: ['mainTerm', 'terms']
   },
   'sub-industries': {
     type: 'object',
     properties: {
-      industry_id: { type: 'number' },
+      industry_id: { 
+        type: 'number',
+        description: 'Industry ID - optional. Use list industries to get available industry IDs' 
+      },
       mainTerm: buildMainTermSchema({ description: 'Main term for the sub-industry (REQUIRED)', valueDescription: 'Term value (sub-industry name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
     },
@@ -329,9 +402,19 @@ const updatePayloadSchemas = {
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
       iso2: { type: 'string' },
       iso3: { type: 'string' },
-      latitude: { type: 'string' },
-      longitude: { type: 'string' },
-      cityIds: { type: 'array', items: { type: 'number' } },
+      latitude: { 
+        type: 'string',
+        description: 'Latitude coordinate - optional' 
+      },
+      longitude: { 
+        type: 'string',
+        description: 'Longitude coordinate - optional' 
+      },
+      cityIds: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of City IDs - optional. Use list cities to get available city IDs' 
+      },
     },
     required: ['mainTerm', 'terms', 'iso2', 'iso3']
   },
@@ -340,9 +423,18 @@ const updatePayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the city (REQUIRED)', valueDescription: 'Term value (city name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
-      country_id: { type: 'number' },
-      latitude: { type: 'string' },
-      longitude: { type: 'string' },
+      country_id: { 
+        type: 'number',
+        description: 'Country ID - optional. Use list countries to get available country IDs' 
+      },
+      latitude: { 
+        type: 'string',
+        description: 'Latitude coordinate - optional' 
+      },
+      longitude: { 
+        type: 'string',
+        description: 'Longitude coordinate - optional' 
+      },
     },
     required: ['mainTerm', 'terms']
   },
@@ -359,15 +451,25 @@ const updatePayloadSchemas = {
     properties: {
       mainTerm: buildMainTermSchema({ description: 'Main term for the object (REQUIRED)', valueDescription: 'Term value (object name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
-      format_ids: { type: 'array', items: { type: 'number' } },
+      format_ids: { 
+        type: 'array', 
+        items: { type: 'number' },
+        description: 'Array of Format IDs - optional. Use list formats to get available format IDs' 
+      },
     },
     required: ['mainTerm', 'terms']
   },
   responsibilities: {
     type: 'object',
     properties: {
-      action_id: { type: 'number' },
-      object_id: { type: 'number' },
+      action_id: { 
+        type: 'number',
+        description: 'Action ID - REQUIRED. Use list actions to get available action IDs' 
+      },
+      object_id: { 
+        type: 'number',
+        description: 'Object ID - REQUIRED. Use list objects to get available object IDs' 
+      },
       mainTerm: buildMainTermSchema({ description: 'Main term for the responsibility (REQUIRED)', valueDescription: 'Term value (responsibility name) - REQUIRED' }),
       terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
     },
@@ -442,6 +544,22 @@ const updatePayloadSchemas = {
     },
     required: ['mainTerm']
   },
+  skills: {
+    type: 'object',
+    properties: {
+      mainTerm: buildMainTermSchema({ description: 'Main term for the skill (REQUIRED)', valueDescription: 'Term value (skill name) - REQUIRED' }),
+      terms: { type: 'array', items: buildTermItemSchema({ withId: true }) },
+      responsibility_id: { 
+        type: 'number', 
+        description: 'Responsibility ID - REQUIRED. Use list responsibilities to get available responsibility IDs, or use find_existing_responsibility_terms to find existing responsibility by action_id and object_id. If responsibility doesn\'t exist, create it first using actions and objects resources.' 
+      },
+      tool_id: { 
+        type: 'number', 
+        description: 'Tool ID - REQUIRED. Use list tools to get available tool IDs. Each skill represents a relationship between a responsibility and a tool' 
+      },
+    },
+    required: ['mainTerm', 'responsibility_id', 'tool_id']
+  },
 };
 
 const tools = [
@@ -504,6 +622,7 @@ const tools = [
         { if: { properties: { resource: { const: 'rates' } } }, then: { properties: { payload: createPayloadSchemas.rates } } },
         { if: { properties: { resource: { const: 'levels' } } }, then: { properties: { payload: createPayloadSchemas.levels } } },
         { if: { properties: { resource: { const: 'positions' } } }, then: { properties: { payload: createPayloadSchemas.positions } } },
+        { if: { properties: { resource: { const: 'skills' } } }, then: { properties: { payload: createPayloadSchemas.skills } } },
       ]
     }
   },
@@ -539,6 +658,7 @@ const tools = [
         { if: { properties: { resource: { const: 'rates' } } }, then: { properties: { payload: updatePayloadSchemas.rates } } },
         { if: { properties: { resource: { const: 'levels' } } }, then: { properties: { payload: updatePayloadSchemas.levels } } },
         { if: { properties: { resource: { const: 'positions' } } }, then: { properties: { payload: updatePayloadSchemas.positions } } },
+        { if: { properties: { resource: { const: 'skills' } } }, then: { properties: { payload: updatePayloadSchemas.skills } } },
       ]
     }
   },
@@ -557,7 +677,7 @@ const tools = [
   },
   {
     name: 'find_existing_responsibility_terms',
-    description: 'Find existing Actions and Objects by language to check what terms already exist. Use this BEFORE adding new terms to responsibilities.',
+    description: 'Find existing Actions and Objects by language to check what terms already exist. Use this BEFORE adding new terms to responsibilities. This tool helps you find existing responsibility combinations or check if a specific action-object pair already has terms.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -568,6 +688,21 @@ const tools = [
         search: { type: 'string', description: 'Search term (optional). Use to filter specific action-object combinations.' }
       },
       required: ['language_id', 'term_type_id', 'action_id', 'object_id']
+    }
+  },
+  {
+    name: 'find_existing_skill_terms',
+    description: 'Find existing Skills by responsibility and tool to check what terms already exist. Use this BEFORE adding new terms to skills. This tool helps you find existing skill combinations or check if a specific responsibility-tool pair already has terms.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        language_id: { type: 'number', description: 'Language ID - REQUIRED. Use get_languages to find language ID.' },
+        term_type_id: { type: 'number', description: 'Term type ID - REQUIRED. Use get_term_types to find term type ID.' },
+        responsibility_id: { type: 'number', description: 'Responsibility ID - REQUIRED. Use list responsibilities to find responsibility ID.' },
+        tool_id: { type: 'number', description: 'Tool ID - REQUIRED. Use list tools to find tool ID.' },
+        search: { type: 'string', description: 'Search term (optional). Use to filter specific responsibility-tool combinations.' }
+      },
+      required: ['language_id', 'term_type_id', 'responsibility_id', 'tool_id']
     }
   },
   {

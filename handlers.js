@@ -40,6 +40,9 @@ import {
   getLevels, getLevel, createLevel, updateLevel,
   // Position functions
   getPositions, getPosition, createPosition, updatePosition,
+  // Skills functions
+  getSkills, getSkill, createSkill, updateSkill,
+  findExistingSkillTerms,
   // Individual Terms functions
   createTerm, updateTerm
 } from './entities.js';
@@ -87,6 +90,8 @@ const ALIASES = {
   'рівень': 'levels', 'рівні': 'levels', 'уровень': 'levels', 'уровни': 'levels', 'level': 'levels', 'levels': 'levels',
   // positions
   'позиція': 'positions', 'позиції': 'positions', 'должность': 'positions', 'должности': 'positions', 'position': 'positions', 'positions': 'positions',
+  // skills
+  'навичка': 'skills', 'навички': 'skills', 'навык': 'skills', 'навыки': 'skills', 'умение': 'skills', 'умения': 'skills', 'skill': 'skills', 'skills': 'skills',
 };
 
 function resolveResource(input) {
@@ -219,6 +224,12 @@ const RESOURCE_MAP = {
     create: createPosition,
     update: updatePosition,
   },
+  skills: {
+    list: getSkills,
+    get: getSkill,
+    create: createSkill,
+    update: updateSkill,
+  },
 };
 
 export async function list({ resource, ...params }) {
@@ -266,7 +277,7 @@ export async function update({ resource, id, payload }) {
 }
 
 // Re-export essential specialized handlers for direct routing
-export { getTermTypes, findExistingResponsibilityTerms, createTerm, updateTerm };
+export { getTermTypes, findExistingResponsibilityTerms, findExistingSkillTerms, createTerm, updateTerm };
 
 // Tool handlers mapping
 const toolHandlers = {
@@ -358,6 +369,13 @@ const toolHandlers = {
   update_responsibility: updateResponsibility,
   find_existing_responsibility_terms: findExistingResponsibilityTerms,
 
+  // Skills handlers
+  get_skills: getSkills,
+  get_skill: getSkill,
+  create_skill: createSkill,
+  update_skill: updateSkill,
+  find_existing_skill_terms: findExistingSkillTerms,
+
   // Individual Terms handlers
   create_term: createTerm,
   update_term: updateTerm,
@@ -391,7 +409,6 @@ const toolHandlers = {
   get_position: getPosition,
   create_position: createPosition,
   update_position: updatePosition,
-
 };
 
 export default toolHandlers;
@@ -399,7 +416,7 @@ export default toolHandlers;
 // --- Merge helpers for updates ---
 const TERM_MANAGED_RESOURCES = new Set([
   'departments','professions','languages','countries','cities',
-  'industries','sub-industries','actions','objects','responsibilities','levels','positions'
+  'industries','sub-industries','actions','objects','responsibilities','levels','positions','skills'
 ]);
 
 function shouldMergeTerms(resourceKey) {
